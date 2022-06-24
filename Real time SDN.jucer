@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
+              addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes">
+  <MAINGROUP id="ojgsDP" name="Real time SDN">
+    <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
+      <GROUP id="{6651CF0C-09D6-4AF8-A451-373401B9214B}" name="Node classes">
+        <FILE id="upFQoe" name="HasBuffer.cpp" compile="1" resource="0" file="Source/Node classes/HasBuffer.cpp"/>
+        <FILE id="oYNCOR" name="HasBuffer.h" compile="0" resource="0" file="Source/Node classes/HasBuffer.h"/>
+        <FILE id="jNFPEs" name="Node.h" compile="0" resource="0" file="Source/Node classes/Node.h"/>
+      </GROUP>
+      <GROUP id="{EE374E07-0E79-BD79-DF98-3B4EF9714970}" name="SDN classes">
+        <FILE id="HtuXah" name="Listener.cpp" compile="1" resource="0" file="Source/SDN classes/Listener.cpp"/>
+        <FILE id="XMUb41" name="Listener.h" compile="0" resource="0" file="Source/SDN classes/Listener.h"/>
+        <FILE id="p0giy3" name="Room.cpp" compile="1" resource="0" file="Source/SDN classes/Room.cpp"/>
+        <FILE id="sJaw6i" name="Room.h" compile="0" resource="0" file="Source/SDN classes/Room.h"/>
+        <FILE id="rQo1hq" name="ScatteringNode.cpp" compile="1" resource="0"
+              file="Source/SDN classes/ScatteringNode.cpp"/>
+        <FILE id="jGK0Xt" name="ScatteringNode.h" compile="0" resource="0"
+              file="Source/SDN classes/ScatteringNode.h"/>
+        <FILE id="kpDGo3" name="Source.cpp" compile="1" resource="0" file="Source/SDN classes/Source.cpp"/>
+        <FILE id="uA7gC8" name="Source.h" compile="0" resource="0" file="Source/SDN classes/Source.h"/>
+        <FILE id="sP6n7y" name="WaveGuide.cpp" compile="1" resource="0" file="Source/SDN classes/WaveGuide.cpp"/>
+        <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
+      </GROUP>
+      <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
+        <FILE id="vdmeKW" name="Point3d.h" compile="0" resource="0" file="Source/Utils/Point3d.h"/>
+      </GROUP>
+      <FILE id="zjmnKl" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="YoweId" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="gbKqNX" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="xDPraX" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Real time SDN"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Real time SDN"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+</JUCERPROJECT>
