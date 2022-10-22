@@ -1,35 +1,42 @@
 #pragma once
-#include "ScatteringNode.h"
+#include <Node.h>
 #include <JuceHeader.h>
+#include <DelayLine.h>
 
 class WaveGuide
 {
-private:
-	std::shared_ptr<HasBuffer> startNode;
-	std::shared_ptr<HasBuffer> endNode;
-
-	float distance;
-	float delay;
-	float attenuation;
-
-	dsp::ProcessorChain<dsp::Gain<float>, dsp::DelayLine<float>> processorChain;
-
 public:
 	WaveGuide();
-	WaveGuide(std::shared_ptr<HasBuffer> start, std::shared_ptr<HasBuffer> end);
+	~WaveGuide() {};
 
-	std::shared_ptr<HasBuffer> getStart() { return startNode; };
-	std::shared_ptr<HasBuffer> getEnd() { return endNode; };
-	float getDelay() { return delay; };
+	Node* getStart() { return startNode; };
+	Node* getEnd() { return endNode; };
+	float getDelay() { return delayInSamples; };
 	float getDistance() { return distance; };
 	float getAttenuation() { return attenuation; };
+	void setAttenuation(float newValue) { attenuation = newValue; };
 
-	dsp::ProcessorChain<dsp::Gain<float>, dsp::DelayLine<float>> getProcessor() { return processorChain; };
+	void prepare(double samplerate, int samplesPerBlock, uint32 nChannels, Node* start, Node* end, float dist);
 
-	void prepare(double samplerate, int samplesPerBlock, uint32 nChannels);
-	void prepare(double samplerate, int samplesPerBlock, uint32 nChannels, uint32 nNodes);
-	void process(AudioBuffer<float>& currentContext);
+	std::vector<float>& getCurrentSample() { return delay.readNextSample(); };
+	void pushNextSample(AudioBuffer<float>& sample) 
+	{
+		if (attenuation != 1.0f) sample.applyGain(attenuation);
+		delay.storeInDelay(sample); 
+	}
+	void stepForward() { delay.advanceWriteIndex(); };
 
-	void updateParams();
+
+private:
+	Node* startNode;
+	Node* endNode;
+	DelayLine delay;
+
+	float distance;
+	float delayInSamples;
+	float attenuation;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveGuide);
+
 };
 

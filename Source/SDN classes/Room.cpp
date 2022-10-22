@@ -1,5 +1,7 @@
 #include "Room.h"
 
+#define SOUND_SPEED 343
+
 Point3d dirVector(Point3d a, Point3d b)
 {
 	return { a.x - b.x, a.y - b.y, a.z - b.z };
@@ -38,109 +40,183 @@ Point3d reflectionPoint(Point3d a, Point3d b, char reflAxis, float wallPosition)
 
 }
 
-Room::Room(Point3d dimensions, std::shared_ptr<Source> source, std::shared_ptr<Listener> player):
-	source(source),
-	player(player),
-	dimensions(dimensions)
+float distanceCalc(Point3d startPos, Point3d endPos)
 {
-	
+	float distance = sqrt(pow((startPos.x - endPos.x), 2) + pow((startPos.y - endPos.y), 2)
+		+ pow((startPos.z - endPos.z), 2));
+
+	if (distance < 1) distance = 1.0f;
+
+	return distance;
+}
+
+void Room::initRoom()
+{
 	setNumberOfWalls(6);
-	char axishelper[6] = {'x', 'x', 'y', 'y', 'z', 'z'};
+	char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
 
-	int bufferSize = source->getBufferSize();
-	int nChann = source->getNChannels();
+	int bufferSize = source.getBufferSize();
+	int nChann = source.getNChannels();
 	int numConnectionsPerNode = wallNumber - 1;
 
-	sourceNode = std::vector<WaveGuide>( wallNumber);
+	sourceNode = std::vector<WaveGuide>(wallNumber);
 	nodeListener = std::vector<WaveGuide>(wallNumber);
 	NodeToNode = std::vector<WaveGuide>(wallNumber * (numConnectionsPerNode));
 
-	wallNodes = std::vector<std::shared_ptr<ScatteringNode>>(wallNumber);
+	wallNodes = std::vector<ScatteringNode>(wallNumber);
 	currentNodeBuffers = std::vector<AudioBuffer<float>>(wallNumber);
 
 	for (int i = 0; i < wallNumber; i++)
 	{
 
-		Point3d refl = reflectionPoint(source->getPosition(), player->getPosition(), axishelper[i], dimHelper[i]);
-		printf("(%f, %f, %f)", refl.x, refl.y, refl.z);
-		wallNodes[i] = std::make_shared<ScatteringNode>(ScatteringNode(refl, nChann, bufferSize));
-		sourceNode[i] =  WaveGuide(source, wallNodes[i]);
-		nodeListener[i] =  WaveGuide(wallNodes[i], player);
-		for (int j = 0; j < i; j++)
-		{
-			NodeToNode[(j * (numConnectionsPerNode)) + (i - 1)] =  WaveGuide(wallNodes[j], wallNodes[i]);
-			NodeToNode[(i * (numConnectionsPerNode)) + j] =  WaveGuide(wallNodes[i], wallNodes[j]);
-		}
+		Point3d refl = reflectionPoint(source.getPosition(), player.getPosition(), axishelper[i], dimHelper[i]);
+		wallNodes[i].init(refl, nChann, bufferSize, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
 
-		currentNodeBuffers[i] = AudioBuffer<float>(nChann, bufferSize);
+		currentNodeBuffers[i].setSize(nChann, bufferSize);
 		currentNodeBuffers[i].clear();
 	}
 	isInstance = true;
-	//for (int i = 0; i < wallNumber * (numConnectionsPerNode); i++)
-		//printf("(%f, %f) ", NodeToNode[i]->getStart()->getPosition().y, NodeToNode[i]->getEnd()->getPosition().y);
-
 }
 
-void Room::prepare(double samplerate)
+void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples)
 {
-	int bufferSize = source->getBufferSize();
-	int nChann = source->getNChannels();
+	this->dimensions = dimensions;
+	source.init(sourcePos, nChannels, numSamples);
+	player.init(playerPos, nChannels, numSamples);
+
+	initRoom();
+
+	int bufferSize = source.getBufferSize();
+	int nChann = source.getNChannels();
 	int numConnectionsPerNode = wallNumber - 1;
+
+	float sourceListenerDist = distanceCalc(source.getPosition(), player.getPosition());
+	sourceListener.prepare(samplerate, bufferSize, nChann, &source, &player, sourceListenerDist);
+	sourceListener.setAttenuation(1 / sourceListenerDist);
 
 	for (int i = 0; i < wallNumber; i++)
 	{
-		sourceNode[i].prepare(samplerate, bufferSize, nChann);
-		nodeListener[i].prepare(samplerate, bufferSize, nChann);
-		for (int j = 0; j < numConnectionsPerNode; j++)
+		float sourceNodeDistance = distanceCalc(source.getPosition(), wallNodes[i].getPosition());
+		float nodeListenerDistance = distanceCalc(wallNodes[i].getPosition(), player.getPosition());
+
+		sourceNode[i].prepare(samplerate, bufferSize, nChann, &source, &wallNodes[i], sourceNodeDistance);
+		sourceNode[i].setAttenuation(1 / sourceNodeDistance);
+		nodeListener[i].prepare(samplerate, bufferSize, nChann, &wallNodes[i], &player, nodeListenerDistance);
+		nodeListener[i].setAttenuation( 1 / (1 + (nodeListenerDistance / sourceNodeDistance)));
+
+		for (int j = i + 1; j < wallNumber; j++)
 		{
-			NodeToNode[(i * (numConnectionsPerNode)) + j].prepare(samplerate, bufferSize, nChann, wallNumber);
+			float nodeDist = distanceCalc(wallNodes[j].getPosition(), wallNodes[i].getPosition());
+
+			wallNodes[i].inWaveguides[(j - 1)] = &NodeToNode[(j * numConnectionsPerNode) + i]; //j node goes to i node
+			wallNodes[j].outWaveguides[i] = wallNodes[i].inWaveguides[(j - 1)];
+
+			wallNodes[i].outWaveguides[(j - 1)] = &NodeToNode[(i * numConnectionsPerNode) + (j - 1)]; //i node goes to j node
+			wallNodes[j].inWaveguides[i] = wallNodes[i].outWaveguides[(j - 1)];
+
+			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, bufferSize, nChann,
+				&wallNodes[j], &wallNodes[i],nodeDist);
+			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f);
+
+			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, bufferSize, nChann,
+				&wallNodes[i], &wallNodes[j], nodeDist);
+			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f);
+
 		}
 	}
 }
 
 void Room::process(AudioBuffer<float>& sourceBuffer)
 {
+	player.cleanBuffer();
+	int bufferDim = sourceBuffer.getNumSamples();
+	int nChannels = sourceBuffer.getNumChannels();
 	int numConnectionsPerNode = wallNumber - 1;
-	sourceBuffer.applyGain(2.5);
-	getPlayer()->cleanBuffer();
-
-
-	for (int i = 0; i < wallNumber; i++)
+	AudioBuffer<float> currentSample;
+	AudioBuffer<float> temp;
+	
+	for (int i = 0; i < bufferDim; i++)
 	{
-		currentNodeBuffers[i].makeCopyOf(*wallNodes[i]->getBuffer());
-		wallNodes[i]->cleanBuffer();
-	}
-
-	for (int i = 0; i < wallNumber; i++)
-	{
-		sourceNode[i].process(sourceBuffer);
-
-		//currentNodeBuffers[i].applyGain(0.6);
-		nodeListener[i].process(currentNodeBuffers[i]);
-
-
+		currentSample.clear();
+		temp.clear();
+		currentSample.setSize(nChannels, 1);
 		
-		for (int j = 0; j < numConnectionsPerNode; j++)
+		for (int ch = 0; ch < nChannels; ch++)
 		{
-			NodeToNode[(i * numConnectionsPerNode) + j].process(currentNodeBuffers[i]);
+			currentSample.copyFrom(ch, 0, sourceBuffer, ch, i, 1);
 		}
 
-		/*int numSamples = getPlayer()->getBuffer()->getNumSamples();
-		for (int channel = 0; channel < getPlayer()->getBuffer()->getNumChannels(); ++channel)
+		temp.makeCopyOf(currentSample);
+		sourceListener.pushNextSample(temp);
+
+		for (WaveGuide& guide : sourceNode)
 		{
-			auto* channelData = getPlayer()->getBuffer()->getReadPointer(channel);
-			for (int j = 0; j < numSamples; j++)
-			{
-				printf(" %f ", channelData[j]);
-			}
-		}*/
+			temp.makeCopyOf(currentSample);
+			guide.pushNextSample(temp);
+		}
+
+		processNodes();
+
+		processListener(nChannels, currentSample, sourceBuffer, i);
+
+		timeStep();
+	}
+
+
+}
+
+void Room::processNodes()
+{
+	for (ScatteringNode& node : wallNodes)
+	{
+		node.process();
 	}
 }
 
-void Room::printTest()
+void Room::processListener(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex)
 {
-	for (int i = 0; i < wallNumber; i++)
-		printf("(%f, %f) ", nodeListener[i].getStart()->getPosition().y, nodeListener[i].getEnd()->getPosition().y);
+	currentSample.clear();
+
+	for (int ch = 0; ch < nChannels; ch++)
+	{
+		float sampleToAdd = sourceListener.getCurrentSample()[ch];
+		currentSample.addSample(ch, 0, sampleToAdd);
+	}
+
+	for (WaveGuide& guide : nodeListener)
+	{
+		for (int ch = 0; ch < nChannels; ch++)
+		{
+			float sampleToAdd = guide.getCurrentSample()[ch];
+			currentSample.addSample(ch, 0, sampleToAdd);
+		}
+	}
+
+	for (int ch = 0; ch < nChannels; ch++)
+	{
+		sourceBuffer.copyFrom(ch, sampleIndex, currentSample, ch, 0, 1);
+	}
+}
+
+void Room::timeStep()
+{
+
+	for (WaveGuide& guide : sourceNode)
+	{
+		guide.stepForward();
+	}
+
+	for (WaveGuide& guide : NodeToNode)
+	{
+		guide.stepForward();
+	}
+
+	for (WaveGuide& guide : nodeListener)
+	{
+		guide.stepForward();
+	}
+
+	sourceListener.stepForward();
 
 }

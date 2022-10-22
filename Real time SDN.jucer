@@ -25,6 +25,8 @@
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
+        <FILE id="LRJeKg" name="DelayLine.cpp" compile="1" resource="0" file="Source/Utils/DelayLine.cpp"/>
+        <FILE id="wx9kCj" name="DelayLine.h" compile="0" resource="0" file="Source/Utils/DelayLine.h"/>
         <FILE id="vdmeKW" name="Point3d.h" compile="0" resource="0" file="Source/Utils/Point3d.h"/>
       </GROUP>
       <FILE id="zjmnKl" name="PluginProcessor.cpp" compile="1" resource="0"

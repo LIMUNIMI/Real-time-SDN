@@ -1,21 +1,22 @@
 #pragma once
 #include "Point3d.h"
-#include "WaveGuide.h"
-#include "Node.h"
+#include "HasBuffer.h"
 
 class Source : public HasBuffer
 {
-private:
-	int numChannels;
-	int bufferSize;
 public:
 	Source();
-	Source(Point3d position);
-	Source(Point3d position, int nChannels, int bufferSize);
+
+	void init(Point3d position, int nChannels, int bufferSize);
 	void addToBuffer(AudioBuffer<float>& inWave) override {};
 
 	int getNChannels() { return numChannels; };
 	int getBufferSize() { return bufferSize; };
 
+private:
+	int numChannels;
+	int bufferSize;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Source);
 };
 

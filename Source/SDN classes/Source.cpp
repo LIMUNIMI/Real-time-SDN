@@ -1,18 +1,10 @@
 #include "Source.h"
 
-
-Source::Source(Point3d position) 
-{
-	setPosition(position);
-	numChannels = 0;
-	bufferSize = 0;
-}
-
-Source::Source(Point3d position, int nChannels, int bufferS)
+void Source::init(Point3d position, int nChannels, int bufferSize)
 {
 	setPosition(position);
 	numChannels = nChannels;
-	bufferSize = bufferS;
+	this->bufferSize = bufferSize;
 }
 
 Source::Source()

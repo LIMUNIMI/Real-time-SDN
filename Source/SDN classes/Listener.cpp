@@ -1,6 +1,6 @@
 #include "Listener.h"
 
-Listener::Listener(Point3d position, int nChannels, int numSamples)
+void Listener::init(Point3d position, int nChannels, int numSamples)
 {
 	setPosition(position);
 	newBuffer(nChannels, numSamples);

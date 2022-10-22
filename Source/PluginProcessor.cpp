@@ -93,23 +93,13 @@ void RealtimeSDNAudioProcessor::changeProgramName (int index, const juce::String
 {
 }
 
-
-float attenuation;
-dsp::DelayLine<float> delay;
-dsp::DelayLine<float> delay2;
-AudioBuffer<float> dry;
-juce::dsp::ProcessorChain<dsp::Gain<float>, dsp::DelayLine<float>, dsp::DelayLine<float>> processorChain;
-Room currentRoom;
 //==============================================================================
 void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     Point3d sourcePos = { 1, 1, 1 };
     Point3d playerPos = { 5, 2, 3 };
-
-    std::shared_ptr<Source> source = std::make_shared<Source>(sourcePos, getTotalNumInputChannels(), samplesPerBlock);
-    std::shared_ptr<Listener> player = std::make_shared<Listener>(playerPos, getTotalNumInputChannels(), samplesPerBlock);
-    currentRoom = Room({10, 10, 10}, source, player);
-    currentRoom.prepare(sampleRate);
+    
+    room.prepare(sampleRate, { 10, 10, 10 }, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -146,7 +136,6 @@ bool RealtimeSDNAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    //currentRoom.printTest();
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -161,48 +150,14 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-
-    //AudioBuffer<float> reflection;
-    //reflection.makeCopyOf(buffer);
-    //auto reflCont = dsp::ProcessContextReplacing<float>(dsp::AudioBlock<float>(reflection));
-    //processorChain.process(reflCont);
-
-
-    //buffer.applyGain(attenuation);
-    //dry.makeCopyOf(buffer);
-    currentRoom.process(buffer);
-    //auto context = dsp::ProcessContextReplacing<float> (dsp::AudioBlock<float>(buffer));
-    //delay.process(context);
-
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer(channel);
-        auto* channelData2 = currentRoom.getPlayer()->getBuffer()->getReadPointer(channel);
-
-        //auto* reflData = reflection.getWritePointer(channel);
-        //std::transform(channelData, channelData + numSamples, channelData2, channelData, std::plus<float>());
-        //std::transform(channelData, channelData + numSamples, reflData, channelData, std::plus<float>());
-        //std::transform(channelData, channelData + numSamples, channelData, [](float& sample) { return sample * attenuation; });
-        /*for (int j = 0; j < numSamples; j++)
-        {
-            printf(" %f ", channelData2[j]);
-        }*/
-    }
-
-    buffer.makeCopyOf(*currentRoom.getPlayer()->getBuffer());
+    room.process(buffer);
     
 }
 
 //==============================================================================
 bool RealtimeSDNAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return false; // (change this to false if you choose to not supply an editor)
 }
 
 juce::AudioProcessorEditor* RealtimeSDNAudioProcessor::createEditor()

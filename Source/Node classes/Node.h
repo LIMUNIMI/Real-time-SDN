@@ -4,9 +4,6 @@
 
 class Node
 {
-private:
-	Point3d position;
-
 public:
 
 	void setPosition(Point3d newPos) { position = newPos; };
@@ -15,5 +12,9 @@ public:
 	virtual void addToBuffer(AudioBuffer<float>& inWave) = 0;
 
 	virtual ~Node() = default;
+
+private:
+	Point3d position;
+
 };
 
