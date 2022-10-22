@@ -2,7 +2,7 @@
 
 #define SOUND_SPEED 343
 
-Point3d dirVector(Point3d a, Point3d b)
+Point3d dirVector(Point3d& a, Point3d& b)
 {
 	return { a.x - b.x, a.y - b.y, a.z - b.z };
 }
@@ -40,7 +40,7 @@ Point3d reflectionPoint(Point3d a, Point3d b, char reflAxis, float wallPosition)
 
 }
 
-float distanceCalc(Point3d startPos, Point3d endPos)
+float distanceCalc(Point3d& startPos, Point3d& endPos)
 {
 	float distance = sqrt(pow((startPos.x - endPos.x), 2) + pow((startPos.y - endPos.y), 2)
 		+ pow((startPos.z - endPos.z), 2));
@@ -48,6 +48,39 @@ float distanceCalc(Point3d startPos, Point3d endPos)
 	if (distance < 1) distance = 1.0f;
 
 	return distance;
+}
+
+float magnitude(Point3d& vector)
+{
+	float distance = sqrt(pow(vector.x, 2) + pow(vector.y, 2)
+		+ pow(vector.z, 2));
+
+	if (distance < 1) distance = 1.0f;
+
+	return distance;
+}
+
+Point3d crossProduct(Point3d& vector1, Point3d& vector2)
+{
+	float x, y, z;
+	x = vector1.y * vector2.z - vector1.z * vector2.y;
+	y = -(vector1.x * vector2.z - vector1.z * vector2.x);
+	z = vector1.x * vector2.y - vector1.y * vector2.x;
+
+	return {x, y, z};
+}
+
+float sinOfVectorsAngle(Point3d vector1, Point3d vector2)
+{
+	float numerator = magnitude(crossProduct(vector1, vector2));
+	float denum = magnitude(vector1) * magnitude(vector2);
+
+	return numerator / denum;
+}
+
+float sinOfAzimuth(Point3d vector1, Point3d vector2)
+{
+	return sinOfVectorsAngle({vector1.x, 0 , vector1.z}, { vector2.x, 0 , vector2.z });
 }
 
 void Room::initRoom()
@@ -65,7 +98,6 @@ void Room::initRoom()
 	NodeToNode = std::vector<WaveGuide>(wallNumber * (numConnectionsPerNode));
 
 	wallNodes = std::vector<ScatteringNode>(wallNumber);
-	currentNodeBuffers = std::vector<AudioBuffer<float>>(wallNumber);
 
 	for (int i = 0; i < wallNumber; i++)
 	{
@@ -73,8 +105,6 @@ void Room::initRoom()
 		Point3d refl = reflectionPoint(source.getPosition(), player.getPosition(), axishelper[i], dimHelper[i]);
 		wallNodes[i].init(refl, nChann, bufferSize, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
 
-		currentNodeBuffers[i].setSize(nChann, bufferSize);
-		currentNodeBuffers[i].clear();
 	}
 	isInstance = true;
 }
@@ -177,18 +207,32 @@ void Room::processNodes()
 void Room::processListener(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex)
 {
 	currentSample.clear();
+	Point3d playerToNodeVector;
+	float panValue;
 
+
+	std::vector<float>& sourceSample = sourceListener.getCurrentSample();
+	playerToNodeVector = dirVector(source.getPosition(), player.getPosition());
+	panValue = signbit(playerToNodeVector.x) * sinOfAzimuth(playerToNodeVector, player.forward);
+
+	Panner::panByValue(sourceSample, panValue);
 	for (int ch = 0; ch < nChannels; ch++)
 	{
-		float sampleToAdd = sourceListener.getCurrentSample()[ch];
+		float sampleToAdd = sourceSample[ch];
 		currentSample.addSample(ch, 0, sampleToAdd);
 	}
 
+
 	for (WaveGuide& guide : nodeListener)
 	{
+		playerToNodeVector = dirVector(guide.getStart()->getPosition(), player.getPosition());
+		panValue = signbit(playerToNodeVector.x) * sinOfAzimuth(playerToNodeVector, player.forward);
+		std::vector<float>& guideSample = guide.getCurrentSample();
+
+		Panner::panByValue(guideSample, panValue);
 		for (int ch = 0; ch < nChannels; ch++)
 		{
-			float sampleToAdd = guide.getCurrentSample()[ch];
+			float sampleToAdd = guideSample[ch];
 			currentSample.addSample(ch, 0, sampleToAdd);
 		}
 	}

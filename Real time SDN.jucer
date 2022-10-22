@@ -27,6 +27,8 @@
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
         <FILE id="LRJeKg" name="DelayLine.cpp" compile="1" resource="0" file="Source/Utils/DelayLine.cpp"/>
         <FILE id="wx9kCj" name="DelayLine.h" compile="0" resource="0" file="Source/Utils/DelayLine.h"/>
+        <FILE id="FfWYcv" name="Panner.cpp" compile="1" resource="0" file="Source/Utils/Panner.cpp"/>
+        <FILE id="rUbAV5" name="Panner.h" compile="0" resource="0" file="Source/Utils/Panner.h"/>
         <FILE id="vdmeKW" name="Point3d.h" compile="0" resource="0" file="Source/Utils/Point3d.h"/>
       </GROUP>
       <FILE id="zjmnKl" name="PluginProcessor.cpp" compile="1" resource="0"

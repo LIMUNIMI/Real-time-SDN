@@ -96,8 +96,8 @@ void RealtimeSDNAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    Point3d sourcePos = { 1, 1, 1 };
-    Point3d playerPos = { 5, 2, 3 };
+    Point3d sourcePos = { 5, 5, 1 };
+    Point3d playerPos = { 5, 2, 8 };
     
     room.prepare(sampleRate, { 10, 10, 10 }, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
 }

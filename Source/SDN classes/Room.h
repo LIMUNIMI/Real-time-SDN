@@ -3,6 +3,7 @@
 #include <Listener.h>
 #include <Source.h>
 #include <ScatteringNode.h>
+#include <Panner.h>
 
 class Room
 {
@@ -35,8 +36,6 @@ private:
 	std::vector<WaveGuide> sourceNode;
 	std::vector<WaveGuide> NodeToNode;
 	std::vector<WaveGuide> nodeListener;
-
-	std::vector<AudioBuffer<float>> currentNodeBuffers;
 
 	std::vector<ScatteringNode> wallNodes;
 
