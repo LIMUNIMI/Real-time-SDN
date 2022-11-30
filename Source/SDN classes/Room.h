@@ -18,19 +18,30 @@ public:
 	Source* getSource() { return &source; };
 	Listener* getPlayer() { return &player; };
 
-	bool hasInstance() { return isInstance; };
+	//bool hasInstance() { return isInstance; };
 
 	void process(AudioBuffer<float>& sourceBuffer);
 	void prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples);
 
+	void updatePositions();
+	void setSourcePos(float newPos, const char& axis);
+	void setListenerPos(float newPos, const char& axis);
+	void setDimensions(float newValue, const char& axis);
+
+
+	void setWallAbsorption(float newValue);
+
 private:
 
-	void initRoom();
+	void initWalls(double samplerate, std::vector<float>& octaveCoeffs);
+	void initVariables(int numSamples);
+	void initWaveguides(double samplerate);
 	void timeStep();
 	void processNodes();
-	void processListener(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex);
+	void processSample(AudioBuffer<float>& sourceBuffer, const float** currentReadPointers, int nChannels, int sampleIndex);
 
 
+	bool hasChanged = false;
 	int wallNumber = 6;
 	WaveGuide sourceListener;
 	std::vector<WaveGuide> sourceNode;
@@ -39,11 +50,22 @@ private:
 
 	std::vector<ScatteringNode> wallNodes;
 
+	SmoothedValue<float, ValueSmoothingTypes::Linear> sourceX;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> sourceY;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> sourceZ;
+
+	SmoothedValue<float, ValueSmoothingTypes::Linear> listenerX;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> listenerY;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> listenerZ;
+
 	Source source;
 	Listener player;
 
-	bool isInstance = false;
-	Point3d dimensions = { 0, 0, 0 };
+	//bool isInstance = false;
+	Point3d dimensions = { 0.0f, 0.0f, 0.0f };
+
+
+	AudioBuffer<float> currentSample;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Room);
 };

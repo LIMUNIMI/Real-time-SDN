@@ -1,16 +1,20 @@
 #pragma once
 #include "Point3d.h"
-#include "HasBuffer.h"
+#include "Node.h"
+#include <WaveGuide.h>
+#include "MathUtils.h"
 
-class Listener : public HasBuffer
+class Listener : public Node
 {
 public:
 
 	Listener();
 	~Listener() {};
-	void init(Point3d position, int nChannels, int numSamples);
+	void init(Point3d position, int nOfConnections);
+	void process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex);
 
 	Point3d forward = {0, 0, -1};
+	std::vector<WaveGuide*> inWaveguides;
 
 private:
 

@@ -1,95 +1,86 @@
 #include "Room.h"
+#include <MathUtils.h>
 
-#define SOUND_SPEED 343
-
-Point3d dirVector(Point3d& a, Point3d& b)
+void Room::setListenerPos(float newPos, const char& axis)
 {
-	return { a.x - b.x, a.y - b.y, a.z - b.z };
-}
-
-Point3d reflectionPoint(Point3d a, Point3d b, char reflAxis, float wallPosition)
-{
-	Point3d direction;
-	float positionParam;
-
-	switch (reflAxis)
+	switch (axis)
 	{
-	case 'x':
-		a.x = (2 * wallPosition) - a.x;
-		direction = dirVector(a, b);
-		positionParam = (wallPosition - a.x) / direction.x;
-		return { wallPosition, a.y + direction.y * positionParam, a.z + direction.z * positionParam };
-		break;
-
-	case 'y':
-		a.y = (2 * wallPosition) - a.y;
-		direction = dirVector(a, b);
-		positionParam = (wallPosition - a.y) / direction.y;
-		return { a.x + direction.x * positionParam, wallPosition, a.z + direction.z * positionParam };
-		break;
-
-	case 'z':
-		a.z = (2 * wallPosition) - a.z;
-		direction = dirVector(a, b);
-		positionParam = (wallPosition - a.z) / direction.z;
-		return { a.x + direction.x * positionParam, a.y + direction.y * positionParam, wallPosition };
-		break;
+		case 'x':
+			listenerX.setTargetValue(newPos * dimensions.x);
+			break;
+		case 'y':
+			listenerY.setTargetValue(newPos * dimensions.y);
+			break;
+		case 'z':
+			listenerZ.setTargetValue(newPos * dimensions.z);
+			break;
+		default:
+			break;
 	}
 
-	return { 0, 0, 0 };
-
+	hasChanged = true;
 }
 
-float distanceCalc(Point3d& startPos, Point3d& endPos)
+void Room::setSourcePos(float newPos, const char& axis)
 {
-	float distance = sqrt(pow((startPos.x - endPos.x), 2) + pow((startPos.y - endPos.y), 2)
-		+ pow((startPos.z - endPos.z), 2));
+	switch (axis)
+	{
+		case 'x':
+			sourceX.setTargetValue(newPos * dimensions.x);
+			break;
+		case 'y':
+			sourceY.setTargetValue(newPos * dimensions.y);
+			break;
+		case 'z':
+			sourceZ.setTargetValue(newPos * dimensions.z);
+			break;
+		default:
+			break;
+	}
 
-	if (distance < 1) distance = 1.0f;
-
-	return distance;
+	hasChanged = true;
 }
 
-float magnitude(Point3d& vector)
+void Room::setDimensions(float newValue, const char& axis)
 {
-	float distance = sqrt(pow(vector.x, 2) + pow(vector.y, 2)
-		+ pow(vector.z, 2));
+	switch (axis)
+	{
+		case 'x':
+			sourceX.setCurrentAndTargetValue((source.getPosition().x / dimensions.x) * newValue);
+			listenerX.setCurrentAndTargetValue((player.getPosition().x / dimensions.x) * newValue);
+			dimensions.x = newValue;
+			break;
+		case 'y':
+			sourceY.setCurrentAndTargetValue((source.getPosition().y / dimensions.y) * newValue);
+			listenerY.setCurrentAndTargetValue((player.getPosition().y / dimensions.y) * newValue);
+			dimensions.y = newValue;
+			break;
+		case 'z':
+			sourceZ.setCurrentAndTargetValue((source.getPosition().z / dimensions.z) * newValue);
+			listenerZ.setCurrentAndTargetValue((player.getPosition().z / dimensions.z) * newValue);
+			dimensions.z = newValue;
+			break;
+		default:
+			break;
+	}
 
-	if (distance < 1) distance = 1.0f;
-
-	return distance;
+	hasChanged = true;
 }
 
-Point3d crossProduct(Point3d& vector1, Point3d& vector2)
+void Room::setWallAbsorption(float newValue)
 {
-	float x, y, z;
-	x = vector1.y * vector2.z - vector1.z * vector2.y;
-	y = -(vector1.x * vector2.z - vector1.z * vector2.x);
-	z = vector1.x * vector2.y - vector1.y * vector2.x;
-
-	return {x, y, z};
+	for ( ScatteringNode& wall : wallNodes )
+	{
+		wall.setAbsorption(1 - newValue);
+	}
 }
 
-float sinOfVectorsAngle(Point3d vector1, Point3d vector2)
-{
-	float numerator = magnitude(crossProduct(vector1, vector2));
-	float denum = magnitude(vector1) * magnitude(vector2);
-
-	return numerator / denum;
-}
-
-float sinOfAzimuth(Point3d vector1, Point3d vector2)
-{
-	return sinOfVectorsAngle({vector1.x, 0 , vector1.z}, { vector2.x, 0 , vector2.z });
-}
-
-void Room::initRoom()
+void Room::initWalls(double samplerate, std::vector<float>& octaveCoeffs)
 {
 	setNumberOfWalls(6);
 	char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
 
-	int bufferSize = source.getBufferSize();
 	int nChann = source.getNChannels();
 	int numConnectionsPerNode = wallNumber - 1;
 
@@ -102,56 +93,134 @@ void Room::initRoom()
 	for (int i = 0; i < wallNumber; i++)
 	{
 
-		Point3d refl = reflectionPoint(source.getPosition(), player.getPosition(), axishelper[i], dimHelper[i]);
-		wallNodes[i].init(refl, nChann, bufferSize, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
+		Point3d refl = MathUtils::reflectionPoint(source.getPosition(), player.getPosition(), axishelper[i], dimHelper[i]);
+		wallNodes[i].init(samplerate, refl, nChann, numConnectionsPerNode, &sourceNode[i], &nodeListener[i], octaveCoeffs);
 
 	}
-	isInstance = true;
+}
+
+void Room::initVariables(int numSamples)
+{
+	sourceX.reset(numSamples);
+	sourceY.reset(numSamples);
+	sourceZ.reset(numSamples);
+	listenerX.reset(numSamples);
+	listenerY.reset(numSamples);
+	listenerZ.reset(numSamples);
+
+	sourceX.setCurrentAndTargetValue(source.getPosition().x);
+	sourceY.setCurrentAndTargetValue(source.getPosition().y);
+	sourceZ.setCurrentAndTargetValue(source.getPosition().z);
+	listenerX.setCurrentAndTargetValue(player.getPosition().x);
+	listenerY.setCurrentAndTargetValue(player.getPosition().y);
+	listenerZ.setCurrentAndTargetValue(player.getPosition().z);
+
+	currentSample.setSize(source.getNChannels(), 1);
+}
+
+void Room::initWaveguides(double samplerate)
+{
+
+	int nChann = source.getNChannels();
+	int numConnectionsPerNode = wallNumber - 1;
+
+	float sourceListenerDist = MathUtils::distanceCalc(source.getPosition(), player.getPosition());
+	sourceListener.prepare(samplerate, nChann, &source, &player, sourceListenerDist);
+	sourceListener.setAttenuation(1 / sourceListenerDist);
+	source.outWaveguides[wallNumber] = &sourceListener;
+	player.inWaveguides[wallNumber] = &sourceListener;
+
+	for (int i = 0; i < wallNumber; i++)
+	{
+		float sourceNodeDistance = MathUtils::distanceCalc(source.getPosition(), wallNodes[i].getPosition());
+		float nodeListenerDistance = MathUtils::distanceCalc(wallNodes[i].getPosition(), player.getPosition());
+
+		sourceNode[i].prepare(samplerate, nChann, &source, &wallNodes[i], sourceNodeDistance);
+		sourceNode[i].setAttenuation(1 / sourceNodeDistance);
+		source.outWaveguides[i] = &sourceNode[i];
+
+		nodeListener[i].prepare(samplerate, nChann, &wallNodes[i], &player, nodeListenerDistance);
+		nodeListener[i].setAttenuation(1 / (1 + (nodeListenerDistance / sourceNodeDistance)));
+		player.inWaveguides[i] = &nodeListener[i];
+
+		for (int j = i + 1; j < wallNumber; j++)
+		{
+			float nodeDist = MathUtils::distanceCalc(wallNodes[j].getPosition(), wallNodes[i].getPosition());
+
+			wallNodes[i].inWaveguides[(j - 1)] = &NodeToNode[(j * numConnectionsPerNode) + i]; //j node to i node
+			wallNodes[j].outWaveguides[i] = wallNodes[i].inWaveguides[(j - 1)];
+
+			wallNodes[i].outWaveguides[(j - 1)] = &NodeToNode[(i * numConnectionsPerNode) + (j - 1)]; //i node to j node
+			wallNodes[j].inWaveguides[i] = wallNodes[i].outWaveguides[(j - 1)];
+
+			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, nChann,
+				&wallNodes[j], &wallNodes[i], nodeDist);
+			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f);
+
+			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, nChann,
+				&wallNodes[i], &wallNodes[j], nodeDist);
+			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f);
+
+		}
+	}
+
 }
 
 void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples)
 {
 	this->dimensions = dimensions;
-	source.init(sourcePos, nChannels, numSamples);
-	player.init(playerPos, nChannels, numSamples);
+	source.init(sourcePos, nChannels, numSamples, wallNumber + 1);
+	player.init(playerPos, wallNumber + 1);
+	std::vector<float> octaveCoeffs{ 0.3f, 0.3f, 0.3f, 0.4f, 0.5f, 0.7f };
 
-	initRoom();
+	initVariables(numSamples);
+	initWalls(samplerate, octaveCoeffs);
+	initWaveguides(samplerate);
+	
+}
 
-	int bufferSize = source.getBufferSize();
-	int nChann = source.getNChannels();
+void Room::updatePositions()
+{
 	int numConnectionsPerNode = wallNumber - 1;
 
-	float sourceListenerDist = distanceCalc(source.getPosition(), player.getPosition());
-	sourceListener.prepare(samplerate, bufferSize, nChann, &source, &player, sourceListenerDist);
-	sourceListener.setAttenuation(1 / sourceListenerDist);
+	source.setX(sourceX.getNextValue());
+	source.setY(sourceY.getNextValue());
+	source.setZ(sourceZ.getNextValue());
+	player.setX(listenerX.getNextValue());
+	player.setY(listenerY.getNextValue());
+	player.setZ(listenerZ.getNextValue());
+
+	char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
+	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
 
 	for (int i = 0; i < wallNumber; i++)
 	{
-		float sourceNodeDistance = distanceCalc(source.getPosition(), wallNodes[i].getPosition());
-		float nodeListenerDistance = distanceCalc(wallNodes[i].getPosition(), player.getPosition());
+		Point3d refl = MathUtils::reflectionPoint(source.getPosition(), player.getPosition(), axishelper[i], dimHelper[i]);
+		wallNodes[i].setPosition(refl);
+	}
 
-		sourceNode[i].prepare(samplerate, bufferSize, nChann, &source, &wallNodes[i], sourceNodeDistance);
+	float sourceListenerDist = MathUtils::distanceCalc(source.getPosition(), player.getPosition());
+	sourceListener.setDistance(sourceListenerDist);
+	sourceListener.setAttenuation(1 / sourceListenerDist);
+
+
+	for (int i = 0; i < wallNumber; i++)
+	{
+		float sourceNodeDistance = MathUtils::distanceCalc(source.getPosition(), wallNodes[i].getPosition());
+		float nodeListenerDistance = MathUtils::distanceCalc(wallNodes[i].getPosition(), player.getPosition());
+
+		sourceNode[i].setDistance(sourceNodeDistance);
 		sourceNode[i].setAttenuation(1 / sourceNodeDistance);
-		nodeListener[i].prepare(samplerate, bufferSize, nChann, &wallNodes[i], &player, nodeListenerDistance);
-		nodeListener[i].setAttenuation( 1 / (1 + (nodeListenerDistance / sourceNodeDistance)));
+		nodeListener[i].setDistance(nodeListenerDistance);
+		nodeListener[i].setAttenuation(1 / (1 + (nodeListenerDistance / sourceNodeDistance)));
 
 		for (int j = i + 1; j < wallNumber; j++)
 		{
-			float nodeDist = distanceCalc(wallNodes[j].getPosition(), wallNodes[i].getPosition());
+			float nodeDist = MathUtils::distanceCalc(wallNodes[j].getPosition(), wallNodes[i].getPosition());
 
-			wallNodes[i].inWaveguides[(j - 1)] = &NodeToNode[(j * numConnectionsPerNode) + i]; //j node goes to i node
-			wallNodes[j].outWaveguides[i] = wallNodes[i].inWaveguides[(j - 1)];
+			NodeToNode[(j * numConnectionsPerNode) + i].setDistance(nodeDist); //j node to i node
 
-			wallNodes[i].outWaveguides[(j - 1)] = &NodeToNode[(i * numConnectionsPerNode) + (j - 1)]; //i node goes to j node
-			wallNodes[j].inWaveguides[i] = wallNodes[i].outWaveguides[(j - 1)];
-
-			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, bufferSize, nChann,
-				&wallNodes[j], &wallNodes[i],nodeDist);
-			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f);
-
-			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, bufferSize, nChann,
-				&wallNodes[i], &wallNodes[j], nodeDist);
-			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f);
+			NodeToNode[(i * numConnectionsPerNode) + (j - 1)].setDistance(nodeDist); //i node to j node
 
 		}
 	}
@@ -159,40 +228,28 @@ void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Poi
 
 void Room::process(AudioBuffer<float>& sourceBuffer)
 {
-	player.cleanBuffer();
+
 	int bufferDim = sourceBuffer.getNumSamples();
 	int nChannels = sourceBuffer.getNumChannels();
-	int numConnectionsPerNode = wallNumber - 1;
-	AudioBuffer<float> currentSample;
-	AudioBuffer<float> temp;
+	const float** currentReadPointers = currentSample.getArrayOfReadPointers();
 	
-	for (int i = 0; i < bufferDim; i++)
+	if (hasChanged)
 	{
-		currentSample.clear();
-		temp.clear();
-		currentSample.setSize(nChannels, 1);
-		
-		for (int ch = 0; ch < nChannels; ch++)
+		for (int i = 0; i < bufferDim; i++)
 		{
-			currentSample.copyFrom(ch, 0, sourceBuffer, ch, i, 1);
+			updatePositions();
+			processSample(sourceBuffer, currentReadPointers, nChannels, i);
 		}
 
-		temp.makeCopyOf(currentSample);
-		sourceListener.pushNextSample(temp);
-
-		for (WaveGuide& guide : sourceNode)
-		{
-			temp.makeCopyOf(currentSample);
-			guide.pushNextSample(temp);
-		}
-
-		processNodes();
-
-		processListener(nChannels, currentSample, sourceBuffer, i);
-
-		timeStep();
+		hasChanged = false;
 	}
-
+	else
+	{
+		for (int i = 0; i < bufferDim; i++)
+		{
+			processSample(sourceBuffer, currentReadPointers, nChannels, i);
+		}
+	}
 
 }
 
@@ -204,43 +261,12 @@ void Room::processNodes()
 	}
 }
 
-void Room::processListener(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex)
+void Room::processSample(AudioBuffer<float>& sourceBuffer, const float** currentReadPointers, int nChannels, int sampleIndex)
 {
-	currentSample.clear();
-	Point3d playerToNodeVector;
-	float panValue;
-
-
-	std::vector<float>& sourceSample = sourceListener.getCurrentSample();
-	playerToNodeVector = dirVector(source.getPosition(), player.getPosition());
-	panValue = signbit(playerToNodeVector.x) * sinOfAzimuth(playerToNodeVector, player.forward);
-
-	Panner::panByValue(sourceSample, panValue);
-	for (int ch = 0; ch < nChannels; ch++)
-	{
-		float sampleToAdd = sourceSample[ch];
-		currentSample.addSample(ch, 0, sampleToAdd);
-	}
-
-
-	for (WaveGuide& guide : nodeListener)
-	{
-		playerToNodeVector = dirVector(guide.getStart()->getPosition(), player.getPosition());
-		panValue = signbit(playerToNodeVector.x) * sinOfAzimuth(playerToNodeVector, player.forward);
-		std::vector<float>& guideSample = guide.getCurrentSample();
-
-		Panner::panByValue(guideSample, panValue);
-		for (int ch = 0; ch < nChannels; ch++)
-		{
-			float sampleToAdd = guideSample[ch];
-			currentSample.addSample(ch, 0, sampleToAdd);
-		}
-	}
-
-	for (int ch = 0; ch < nChannels; ch++)
-	{
-		sourceBuffer.copyFrom(ch, sampleIndex, currentSample, ch, 0, 1);
-	}
+	source.process(currentSample, sourceBuffer, currentReadPointers, sampleIndex);
+	processNodes();
+	player.process(nChannels, currentSample, sourceBuffer, sampleIndex);
+	timeStep();
 }
 
 void Room::timeStep()

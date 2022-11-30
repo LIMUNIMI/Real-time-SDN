@@ -11,6 +11,8 @@ public:
 	void prepare(double samplerate, int numChannels, int maxLength, float delaySamp);
 	
 	void storeInDelay(const AudioBuffer<float>& buffer);
+	void storeInDelay(const float** sampleReadPointers, float gain);
+	void storeInChannel(float sample, int channel);
 	std::vector<float>& readNextSample();
 	
 	void advanceWriteIndex()
@@ -26,6 +28,8 @@ public:
 		circularBuffer.setSize(0,0);
 		maxBufferLength = 0;
 	}
+
+	double getSampleRate() { return sampleRate; };
 
 private:
 

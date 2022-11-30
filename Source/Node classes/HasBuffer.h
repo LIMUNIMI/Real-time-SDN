@@ -1,5 +1,5 @@
 #pragma once
-
+//might not be needed
 #include <JuceHeader.h>
 #include"Node.h"
 
@@ -10,7 +10,7 @@ public:
 	AudioBuffer<float>* getBuffer() { return &buffer; };
 	void setBuffer(AudioBuffer<float> newBuffer) { buffer.makeCopyOf(newBuffer); };
 	void newBuffer(int numChannels, int numSamples) { buffer = AudioBuffer<float>(numChannels, numSamples); buffer.clear(); };
-	void addToBuffer(AudioBuffer<float>& inWave) override;
+	//void addToBuffer(AudioBuffer<float>& inWave) override;
 	void cleanBuffer() { buffer.clear(); };
 
 private:

@@ -14,11 +14,23 @@ void DelayLine::prepare(double samplerate, int numChan, int maxLength, float del
 
 void DelayLine::storeInDelay(const AudioBuffer<float>& buffer)
 {
-	
 	for (int i = 0; i < numChannels; i++)
 	{
 		circularBuffer.copyFrom(i, writeIndex, buffer, i, 0, 1);
 	}
+}
+
+void DelayLine::storeInDelay(const float** sampleReadPointers, float gain)
+{
+	for (int i = 0; i < numChannels; i++)
+	{
+		circularBuffer.copyFrom(i, writeIndex, sampleReadPointers[i], 1, gain);
+	}
+}
+
+void DelayLine::storeInChannel(float sample, int channel)
+{
+	circularBuffer.setSample(channel, writeIndex, sample);
 }
 
 std::vector<float>& DelayLine::readNextSample()

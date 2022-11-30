@@ -14,7 +14,7 @@
 //==============================================================================
 /**
 */
-class RealtimeSDNAudioProcessor  : public juce::AudioProcessor
+class RealtimeSDNAudioProcessor  : public juce::AudioProcessor, public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -56,7 +56,10 @@ public:
 
 private:
 
+    void parameterChanged(const String& paramID, float newValue) override;
+
     Room room;
+    AudioProcessorValueTreeState parameters;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessor)
 };

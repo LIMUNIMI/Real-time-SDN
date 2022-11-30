@@ -1,21 +1,11 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include <ScatteringNode.h>
-#include <Point3d.h>
-#include <Room.cpp>
 
 //==============================================================================
-RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor()
+RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
+    parameters(*this, nullptr, "pluginParams", Parameters::createParameterLayout())
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+     , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
@@ -25,6 +15,16 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor()
                        )
 #endif
 {
+    parameters.addParameterListener("SourceX", this);
+    parameters.addParameterListener("SourceY", this);
+    parameters.addParameterListener("SourceZ", this);
+    parameters.addParameterListener("ListenerX", this);
+    parameters.addParameterListener("ListenerY", this);
+    parameters.addParameterListener("ListenerZ", this);
+    parameters.addParameterListener("WallAbsorption", this);
+    parameters.addParameterListener("DimensionsX", this);
+    parameters.addParameterListener("DimensionsY", this);
+    parameters.addParameterListener("DimensionsZ", this);
 }
 
 RealtimeSDNAudioProcessor::~RealtimeSDNAudioProcessor()
@@ -96,10 +96,18 @@ void RealtimeSDNAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    Point3d sourcePos = { 5, 5, 1 };
-    Point3d playerPos = { 5, 2, 8 };
+    Point3d roomDim = { *parameters.getRawParameterValue("DimensionsX"), 
+        *parameters.getRawParameterValue("DimensionsY"), 
+        *parameters.getRawParameterValue("DimensionsZ") };
+    Point3d sourcePos = { *parameters.getRawParameterValue("SourceX") * roomDim.x , 
+        * parameters.getRawParameterValue("SourceY")* roomDim.y, 
+        * parameters.getRawParameterValue("SourceZ")* roomDim.z };
+    Point3d playerPos = { *parameters.getRawParameterValue("ListenerX") * roomDim.x ,
+        *parameters.getRawParameterValue("ListenerY") * roomDim.y,
+        *parameters.getRawParameterValue("ListenerZ") * roomDim.z };
     
-    room.prepare(sampleRate, { 10, 10, 10 }, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
+    room.prepare(sampleRate, roomDim, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
+    room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -139,7 +147,6 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-    int numSamples = buffer.getNumSamples();
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -168,15 +175,45 @@ juce::AudioProcessorEditor* RealtimeSDNAudioProcessor::createEditor()
 //==============================================================================
 void RealtimeSDNAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = parameters.copyState();
+    std::unique_ptr<XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void RealtimeSDNAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName(parameters.state.getType()))
+            parameters.replaceState(ValueTree::fromXml(*xmlState));
+}
+
+void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)
+{
+    if (paramID == "SourceX")
+        room.setSourcePos(newValue, 'x');
+    if (paramID == "SourceY")
+        room.setSourcePos(newValue, 'y');
+    if (paramID == "SourceZ")
+        room.setSourcePos(newValue, 'z');
+
+    if (paramID == "ListenerX")
+        room.setListenerPos(newValue, 'x');
+    if (paramID == "ListenerY")
+        room.setListenerPos(newValue, 'y');
+    if (paramID == "ListenerZ")
+        room.setListenerPos(newValue, 'z');
+
+    if (paramID == "WallAbsorption")
+        room.setWallAbsorption(newValue);
+
+    if (paramID == "DimensionsX")
+        room.setDimensions(newValue, 'x');
+    if (paramID == "DimensionsY")
+        room.setDimensions(newValue, 'y');
+    if (paramID == "DimensionsZ")
+        room.setDimensions(newValue, 'z');
+
 }
 
 //==============================================================================

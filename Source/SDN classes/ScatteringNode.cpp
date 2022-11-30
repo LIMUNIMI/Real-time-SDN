@@ -5,8 +5,8 @@ ScatteringNode::ScatteringNode()
 	setPosition({0, 0, 0});
 }
 
-void ScatteringNode::init(Point3d position, int numChannels, int numSamples, int nOfConnections, WaveGuide* sourceNodeGuide
-	, WaveGuide* nodeListenerGuide)
+void ScatteringNode::init(double samplerate, Point3d position, int numChannels, int nOfConnections,
+	WaveGuide* sourceNodeGuide, WaveGuide* nodeListenerGuide, std::vector<float>& octaveCoeffs)
 {
 	nChannels = numChannels;
 	setPosition(position);
@@ -18,13 +18,28 @@ void ScatteringNode::init(Point3d position, int numChannels, int numSamples, int
 	listenerGuide = nodeListenerGuide;
 
 	inSamples = std::vector<std::vector<float>>(nOfConnections);
+	toListenerSample.setSize(numChannels, 1);
+	wallFilter = std::vector<std::vector<WallFilters>>(nOfConnections);
+	totLoudness = std::vector<float>(nChannels, 0.0f);
+	
+	for (std::vector<WallFilters>& filterVector : wallFilter)
+	{
+		filterVector = std::vector<WallFilters>(nChannels);
+		for (WallFilters& filter : filterVector)
+		{
+			filter.prepare(samplerate, octaveCoeffs);
+		}
+	}
 
 }
 
 void ScatteringNode::process()
 {
 
-	std::vector<float> totLoudness(nChannels, 0.0f);
+	for (float& value : totLoudness)
+	{
+		value = 0.0f;
+	}
 	std::vector<float>& sourceSample = sourceGuide->getCurrentSample();
 
 	for (int i = 0; i < nOfConnections; i++)
@@ -37,26 +52,25 @@ void ScatteringNode::process()
 		}
 	}
 	
-	getAllOutSamples(totLoudness);
+	getAllOutSamples();
 
 }
 
-void ScatteringNode::getAllOutSamples(std::vector<float>& totLoudness)
+void ScatteringNode::getAllOutSamples()
 {
-	AudioBuffer<float> toListenerSample;
-	toListenerSample.setSize(nChannels, 1);
+	//std::fill(toListenerSample.begin(), toListenerSample.end(), 0.0f);
 	toListenerSample.clear();
 	//std::vector<float> inSample(nChannels, 0.0f);
-	float inSampleIndex = 0;
+	int inSampleIndex = 0;
 	//inSample.setSize(nChannels, 1);
 	//float** insampleWritePointers = inSample.getArrayOfWritePointers();
 
-	AudioBuffer<float> outSample;
-	outSample.setSize(nChannels, 1);
+	/*AudioBuffer<float> outSample;
+	outSample.setSize(nChannels, 1);*/
 
 	for (int i = 0; i < nOfConnections; i++)
 	{
-		outSample.clear();
+		//outSample.clear();
 
 		if (inWaveguides[i]->getStart() == outWaveguides[i]->getEnd()) //should always enter here by vector construction
 		{
@@ -91,13 +105,23 @@ void ScatteringNode::getAllOutSamples(std::vector<float>& totLoudness)
 			chSample *= scatteringCoeff;
 			chSample += chInSample * (scatteringCoeff - 1);
 
-			outSample.setSample(ch, 0, chSample);
-			toListenerSample.addSample(ch, 0, chSample * wallAbsorption);
+			//wallFilter[i][ch].process(chSample);
+			chSample *= wallAbsorption;
+
+			//outSample.setSample(ch, 0, chSample);
+			outWaveguides[i]->pushNextSample(chSample, ch);
+			toListenerSample.addSample(ch, 0, chSample);
+			//toListenerSample[ch] = toListenerSample[ch] + chSample;
 		}
-		outSample.applyGain(wallAbsorption);
-		outWaveguides[i]->pushNextSample(outSample);
+		//outSample.applyGain(wallAbsorption);
+		//outWaveguides[i]->pushNextSample(outSample);
 	}
 
+	/*for (int ch = 0; ch < nChannels; ch++)
+	{
+		toListenerSample[ch] = toListenerSample[ch] * scatteringCoeff;
+		listenerGuide->pushNextSample(toListenerSample[ch], ch);
+	}*/
 	toListenerSample.applyGain(scatteringCoeff);
 	listenerGuide->pushNextSample(toListenerSample);
 }
