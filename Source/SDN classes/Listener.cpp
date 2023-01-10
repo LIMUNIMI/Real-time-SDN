@@ -1,24 +1,42 @@
 #include "Listener.h"
 #include <Panner.h>
 
-void Listener::init(Point3d position, int nOfConnections)
+using namespace Eigen;
+
+Listener::Listener()
+{
+	setPosition({ 0, 0, 0 });
+	//newBuffer(0, 0);
+}
+
+void Listener::init(Point3d position, int bufferSize, int nOfConnections)
 {
 	setPosition(position);
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
+	xyzRotation = Vector3f(0, 0, 0);
+	prevRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+	currentRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+	playerToNodeVector = Vector3f(0, 0, 0);
+
+	initRange(bufferSize, position);
+	//rotationMatrix = Matrix3D<float>::rotation(xyzRotation);
 	//newBuffer(nChannels, numSamples);
 	//cleanBuffer();
 }
 
-void Listener::process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex)
+void Listener::process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
 {
 	currentSample.clear();
-	Point3d playerToNodeVector;
 	float panValue;
+	currentRotation = prevRotation.slerp((float)sampleIndex / maxIndex, targetRotation).normalized().toRotationMatrix();
 
 	for (WaveGuide* guide : inWaveguides)
 	{
 		playerToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), getPosition());
-		panValue = -copysignf(1, playerToNodeVector.x) * MathUtils::sinOfAzimuth(playerToNodeVector, forward);
+		playerToNodeVector = currentRotation * playerToNodeVector;
+		float azi = atan2f(playerToNodeVector.x(), playerToNodeVector.z());
+		panValue = -sin(azi);
 		std::vector<float>& guideSample = guide->getCurrentSample();
 
 		Panner::panByValue(guideSample, panValue);
@@ -35,8 +53,40 @@ void Listener::process(int nChannels, AudioBuffer<float>& currentSample, AudioBu
 	}
 }
 
-Listener::Listener()
+void Listener::setRotation(float newValue, const char axis)
 {
-	setPosition({ 0, 0, 0 });
-	//newBuffer(0, 0);
+
+	switch (axis)
+	{
+	case 'x':
+		xyzRotation.x() = newValue;
+		break;
+	case 'y':
+		xyzRotation.y() = newValue;
+		break;
+	case 'z':
+		xyzRotation.z() = newValue;
+		break;
+	}
+
+}
+
+//void Listener::updateRotationMatrix()
+//{
+//	rotationMatrix = Matrix3D<float>::rotation(xyzRotation);
+//}
+
+void Listener::updateQuaternion()
+{
+	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+}
+
+void Listener::sync()
+{
+	if(prevRotation != targetRotation) prevRotation = targetRotation;
+}
+
+void Listener::updatePosition()
+{
+	setPosition(getSmoothedPos());
 }

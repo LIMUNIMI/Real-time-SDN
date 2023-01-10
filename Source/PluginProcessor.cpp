@@ -21,10 +21,23 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
     parameters.addParameterListener("ListenerX", this);
     parameters.addParameterListener("ListenerY", this);
     parameters.addParameterListener("ListenerZ", this);
+    parameters.addParameterListener("ListenerRotx", this);
+    parameters.addParameterListener("ListenerRoty", this);
+    parameters.addParameterListener("ListenerRotz", this);
     parameters.addParameterListener("WallAbsorption", this);
     parameters.addParameterListener("DimensionsX", this);
     parameters.addParameterListener("DimensionsY", this);
     parameters.addParameterListener("DimensionsZ", this);
+
+
+
+    for (int i = 0; i < Parameters::NUM_WALLS; i++)
+    {
+        for (int j = 0; j < Parameters::NUM_WALLS; j++)
+        {
+            parameters.addParameterListener("freq" + String(i) + String(j), this);
+        }
+    }
 }
 
 RealtimeSDNAudioProcessor::~RealtimeSDNAudioProcessor()
@@ -108,6 +121,19 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     
     room.prepare(sampleRate, roomDim, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
     room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
+
+    for (int i = 0; i < 3; i++)
+    {
+        room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + Parameters::axishelper[i * 2]), Parameters::axishelper[i * 2]);
+    }
+
+    for (int i = 0; i < Parameters::NUM_WALLS; i++)
+    {
+        for (int j = 0; j < Parameters::NUM_FREQ; j++)
+        {
+            room.setWallFreqAbsorption(*parameters.getRawParameterValue("freq" + String(i) + String(j)), i, j);
+        }
+    }
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -204,6 +230,9 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     if (paramID == "ListenerZ")
         room.setListenerPos(newValue, 'z');
 
+    if (paramID.substring(0, 11) == "ListenerRot")
+        room.setListenerRotation(newValue, paramID.getLastCharacter());
+
     if (paramID == "WallAbsorption")
         room.setWallAbsorption(newValue);
 
@@ -213,6 +242,9 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
         room.setDimensions(newValue, 'y');
     if (paramID == "DimensionsZ")
         room.setDimensions(newValue, 'z');
+
+    if (paramID.substring(0, 4) == "freq")
+        room.setWallFreqAbsorption(newValue, paramID.substring(4, 5).getIntValue(), paramID.substring(5,6).getIntValue());
 
 }
 

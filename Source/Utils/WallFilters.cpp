@@ -4,21 +4,17 @@ WallFilters::WallFilters()
 {
 }
 
-void WallFilters::prepare(double samplerate, std::vector<float>& octaveCoeffs)
+void WallFilters::prepare(double samplerate)
 {
-	for (int i = 0; i < N_OF_FILTERS; i++)
-	{
-		EQ[i].init(samplerate, EQFrequency[i], -octaveCoeffs[i]);
-	}
+	std::vector<std::vector<double>> coeffs = dspUtils::getWallFilterCoeffs(samplerate, absorption[0], 
+		absorption[1], absorption[2], absorption[3], absorption[4], absorption[5]);
+
+	filter.init(samplerate, &coeffs[1], &coeffs[0]);
 }
 
 void WallFilters::process(float& sample)
 {
 
-	EQ[0].process(sample);
-	/*for (BiquadFilter& filter : EQ)
-	{
-		filter.process(sample);
-	}*/
+	filter.process(sample);
 
 }

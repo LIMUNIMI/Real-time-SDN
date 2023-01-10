@@ -9,6 +9,10 @@
         <FILE id="upFQoe" name="HasBuffer.cpp" compile="1" resource="0" file="Source/Node classes/HasBuffer.cpp"/>
         <FILE id="oYNCOR" name="HasBuffer.h" compile="0" resource="0" file="Source/Node classes/HasBuffer.h"/>
         <FILE id="jNFPEs" name="Node.h" compile="0" resource="0" file="Source/Node classes/Node.h"/>
+        <FILE id="udjlOR" name="NormalPosition.cpp" compile="1" resource="0"
+              file="Source/Node classes/NormalPosition.cpp"/>
+        <FILE id="IzMVzj" name="NormalPosition.h" compile="0" resource="0"
+              file="Source/Node classes/NormalPosition.h"/>
       </GROUP>
       <GROUP id="{EE374E07-0E79-BD79-DF98-3B4EF9714970}" name="SDN classes">
         <FILE id="HtuXah" name="Listener.cpp" compile="1" resource="0" file="Source/SDN classes/Listener.cpp"/>
@@ -25,11 +29,12 @@
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
-        <FILE id="zSoRKv" name="BiquadFIlter.cpp" compile="1" resource="0"
-              file="Source/Utils/BiquadFIlter.cpp"/>
-        <FILE id="tfys2b" name="BiquadFIlter.h" compile="0" resource="0" file="Source/Utils/BiquadFIlter.h"/>
+        <FILE id="zSoRKv" name="IIRBase.cpp" compile="1" resource="0" file="Source/Utils/IIRBase.cpp"/>
+        <FILE id="tfys2b" name="IIRBase.h" compile="0" resource="0" file="Source/Utils/IIRBase.h"/>
         <FILE id="LRJeKg" name="DelayLine.cpp" compile="1" resource="0" file="Source/Utils/DelayLine.cpp"/>
         <FILE id="wx9kCj" name="DelayLine.h" compile="0" resource="0" file="Source/Utils/DelayLine.h"/>
+        <FILE id="MvW2vg" name="DSPUtils.cpp" compile="1" resource="0" file="Source/Utils/DSPUtils.cpp"/>
+        <FILE id="iJ1YQJ" name="DSPUtils.h" compile="0" resource="0" file="Source/Utils/DSPUtils.h"/>
         <FILE id="pzkqfb" name="MathUtils.cpp" compile="1" resource="0" file="Source/Utils/MathUtils.cpp"/>
         <FILE id="AuLsct" name="MathUtils.h" compile="0" resource="0" file="Source/Utils/MathUtils.h"/>
         <FILE id="FfWYcv" name="Panner.cpp" compile="1" resource="0" file="Source/Utils/Panner.cpp"/>
@@ -53,7 +58,7 @@
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Real time SDN"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Real time SDN" optimisation="3"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Real time SDN"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

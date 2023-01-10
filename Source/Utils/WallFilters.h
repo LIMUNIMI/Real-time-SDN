@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
-#include <BiquadFIlter.h>
+#include <IIRBase.h>
+#include <DSPUtils.h>
 
 #define N_OF_FILTERS 6
 
@@ -11,15 +12,15 @@ public:
 	WallFilters();
 	~WallFilters() {};
 
-	void prepare(double samplerate, std::vector<float>& octaveCoeffs);
+	void prepare(double samplerate);
 	void process(float& sample);
 
 
 private:
 
-	std::vector<BiquadFilter> EQ = std::vector<BiquadFilter>(N_OF_FILTERS);
+	IIRBase filter;
 
-	const float EQFrequency[N_OF_FILTERS] = { 125.0f, 250.0f, 500.0f, 1000.0f, 2000.0f, 4000.0f };
+	float absorption[6] = { 0.08, 0.2, 0.55, 0.65, 0.5, 0.4 };
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WallFilters);
 

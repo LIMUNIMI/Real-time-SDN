@@ -1,22 +1,36 @@
 #pragma once
 #include "Point3d.h"
 #include "Node.h"
+#include "NormalPosition.h"
 #include <WaveGuide.h>
 #include "MathUtils.h"
+#include <Eigen/Geometry>
 
-class Listener : public Node
+class Listener : public Node, public NormalPosition
 {
 public:
 
 	Listener();
 	~Listener() {};
-	void init(Point3d position, int nOfConnections);
-	void process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex);
 
-	Point3d forward = {0, 0, -1};
+	void init(Point3d position, int bufferSize, int nOfConnections);
+	void process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex);
+
+	void updatePosition();
+	void setRotation(float newValue, const char axis);
+	//void updateRotationMatrix();
+	void updateQuaternion();
+	void sync();
+
+	Eigen::Vector3f forward = Eigen::Vector3f(0, 0, 1);
 	std::vector<WaveGuide*> inWaveguides;
 
 private:
+
+	Eigen::Quaternionf prevRotation, targetRotation;
+	Eigen::Matrix3f currentRotation;
+	//Matrix3D<float> rotationMatrix;
+	Eigen::Vector3f xyzRotation, playerToNodeVector;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Listener);
 
