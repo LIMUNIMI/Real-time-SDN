@@ -37,7 +37,7 @@ private:
 	void initWaveguides(double samplerate);
 	void timeStep();
 	void processNodes();
-	void processSample(AudioBuffer<float>& sourceBuffer, const float** currentReadPointers, int nChannels, int sampleIndex, int maxIndex);
+	void processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex);
 
 
 	bool hasChanged = false;

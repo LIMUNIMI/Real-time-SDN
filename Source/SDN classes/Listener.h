@@ -13,8 +13,8 @@ public:
 	Listener();
 	~Listener() {};
 
-	void init(Point3d position, int bufferSize, int nOfConnections);
-	void process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex);
+	void init(Point3d normalPosition, int bufferSize, int nOfConnections, Point3d dimensions);
+	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex);
 
 	void updatePosition();
 	void setRotation(float newValue, const char axis);
@@ -27,6 +27,7 @@ public:
 
 private:
 
+	std::vector<float> monoToStereoDummy;
 	Eigen::Quaternionf prevRotation, targetRotation;
 	Eigen::Matrix3f currentRotation;
 	//Matrix3D<float> rotationMatrix;

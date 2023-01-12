@@ -8,7 +8,7 @@ public:
 	NormalPosition();
 	~NormalPosition() {};
 
-	void initRange(int numSamples, Point3d& startPos);
+	void initRange(int numSamples, Point3d& startNormalPos, Point3d dimensions);
 
 	void scaleToDim(float newValue, const char& axis);
 	void setNormalPos(float newPos, Point3d& dimensions, const char& axis);

@@ -112,19 +112,21 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     Point3d roomDim = { *parameters.getRawParameterValue("DimensionsX"), 
         *parameters.getRawParameterValue("DimensionsY"), 
         *parameters.getRawParameterValue("DimensionsZ") };
-    Point3d sourcePos = { *parameters.getRawParameterValue("SourceX") * roomDim.x , 
-        * parameters.getRawParameterValue("SourceY")* roomDim.y, 
-        * parameters.getRawParameterValue("SourceZ")* roomDim.z };
-    Point3d playerPos = { *parameters.getRawParameterValue("ListenerX") * roomDim.x ,
-        *parameters.getRawParameterValue("ListenerY") * roomDim.y,
-        *parameters.getRawParameterValue("ListenerZ") * roomDim.z };
+    Point3d sourceNormPos = { *parameters.getRawParameterValue("SourceX"), 
+        * parameters.getRawParameterValue("SourceY"), 
+        * parameters.getRawParameterValue("SourceZ") };
+    Point3d playerNormPos = { *parameters.getRawParameterValue("ListenerX") ,
+        *parameters.getRawParameterValue("ListenerY"),
+        *parameters.getRawParameterValue("ListenerZ") };
     
-    room.prepare(sampleRate, roomDim, sourcePos, playerPos, getTotalNumInputChannels(), samplesPerBlock);
+    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumInputChannels(), samplesPerBlock);
     room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
 
     for (int i = 0; i < 3; i++)
     {
-        room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + Parameters::axishelper[i * 2]), Parameters::axishelper[i * 2]);
+        //String a = "ListenerRot" + String::charToString(Parameters::axishelper[i * 2]);
+        room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + String::charToString(Parameters::axishelper[i * 2])), 
+            Parameters::axishelper[i * 2]);
     }
 
     for (int i = 0; i < Parameters::NUM_WALLS; i++)

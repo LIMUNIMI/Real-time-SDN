@@ -17,24 +17,24 @@ public:
 	void setDistance(float newDist);
 	void setAttenuation(float newValue) { attenuation = newValue; };
 
-	void prepare(double samplerate, uint32 nChannels, Node* start, Node* end, float dist);
+	void prepare(double samplerate, Node* start, Node* end, float dist);
 
-	std::vector<float>& getCurrentSample() { return delay.readNextSample(); };
+	float& getCurrentSample() { return delay.readNextSample(); };
 	void pushNextSample(AudioBuffer<float>& sample) 
 	{
 		if (attenuation != 1.0f) sample.applyGain(attenuation);
 		delay.storeInDelay(sample); 
 	}
 
-	void pushNextSample(const float** sampleReadPointers)
+	void pushNextSample(const float* sampleReadPointer)
 	{
-		delay.storeInDelay(sampleReadPointers, attenuation);
+		delay.storeInDelay(sampleReadPointer, attenuation);
 	}
 
-	void pushNextSample(float sample, int channel)
+	void pushNextSample(float sample)
 	{
 		if (attenuation != 1.0f) sample *= attenuation;
-		delay.storeInChannel(sample, channel);
+		delay.storeInDelay(sample);
 	}
 	void stepForward() { delay.advanceWriteIndex(); };
 

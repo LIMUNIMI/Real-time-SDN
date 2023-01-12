@@ -72,7 +72,6 @@ void Room::initWalls(double samplerate)
 	//char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
 
-	int nChann = source.getNChannels();
 	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;
 
 	//sourceNode = std::vector<WaveGuide>(wallNumber);
@@ -85,24 +84,23 @@ void Room::initWalls(double samplerate)
 	{
 
 		Point3d refl = MathUtils::reflectionPoint(source.getPosition(), player.getPosition(), Parameters::axishelper[i], dimHelper[i]);
-		wallNodes[i].init(samplerate, refl, nChann, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
+		wallNodes[i].init(samplerate, refl, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
 
 	}
 }
 
 void Room::initVariables(int numSamples)
 {
-	currentSample.setSize(source.getNChannels(), 1);
+	currentSample.setSize(2, 1);
 }
 
 void Room::initWaveguides(double samplerate)
 {
 
-	int nChann = source.getNChannels();
 	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;
 
 	float sourceListenerDist = MathUtils::distanceCalc(source.getPosition(), player.getPosition());
-	sourceListener.prepare(samplerate, nChann, &source, &player, sourceListenerDist);
+	sourceListener.prepare(samplerate, &source, &player, sourceListenerDist);
 	sourceListener.setAttenuation(1 / sourceListenerDist);
 	source.outWaveguides[Parameters::NUM_WALLS] = &sourceListener;
 	player.inWaveguides[Parameters::NUM_WALLS] = &sourceListener;
@@ -112,11 +110,11 @@ void Room::initWaveguides(double samplerate)
 		float sourceNodeDistance = MathUtils::distanceCalc(source.getPosition(), wallNodes[i].getPosition());
 		float nodeListenerDistance = MathUtils::distanceCalc(wallNodes[i].getPosition(), player.getPosition());
 
-		sourceNode[i].prepare(samplerate, nChann, &source, &wallNodes[i], sourceNodeDistance);
+		sourceNode[i].prepare(samplerate, &source, &wallNodes[i], sourceNodeDistance);
 		sourceNode[i].setAttenuation(1 / sourceNodeDistance);
 		source.outWaveguides[i] = &sourceNode[i];
 
-		nodeListener[i].prepare(samplerate, nChann, &wallNodes[i], &player, nodeListenerDistance);
+		nodeListener[i].prepare(samplerate, &wallNodes[i], &player, nodeListenerDistance);
 		nodeListener[i].setAttenuation(1 / (1 + (nodeListenerDistance / sourceNodeDistance)));
 		player.inWaveguides[i] = &nodeListener[i];
 
@@ -130,12 +128,10 @@ void Room::initWaveguides(double samplerate)
 			wallNodes[i].outWaveguides[(j - 1)] = &NodeToNode[(i * numConnectionsPerNode) + (j - 1)]; //i node to j node
 			wallNodes[j].inWaveguides[i] = wallNodes[i].outWaveguides[(j - 1)];
 
-			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, nChann,
-				&wallNodes[j], &wallNodes[i], nodeDist);
+			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, &wallNodes[j], &wallNodes[i], nodeDist);
 			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f);
 
-			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, nChann,
-				&wallNodes[i], &wallNodes[j], nodeDist);
+			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, &wallNodes[i], &wallNodes[j], nodeDist);
 			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f);
 
 		}
@@ -146,8 +142,8 @@ void Room::initWaveguides(double samplerate)
 void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples)
 {
 	this->dimensions = dimensions;
-	source.init(sourcePos, nChannels, numSamples, Parameters::NUM_WALLS + 1, samplerate);
-	player.init(playerPos, numSamples, Parameters::NUM_WALLS + 1);
+	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
+	player.init(playerPos, numSamples, Parameters::NUM_WALLS + 1, dimensions);
 
 	initVariables(numSamples);
 	initWalls(samplerate);
@@ -206,22 +202,25 @@ void Room::process(AudioBuffer<float>& sourceBuffer)
 
 	int bufferDim = sourceBuffer.getNumSamples();
 	int nChannels = sourceBuffer.getNumChannels();
+
+	sourceBuffer.addFrom(0, 0, sourceBuffer, 1, 0, bufferDim); // source to mono // TODO handle more channels in input
+
 	int maxIndex = bufferDim - 1;
-	const float** currentReadPointers = currentSample.getArrayOfReadPointers();
+	const float* currentReadPointer = currentSample.getReadPointer(0);
 	
 	if (hasChanged)
 	{
 		for (int i = 0; i < bufferDim; i++)
 		{
 			updatePositions();
-			processSample(sourceBuffer, currentReadPointers, nChannels, i, maxIndex);
+			processSample(sourceBuffer, currentReadPointer, i, maxIndex);
 		}
 	}
 	else
 	{
 		for (int i = 0; i < bufferDim; i++)
 		{
-			processSample(sourceBuffer, currentReadPointers, nChannels, i, maxIndex);
+			processSample(sourceBuffer, currentReadPointer, i, maxIndex);
 		}
 	}
 
@@ -235,11 +234,11 @@ void Room::processNodes()
 	}
 }
 
-void Room::processSample(AudioBuffer<float>& sourceBuffer, const float** currentReadPointers, int nChannels, int sampleIndex, int maxIndex)
+void Room::processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex)
 {
-	source.process(currentSample, sourceBuffer, currentReadPointers, sampleIndex);
+	source.process(currentSample, sourceBuffer, currentReadPointer, sampleIndex);
 	processNodes();
-	player.process(nChannels, currentSample, sourceBuffer, sampleIndex, maxIndex);
+	player.process(currentSample, sourceBuffer, sampleIndex, maxIndex);
 	timeStep();
 }
 

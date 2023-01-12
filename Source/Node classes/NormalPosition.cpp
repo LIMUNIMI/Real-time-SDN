@@ -6,15 +6,17 @@ NormalPosition::NormalPosition()
 }
 
 
-void NormalPosition::initRange(int numSamples, Point3d& startPos)
+void NormalPosition::initRange(int numSamples, Point3d& startNormalPos, Point3d dimensions)
 {
 	smoothedX.reset(numSamples);
 	smoothedY.reset(numSamples);
 	smoothedZ.reset(numSamples);
 
-	smoothedX.setCurrentAndTargetValue(startPos.x);
-	smoothedY.setCurrentAndTargetValue(startPos.y);
-	smoothedZ.setCurrentAndTargetValue(startPos.z);
+	normalPos = startNormalPos;
+
+	smoothedX.setCurrentAndTargetValue(normalPos.x * dimensions.x);
+	smoothedY.setCurrentAndTargetValue(normalPos.y * dimensions.y);
+	smoothedZ.setCurrentAndTargetValue(normalPos.z * dimensions.z);
 }
 
 void NormalPosition::scaleToDim(float newValue, const char& axis)

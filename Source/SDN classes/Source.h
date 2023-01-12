@@ -10,21 +10,19 @@ public:
 	Source();
 	~Source() {};
 
-	void init(Point3d position, int nChannels, int bufferSize, int nOfConnections, double samplerate);
+	void init(Point3d normalPosition, int bufferSize, int nOfConnections, double samplerate, Point3d dimensions);
 
-	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, const float** currentReadPointers, int sampleIndex);
+	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex);
 	//void addToBuffer(AudioBuffer<float>& inWave) override {};
 
 	void updatePosition();
 
-	int getNChannels() { return numChannels; };
 	int getBufferSize() { return bufferSize; };
 	double getSamplerate() { return samplerate; };
 
 	std::vector<WaveGuide*> outWaveguides;
 
 private:
-	int numChannels = 0;
 	int bufferSize = 0;
 	double samplerate = 48000;
 

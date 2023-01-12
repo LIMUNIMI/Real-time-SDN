@@ -9,9 +9,10 @@ Listener::Listener()
 	//newBuffer(0, 0);
 }
 
-void Listener::init(Point3d position, int bufferSize, int nOfConnections)
+void Listener::init(Point3d normalPosition, int bufferSize, int nOfConnections, Point3d dimensions)
 {
-	setPosition(position);
+	initRange(bufferSize, normalPosition, dimensions);
+	setPosition(getSmoothedPos());
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
 	xyzRotation = Vector3f(0, 0, 0);
 	prevRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
@@ -19,13 +20,13 @@ void Listener::init(Point3d position, int bufferSize, int nOfConnections)
 	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 	playerToNodeVector = Vector3f(0, 0, 0);
 
-	initRange(bufferSize, position);
+	monoToStereoDummy = std::vector<float>(2, 0.0f);
 	//rotationMatrix = Matrix3D<float>::rotation(xyzRotation);
 	//newBuffer(nChannels, numSamples);
 	//cleanBuffer();
 }
 
-void Listener::process(int nChannels, AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
+void Listener::process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
 {
 	currentSample.clear();
 	float panValue;
@@ -37,17 +38,21 @@ void Listener::process(int nChannels, AudioBuffer<float>& currentSample, AudioBu
 		playerToNodeVector = currentRotation * playerToNodeVector;
 		float azi = atan2f(playerToNodeVector.x(), playerToNodeVector.z());
 		panValue = -sin(azi);
-		std::vector<float>& guideSample = guide->getCurrentSample();
+		//float& guideSample = guide->getCurrentSample();
 
-		Panner::panByValue(guideSample, panValue);
-		for (int ch = 0; ch < nChannels; ch++)
+		monoToStereoDummy.at(0) = guide->getCurrentSample();
+		monoToStereoDummy.at(1) = 0.0f;
+
+		Panner::panMonoToStereo(monoToStereoDummy, panValue);
+
+		for (int ch = 0; ch < currentSample.getNumChannels(); ch++)
 		{
-			float sampleToAdd = guideSample[ch];
+			float sampleToAdd = monoToStereoDummy[ch];
 			currentSample.addSample(ch, 0, sampleToAdd);
 		}
 	}
 
-	for (int ch = 0; ch < nChannels; ch++)
+	for (int ch = 0; ch < sourceBuffer.getNumChannels(); ch++)
 	{
 		sourceBuffer.copyFrom(ch, sampleIndex, currentSample, ch, 0, 1);
 	}

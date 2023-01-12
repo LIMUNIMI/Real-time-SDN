@@ -10,7 +10,7 @@ WaveGuide::WaveGuide()
 
 }
 
-void WaveGuide::prepare(double samplerate, uint32 nChannels, Node* start, Node* end, float dist)
+void WaveGuide::prepare(double samplerate, Node* start, Node* end, float dist)
 {
 	startNode = start;
 	endNode = end;
@@ -20,7 +20,7 @@ void WaveGuide::prepare(double samplerate, uint32 nChannels, Node* start, Node* 
 	toSamplesConst = samplerate / Parameters::SOUND_SPEED;
 
 	//delayInSamples = (samplerate * distance) / SOUND_SPEED;
-	delay.prepare(samplerate, nChannels, (int)samplerate * 5, distance * toSamplesConst);
+	delay.prepare(samplerate, (int)samplerate * 5, distance * toSamplesConst);
 
 }
 

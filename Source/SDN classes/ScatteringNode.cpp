@@ -5,10 +5,9 @@ ScatteringNode::ScatteringNode()
 	setPosition({0, 0, 0});
 }
 
-void ScatteringNode::init(double samplerate, Point3d position, int numChannels, int nOfConnections,
+void ScatteringNode::init(double samplerate, Point3d position, int nOfConnections,
 	WaveGuide* sourceNodeGuide, WaveGuide* nodeListenerGuide)
 {
-	nChannels = numChannels;
 	setPosition(position);
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
 	outWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
@@ -17,10 +16,10 @@ void ScatteringNode::init(double samplerate, Point3d position, int numChannels, 
 	sourceGuide = sourceNodeGuide;
 	listenerGuide = nodeListenerGuide;
 
-	inSamples = std::vector<std::vector<float>>(nOfConnections);
-	toListenerSample.setSize(numChannels, 1);
-	wallFilters = std::vector<std::vector<IIRBase>>(nOfConnections);
-	totLoudness = std::vector<float>(nChannels, 0.0f);
+	inSamples = std::vector<float>(nOfConnections);
+	toListenerSample.setSize(1, 1);
+	wallFilters = std::vector<IIRBase>(nOfConnections);
+	totLoudness = 0.0f;
 
 	std::vector<std::vector<double>> coeffs = dspUtils::getWallFilterCoeffs(samplerate, absorption[0],
 		absorption[1], absorption[2], absorption[3], absorption[4], absorption[5]);
@@ -28,13 +27,10 @@ void ScatteringNode::init(double samplerate, Point3d position, int numChannels, 
 	a = coeffs[1];
 	b = coeffs[0];
 	
-	for (std::vector<IIRBase>& connectionFilters : wallFilters)
+;
+	for (IIRBase& filter : wallFilters)
 	{
-		connectionFilters = std::vector<IIRBase>(nChannels);
-		for (IIRBase& filter : connectionFilters)
-		{
-			filter.init(samplerate, &a, &b);
-		}
+		filter.init(samplerate, &a, &b);
 	}
 
 }
@@ -42,20 +38,15 @@ void ScatteringNode::init(double samplerate, Point3d position, int numChannels, 
 void ScatteringNode::process()
 {
 
-	for (float& value : totLoudness)
-	{
-		value = 0.0f;
-	}
-	std::vector<float>& sourceSample = sourceGuide->getCurrentSample();
+	totLoudness = 0;
+	float sourceSample = sourceGuide->getCurrentSample();
 
 	for (int i = 0; i < nOfConnections; i++)
 	{
 		inSamples[i] = inWaveguides[i]->getCurrentSample();
-		for (int ch = 0; ch < nChannels; ch++)
-		{
-			inSamples[i][ch] += sourceSample[ch] / 2.0f;
-			totLoudness[ch] += inSamples[i][ch];
-		}
+
+		inSamples[i] += sourceSample / 2.0f;
+		totLoudness += inSamples[i];
 	}
 	
 	getAllOutSamples();
@@ -88,20 +79,17 @@ void ScatteringNode::getAllOutSamples()
 		}
 
 
-		for (int ch = 0; ch < nChannels; ch++)
-		{
-			float chInSample = inSamples[inSampleIndex][ch];
+		float chInSample = inSamples[inSampleIndex];
 
-			float chSample = totLoudness[ch] - chInSample;
-			chSample *= scatteringCoeff;
-			chSample += chInSample * (scatteringCoeff - 1);
+		float chSample = totLoudness - chInSample;
+		chSample *= scatteringCoeff;
+		chSample += chInSample * (scatteringCoeff - 1);
 
-			//chSample *= wallAbsorption;
-			wallFilters[inSampleIndex][ch].process(chSample);
+		//chSample *= wallAbsorption;
+		wallFilters[inSampleIndex].process(chSample);
 
-			outWaveguides[i]->pushNextSample(chSample, ch);
-			toListenerSample.addSample(ch, 0, chSample);
-		}
+		outWaveguides[i]->pushNextSample(chSample);
+		toListenerSample.addSample(0, 0, chSample);
 	}
 
 	toListenerSample.applyGain(scatteringCoeff);

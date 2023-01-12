@@ -8,12 +8,12 @@ public:
 	DelayLine() {};
 	~DelayLine() {};
 
-	void prepare(double samplerate, int numChannels, int maxLength, float delaySamp);
+	void prepare(double samplerate, int maxLength, float delaySamp);
 	
 	void storeInDelay(const AudioBuffer<float>& buffer);
-	void storeInDelay(const float** sampleReadPointers, float gain);
-	void storeInChannel(float sample, int channel);
-	std::vector<float>& readNextSample();
+	void storeInDelay(const float* sampleReadPointer, float gain);
+	void storeInDelay(float sample);
+	float& readNextSample();
 	
 	void advanceWriteIndex()
 	{
@@ -34,13 +34,12 @@ public:
 private:
 
 	AudioBuffer<float> circularBuffer;
-	std::vector<float> oldSample;
-	std::vector<float> outSamples;
+	float oldSample = 0;
+	float outSample = 0;
 	int maxBufferLength = 0;
 	double sampleRate = 1;
 	float delaySamples = 0;
 	int writeIndex = 0;
-	int numChannels = 0;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DelayLine);
 

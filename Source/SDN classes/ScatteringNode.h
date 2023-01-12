@@ -11,7 +11,7 @@ public:
 	ScatteringNode();
 	~ScatteringNode() {};
 
-	void init(double samplerate, Point3d position, int numChannels, int nOfConnections, 
+	void init(double samplerate, Point3d position, int nOfConnections, 
 		WaveGuide* sourceNodeGuide, WaveGuide* nodeListenerGuide);
 	void process();
 
@@ -39,16 +39,15 @@ private:
 
 	void getAllOutSamples();
 
-	std::vector<std::vector<float>> inSamples;
+	std::vector<float> inSamples;
 	AudioBuffer<float> toListenerSample;
-	std::vector<float> totLoudness;
+	float totLoudness;
 
-	std::vector<std::vector<IIRBase>> wallFilters;
+	std::vector<IIRBase> wallFilters;
 	WaveGuide* sourceGuide = 0;
 	WaveGuide* listenerGuide = 0;
 
 	int nOfConnections = 0;
-	int nChannels = 0;
 	float scatteringCoeff = 0.0f;
 	float wallAbsorption = 0.8f;
 

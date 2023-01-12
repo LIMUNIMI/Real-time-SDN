@@ -18,6 +18,10 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 
 	params.push_back(std::make_unique<AudioParameterFloat>("WallAbsorption", "WallAbsorptions", 0.0f, 1.0f, 0.2f));
 
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsX", "Dimensions X", 1.0f, 100.0f, 10.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsY", "Dimensions Y", 1.0f, 100.0f, 10.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsZ", "Dimensions Z", 1.0f, 100.0f, 10.0f));
+
 	//freq + wallIndex + freqIndex
 	for (int i = 0; i < NUM_WALLS; i++)
 	{
@@ -26,10 +30,6 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 			params.push_back(std::make_unique<AudioParameterFloat>("freq" + String(i) + String(j), String(125 * pow(2, j)) + "HZ Wall " + String::charToString(axishelper[i]).toUpperCase() + " " + String(i % 2), 0.0001f, 1.0f, 0.5f));
 		}
 	}
-
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsX", "Dimensions X", 1.0f, 100.0f, 10.0f));
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsY", "Dimensions Y", 1.0f, 100.0f, 10.0f));
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsZ", "Dimensions Z", 1.0f, 100.0f, 10.0f));
 
 	return { params.begin(), params.end() };
 }

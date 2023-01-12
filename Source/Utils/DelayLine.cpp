@@ -1,42 +1,33 @@
 #include "DelayLine.h"
 
-void DelayLine::prepare(double samplerate, int numChan, int maxLength, float delaySamp)
+void DelayLine::prepare(double samplerate, int maxLength, float delaySamp)
 {
 	maxBufferLength = maxLength;
-	circularBuffer.setSize(numChan, maxBufferLength);
+	circularBuffer.setSize(1, maxBufferLength);
 	circularBuffer.clear();
 	sampleRate = samplerate;
-	numChannels = numChan;
-	oldSample = std::vector<float>(numChan, 0.0f);
-	outSamples = std::vector<float>(numChannels, 0.0f);
 	delaySamples = delaySamp;
 }
 
 void DelayLine::storeInDelay(const AudioBuffer<float>& buffer)
 {
-	for (int i = 0; i < numChannels; i++)
-	{
-		circularBuffer.copyFrom(i, writeIndex, buffer, i, 0, 1);
-	}
+	circularBuffer.copyFrom(0, writeIndex, buffer, 0, 0, 1);
 }
 
-void DelayLine::storeInDelay(const float** sampleReadPointers, float gain)
+void DelayLine::storeInDelay(const float* sampleReadPointer, float gain)
 {
-	for (int i = 0; i < numChannels; i++)
-	{
-		circularBuffer.copyFrom(i, writeIndex, sampleReadPointers[i], 1, gain);
-	}
+	circularBuffer.copyFrom(0, writeIndex, sampleReadPointer, 1, gain);
 }
 
-void DelayLine::storeInChannel(float sample, int channel)
+void DelayLine::storeInDelay(float sample)
 {
-	circularBuffer.setSample(channel, writeIndex, sample);
+	circularBuffer.setSample(0, writeIndex, sample);
 }
 
-std::vector<float>& DelayLine::readNextSample()
+float& DelayLine::readNextSample()
 {
 
-	auto** delayReadPointers = circularBuffer.getArrayOfReadPointers();
+	auto* delayReadPointer = circularBuffer.getReadPointer(0);
 
 	float fReadIndex = maxBufferLength + writeIndex - delaySamples;
 	int readIndex = (int)fReadIndex;
@@ -46,13 +37,10 @@ std::vector<float>& DelayLine::readNextSample()
 	readIndex %= maxBufferLength;
 	int nextIndex = (readIndex + 1) % maxBufferLength;
 
-	for (int i = 0; i < numChannels; i++)
-	{
-		auto sample = allPassCoeff * (delayReadPointers[i][nextIndex] - oldSample.at(i)) + delayReadPointers[i][readIndex];
-		oldSample.at(i) = sample;
-		outSamples[i] = sample;
-	}
+	auto sample = allPassCoeff * (delayReadPointer[nextIndex] - oldSample) + delayReadPointer[readIndex];
+	oldSample = sample;
+	outSample = sample;
 
 
-	return outSamples;
+	return outSample;
 }
