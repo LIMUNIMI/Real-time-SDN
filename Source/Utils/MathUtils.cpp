@@ -90,17 +90,17 @@ float MathUtils::sinOfAzimuth(Vector3f vector1, Vector3f vector2)
 
 Quaternionf MathUtils::eulerXYZ_to_Quaternion(Vector3f eulerXYZ)
 {
-	double cy = cos(eulerXYZ.x() * 0.5);
-	double sy = sin(eulerXYZ.x() * 0.5);
 	double cr = cos(eulerXYZ.z() * 0.5);
 	double sr = sin(eulerXYZ.z() * 0.5);
-	double cp = cos(eulerXYZ.y() * 0.5);
-	double sp = sin(eulerXYZ.y() * 0.5);
+	double cp = cos(eulerXYZ.x() * 0.5);
+	double sp = sin(eulerXYZ.x() * 0.5);
+	double cy = cos(eulerXYZ.y() * 0.5);
+	double sy = sin(eulerXYZ.y() * 0.5);
 
-	float w = cy * cr * cp + sy * sr * sp;
-	float x = cy * sr * cp - sy * cr * sp;
-	float y = cy * cr * sp + sy * sr * cp;
-	float z = sy * cr * cp - cy * sr * sp;
+	float w = cp * cy * cr + sp * sy * sr;
+	float x = sp * cy * cr - cp * sy * sr;
+	float y = cp * sy * cr + sp * cy * sr;
+	float z = cp * cy * sr - sp * sy * cr;
 
 	return Quaternionf(w, x, y, z);
 }

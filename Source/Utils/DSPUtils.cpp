@@ -203,7 +203,7 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 	}
 
 	float ampExtended[8], freqExtended[8];
-	ampExtended[0] = 0;
+	ampExtended[0] = amplitude[0];
 	freqExtended[0] = 0;
 	ampExtended[7] = amplitude[5];
 	freqExtended[7] = Fs / 2.0;

@@ -2,7 +2,7 @@
 
 ScatteringNode::ScatteringNode()
 {
-	setPosition({0, 0, 0});
+	setPosition({ 0, 0, 0 });
 }
 
 void ScatteringNode::init(double samplerate, Point3d position, int nOfConnections,
@@ -82,8 +82,9 @@ void ScatteringNode::getAllOutSamples()
 		float chInSample = inSamples[inSampleIndex];
 
 		float chSample = totLoudness - chInSample;
-		chSample *= scatteringCoeff;
-		chSample += chInSample * (scatteringCoeff - 1);
+		//chSample *= scatteringCoeff;
+		//chSample += chInSample * (scatteringCoeff - 1);
+		chSample = (chSample * scatteringCoeff) + (chInSample * (scatteringCoeff - 1));
 
 		//chSample *= wallAbsorption;
 		wallFilters[inSampleIndex].process(chSample);

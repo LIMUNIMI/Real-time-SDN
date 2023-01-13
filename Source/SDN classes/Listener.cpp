@@ -37,7 +37,8 @@ void Listener::process(AudioBuffer<float>& currentSample, AudioBuffer<float>& so
 		playerToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), getPosition());
 		playerToNodeVector = currentRotation * playerToNodeVector;
 		float azi = atan2f(playerToNodeVector.x(), playerToNodeVector.z());
-		panValue = -sin(azi);
+		panValue = sin(azi);
+
 		//float& guideSample = guide->getCurrentSample();
 
 		monoToStereoDummy.at(0) = guide->getCurrentSample();

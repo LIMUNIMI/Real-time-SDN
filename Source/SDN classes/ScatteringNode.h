@@ -41,7 +41,7 @@ private:
 
 	std::vector<float> inSamples;
 	AudioBuffer<float> toListenerSample;
-	float totLoudness;
+	float totLoudness = 0;
 
 	std::vector<IIRBase> wallFilters;
 	WaveGuide* sourceGuide = 0;
@@ -51,7 +51,7 @@ private:
 	float scatteringCoeff = 0.0f;
 	float wallAbsorption = 0.8f;
 
-	float absorption[6] = { 0.08, 0.2, 0.55, 0.65, 0.5, 0.4 };
+	float absorption[6] = { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f };
 	//std::vector<std::vector<double>> coeffs;
 	std::vector<double> a, b;
 
