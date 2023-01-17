@@ -40,19 +40,19 @@ Point3d MathUtils::reflectionPoint(Point3d a, Point3d b, char reflAxis, float wa
 
 }
 
-float MathUtils::magnitude(Point3d vector)
-{
-	float magnitude = sqrt(powf(vector.x, 2) + powf(vector.y, 2)
-		+ powf(vector.z, 2));
-
-	return magnitude;
-}
-
-float MathUtils::distanceCalc(Point3d& vector)
-{
-	float dist = MathUtils::magnitude(vector);
-	return dist < 1 ? 1.0f : dist;
-}
+//float MathUtils::magnitude(Point3d vector)
+//{
+//	float magnitude = sqrt(powf(vector.x, 2) + powf(vector.y, 2)
+//		+ powf(vector.z, 2));
+//
+//	return magnitude;
+//}
+//
+//float MathUtils::distanceCalc(Point3d& vector)
+//{
+//	float dist = MathUtils::magnitude(vector);
+//	return dist < 1 ? 1.0f : dist;
+//}
 
 float MathUtils::distanceCalc(Point3d& startPos, Point3d& endPos)
 {

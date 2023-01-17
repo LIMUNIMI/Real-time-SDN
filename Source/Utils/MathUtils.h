@@ -14,9 +14,9 @@ namespace MathUtils
 
 	Point3d reflectionPoint(Point3d a, Point3d b, char reflAxis, float wallPosition);
 
-	float magnitude(Point3d vector);
+	//float magnitude(Point3d vector);
 
-	float distanceCalc(Point3d& vector);
+	//float distanceCalc(Point3d& vector);
 
 	float distanceCalc(Point3d& startPos, Point3d& endPos);
 

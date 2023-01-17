@@ -20,16 +20,21 @@ public:
 	void setFreqAbsorption(float newValue, int index)
 	{
 		absorption[index] = newValue;
+		newAbsorption = true;
 	}
 
 	void updateFilterCoeffs(double samplerate)
 	{
 		std::vector<std::vector<double>> coeffs = dspUtils::getWallFilterCoeffs(samplerate, absorption[0],
-			absorption[1], absorption[2], absorption[3], absorption[4], absorption[5]);
+			absorption[1], absorption[2], absorption[3], absorption[4], absorption[5], absorption[6], absorption[7]);
 
 		a = coeffs[1];
 		b = coeffs[0];
+
+		newAbsorption = false;
 	}
+
+	bool hasNewAbsorption() { return newAbsorption; }
 	
 	//void addToBuffer(AudioBuffer<float>& inWave) override {};
 
@@ -51,7 +56,8 @@ private:
 	float scatteringCoeff = 0.0f;
 	float wallAbsorption = 0.8f;
 
-	float absorption[6] = { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f };
+	float absorption[Parameters::NUM_FREQ] = { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f };
+	bool newAbsorption = false;
 	//std::vector<std::vector<double>> coeffs;
 	std::vector<double> a, b;
 

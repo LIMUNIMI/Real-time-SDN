@@ -15,6 +15,7 @@ namespace dspUtils
 	std::vector<double> polystab(std::vector<double>& a);
 
 	//returns coeffs in format [b, a]
-	std::vector<std::vector<double>> getWallFilterCoeffs(double sampleRate, double f125, double f250, double f500, double f1000, double f2000, double f4000);
+	std::vector<std::vector<double>> getWallFilterCoeffs(double sampleRate, double f125, double f250, double f500, double f1000, 
+		double f2000, double f4000, double f8000, double f16000);
 
 }

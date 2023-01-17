@@ -1,4 +1,5 @@
 #include "DSPUtils.h"
+#include <Parameters.h>
 
 using namespace Eigen;
 
@@ -186,36 +187,37 @@ std::vector<double> dspUtils::polystab(std::vector<double>& a)
 	return out;
 }
 
-std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate, double f125, double f250, double f500, double f1000, double f2000, double f4000)
+std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate, double f125, double f250, double f500, 
+	double f1000, double f2000, double f4000, double f8000, double f16000)
 {
 
 	int N = 3;
 	double	Fs = sampleRate;
 	double sizeFFT = 1024;
 
-	double amplitude[6] = { f125, f250, f500, f1000, f2000, f4000 };
-	double freq[6] = { 125, 250, 500, 1000, 2000, 4000 };
+	double amplitude[Parameters::NUM_FREQ] = { f125, f250, f500, f1000, f2000, f4000, f8000, f16000 };
+	double freq[Parameters::NUM_FREQ] = { 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < Parameters::NUM_FREQ; i++)
 	{
 		amplitude[i] = Decibels::gainToDecibels(sqrt(1 - amplitude[i]));
 		//w[i] = (w[i] / Fs) * MathConstants<double>::twoPi;
 	}
 
-	float ampExtended[8], freqExtended[8];
+	float ampExtended[Parameters::NUM_FREQ + 2], freqExtended[Parameters::NUM_FREQ + 2];
 	ampExtended[0] = amplitude[0];
 	freqExtended[0] = 0;
-	ampExtended[7] = amplitude[5];
-	freqExtended[7] = Fs / 2.0;
-	std::copy(amplitude, &amplitude[6], &ampExtended[1]);
-	std::copy(freq, &freq[6], &freqExtended[1]);
+	ampExtended[Parameters::NUM_FREQ + 1] = amplitude[Parameters::NUM_FREQ - 1];
+	freqExtended[Parameters::NUM_FREQ + 1] = Fs / 2.0;
+	std::copy(amplitude, &amplitude[Parameters::NUM_FREQ], &ampExtended[1]);
+	std::copy(freq, &freq[Parameters::NUM_FREQ], &freqExtended[1]);
 	
 	arma::vec interpPoints = arma::linspace(0, sizeFFT / 2, (sizeFFT / 2) + 1);
 	interpPoints *= (Fs/sizeFFT);
 	int nSamples = interpPoints.size();
 
-	arma::vec ampEV(std::vector<double>(ampExtended, &ampExtended[8]));
-	arma::vec freqEV(std::vector<double>(freqExtended, &freqExtended[8]));
+	arma::vec ampEV(std::vector<double>(ampExtended, &ampExtended[Parameters::NUM_FREQ + 2]));
+	arma::vec freqEV(std::vector<double>(freqExtended, &freqExtended[Parameters::NUM_FREQ + 2]));
 
 	arma::vec hInterp(nSamples);
 	

@@ -5,7 +5,7 @@
 
 #define N_OF_FILTERS 6
 
-
+//does nothing atm, to be removed later
 class WallFilters
 {
 public:

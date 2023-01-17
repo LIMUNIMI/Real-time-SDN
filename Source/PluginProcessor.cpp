@@ -33,7 +33,7 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
 
     for (int i = 0; i < Parameters::NUM_WALLS; i++)
     {
-        for (int j = 0; j < Parameters::NUM_WALLS; j++)
+        for (int j = 0; j < Parameters::NUM_FREQ; j++)
         {
             parameters.addParameterListener("freq" + String(i) + String(j), this);
         }
@@ -120,7 +120,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerZ") };
     
     room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumInputChannels(), samplesPerBlock);
-    room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
+    //room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
 
     for (int i = 0; i < 3; i++)
     {

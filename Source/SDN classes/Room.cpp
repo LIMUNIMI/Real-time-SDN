@@ -63,7 +63,6 @@ void Room::setWallAbsorption(float newValue)
 void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
 {
 	wallNodes[wallIndex].setFreqAbsorption(newValue, freqIndex);
-	wallNodes[wallIndex].updateFilterCoeffs(source.getSamplerate());
 }
 
 void Room::initWalls(double samplerate)
@@ -230,6 +229,9 @@ void Room::processNodes()
 {
 	for (ScatteringNode& node : wallNodes)
 	{
+		if (node.hasNewAbsorption())
+			node.updateFilterCoeffs(source.getSamplerate());
+
 		node.process();
 	}
 }

@@ -22,7 +22,7 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 	totLoudness = 0.0f;
 
 	std::vector<std::vector<double>> coeffs = dspUtils::getWallFilterCoeffs(samplerate, absorption[0],
-		absorption[1], absorption[2], absorption[3], absorption[4], absorption[5]);
+		absorption[1], absorption[2], absorption[3], absorption[4], absorption[5], absorption[6], absorption[7]);
 
 	a = coeffs[1];
 	b = coeffs[0];
