@@ -60,6 +60,7 @@ private:
 
     Room room;
     AudioProcessorValueTreeState parameters;
+    //bool wrongOutput = false;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessor)
 };

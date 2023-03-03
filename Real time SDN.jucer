@@ -2,21 +2,28 @@
 
 <JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes">
+              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes"
+              pluginChannelConfigs="{1, 1}, {1, 2}, {1, 4}, {1, 9}, {1, 16}, {1, 25}, {1, 36}">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{6651CF0C-09D6-4AF8-A451-373401B9214B}" name="Node classes">
-        <FILE id="upFQoe" name="HasBuffer.cpp" compile="1" resource="0" file="Source/Node classes/HasBuffer.cpp"/>
-        <FILE id="oYNCOR" name="HasBuffer.h" compile="0" resource="0" file="Source/Node classes/HasBuffer.h"/>
         <FILE id="jNFPEs" name="Node.h" compile="0" resource="0" file="Source/Node classes/Node.h"/>
+        <FILE id="bHyf09" name="NodeRotation.cpp" compile="1" resource="0"
+              file="Source/Node classes/NodeRotation.cpp"/>
+        <FILE id="hWWY5o" name="NodeRotation.h" compile="0" resource="0" file="Source/Node classes/NodeRotation.h"/>
         <FILE id="udjlOR" name="NormalPosition.cpp" compile="1" resource="0"
               file="Source/Node classes/NormalPosition.cpp"/>
         <FILE id="IzMVzj" name="NormalPosition.h" compile="0" resource="0"
               file="Source/Node classes/NormalPosition.h"/>
       </GROUP>
       <GROUP id="{EE374E07-0E79-BD79-DF98-3B4EF9714970}" name="SDN classes">
-        <FILE id="HtuXah" name="Listener.cpp" compile="1" resource="0" file="Source/SDN classes/Listener.cpp"/>
-        <FILE id="XMUb41" name="Listener.h" compile="0" resource="0" file="Source/SDN classes/Listener.h"/>
+        <FILE id="ZWLb6h" name="Ambisonic.cpp" compile="1" resource="0" file="Source/SDN classes/Ambisonic.cpp"/>
+        <FILE id="Aqb2Ib" name="Ambisonic.h" compile="0" resource="0" file="Source/SDN classes/Ambisonic.h"/>
+        <FILE id="KR4AUA" name="Mono.cpp" compile="1" resource="0" file="Source/SDN classes/Mono.cpp"/>
+        <FILE id="Y603go" name="Mono.h" compile="0" resource="0" file="Source/SDN classes/Mono.h"/>
+        <FILE id="lDHa56" name="Microphone.h" compile="0" resource="0" file="Source/SDN classes/Microphone.h"/>
+        <FILE id="Jl4rjL" name="Receiver.cpp" compile="1" resource="0" file="Source/SDN classes/Receiver.cpp"/>
+        <FILE id="unYyAz" name="Receiver.h" compile="0" resource="0" file="Source/SDN classes/Receiver.h"/>
         <FILE id="p0giy3" name="Room.cpp" compile="1" resource="0" file="Source/SDN classes/Room.cpp"/>
         <FILE id="sJaw6i" name="Room.h" compile="0" resource="0" file="Source/SDN classes/Room.h"/>
         <FILE id="rQo1hq" name="ScatteringNode.cpp" compile="1" resource="0"
@@ -25,6 +32,8 @@
               file="Source/SDN classes/ScatteringNode.h"/>
         <FILE id="kpDGo3" name="Source.cpp" compile="1" resource="0" file="Source/SDN classes/Source.cpp"/>
         <FILE id="uA7gC8" name="Source.h" compile="0" resource="0" file="Source/SDN classes/Source.h"/>
+        <FILE id="IOXtQY" name="Stereo.cpp" compile="1" resource="0" file="Source/SDN classes/Stereo.cpp"/>
+        <FILE id="tcYbq7" name="Stereo.h" compile="0" resource="0" file="Source/SDN classes/Stereo.h"/>
         <FILE id="sP6n7y" name="WaveGuide.cpp" compile="1" resource="0" file="Source/SDN classes/WaveGuide.cpp"/>
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>

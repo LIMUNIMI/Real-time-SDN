@@ -15,6 +15,8 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
                        )
 #endif
 {
+
+
     parameters.addParameterListener("SourceX", this);
     parameters.addParameterListener("SourceY", this);
     parameters.addParameterListener("SourceZ", this);
@@ -28,6 +30,8 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
     parameters.addParameterListener("DimensionsX", this);
     parameters.addParameterListener("DimensionsY", this);
     parameters.addParameterListener("DimensionsZ", this);
+    parameters.addParameterListener("OutputMode", this);
+
 
 
 
@@ -176,6 +180,14 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    //if (wrongOutput)
+    //{
+    //    parameters.getParameter("OutputMode")->beginChangeGesture();
+    //    parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
+    //    parameters.getParameter("OutputMode")->endChangeGesture();
+    //    wrongOutput = false;
+    //}
+
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -247,6 +259,15 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
 
     if (paramID.substring(0, 4) == "freq")
         room.setWallFreqAbsorption(newValue, paramID.substring(4, 5).getIntValue(), paramID.substring(5,6).getIntValue());
+    
+    if (paramID == "OutputMode")
+    {
+        int value = newValue;
+        if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
+        {
+            room.setOutputMode(value, getNumOutputChannels());
+        }
+    }
 
 }
 

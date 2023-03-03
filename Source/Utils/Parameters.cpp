@@ -16,8 +16,8 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRoty", "Listener Yaw", 0.0f, 360.0f, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotz", "Listener Roll", 0.0f, 360.0f, 0.0f));
 
-	//TODO add it back later or clean up all code related to it
-	//params.push_back(std::make_unique<AudioParameterFloat>("WallAbsorption", "WallAbsorptions", 0.0f, 1.0f, 0.2f));
+	params.push_back(std::make_unique<AudioParameterChoice>("OutputMode", "Output mode", 
+		StringArray(outputModes, NUM_OUT_MODES), 0));
 
 	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsX", "Dimensions X", 1.0f, 100.0f, 10.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsY", "Dimensions Y", 1.0f, 100.0f, 10.0f));

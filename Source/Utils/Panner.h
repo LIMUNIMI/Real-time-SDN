@@ -1,7 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 
-
+//To be deleted
 class Panner
 {
 public:

@@ -1,6 +1,6 @@
 #pragma once
 #include <WaveGuide.h>
-#include <Listener.h>
+#include <Receiver.h>
 #include <Source.h>
 #include <ScatteringNode.h>
 #include <Panner.h>
@@ -10,13 +10,13 @@ class Room
 
 public:
 	Room();
-	~Room() {};
+	~Room() { };
 
 	//int getNumberOfWalls() { return wallNumber; };
 	//void setNumberOfWalls(int newWalls) { wallNumber = newWalls; };
 
 	Source* getSource() { return &source; };
-	Listener* getPlayer() { return &player; };
+	Receiver* getPlayer() { return &receiver; };
 
 	void process(AudioBuffer<float>& sourceBuffer);
 	void prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples);
@@ -30,10 +30,12 @@ public:
 	void setWallAbsorption(float newValue);
 	void setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex);
 
+	void setOutputMode(int mode, int numChannels);
+
 private:
 
 	void initWalls(double samplerate);
-	void initVariables(int numSamples);
+	void initVariables(int numSamples, int nChannels);
 	void initWaveguides(double samplerate);
 	void timeStep();
 	void processNodes();
@@ -50,7 +52,7 @@ private:
 	std::vector<ScatteringNode> wallNodes;
 
 	Source source;
-	Listener player;
+	Receiver receiver;
 
 	Point3d dimensions = { 0.0f, 0.0f, 0.0f };
 
