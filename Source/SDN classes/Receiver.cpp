@@ -11,9 +11,9 @@ Receiver::Receiver()
 	microphone = stereo;
 }
 
-void Receiver::init(Point3d normalPosition, int bufferSize, int nOfConnections, Point3d dimensions, int nChannels)
+void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions, int nChannels)
 {
-	initRange(bufferSize, normalPosition, dimensions);
+	initRange(samplerate, normalPosition, dimensions);
 	
 	setPosition(getSmoothedPos());
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
@@ -22,11 +22,11 @@ void Receiver::init(Point3d normalPosition, int bufferSize, int nOfConnections, 
 	microphone->init();
 }
 
-void Receiver::process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
+void Receiver::process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
 	currentSample.clear();
 
-	microphone->process(inWaveguides, getPosition(), currentSample, sourceBuffer, sampleIndex, maxIndex);
+	microphone->process(inWaveguides, getPosition(), currentSample, sourceBuffer, sampleIndex, maxIndex, hasChanged);
 }
 
 void Receiver::updatePosition()

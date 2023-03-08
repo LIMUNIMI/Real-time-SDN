@@ -17,7 +17,7 @@ public:
 	void sync() {};
 
 	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex) override;
+		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) override;
 
 private:
 

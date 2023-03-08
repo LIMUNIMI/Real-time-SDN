@@ -6,8 +6,9 @@ NormalPosition::NormalPosition()
 }
 
 
-void NormalPosition::initRange(int numSamples, Point3d& startNormalPos, Point3d dimensions)
+void NormalPosition::initRange(int samplerate, Point3d& startNormalPos, Point3d dimensions)
 {
+	int numSamples = samplerate * Parameters::SMOOTHING_TIME_SECONDS;
 	smoothedX.reset(numSamples);
 	smoothedY.reset(numSamples);
 	smoothedZ.reset(numSamples);

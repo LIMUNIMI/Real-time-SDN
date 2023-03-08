@@ -1,5 +1,6 @@
 #pragma once
 #include "Point3d.h"
+#include <Parameters.h>
 #include <JuceHeader.h>
 
 class NormalPosition
@@ -8,7 +9,7 @@ public:
 	NormalPosition();
 	~NormalPosition() {};
 
-	void initRange(int numSamples, Point3d& startNormalPos, Point3d dimensions);
+	void initRange(int samplerate, Point3d& startNormalPos, Point3d dimensions);
 
 	void scaleToDim(float newValue, const char& axis);
 	void setNormalPos(float newPos, Point3d& dimensions, const char& axis);

@@ -153,7 +153,7 @@ void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Poi
 {
 	this->dimensions = dimensions;
 	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
-	receiver.init(playerPos, numSamples, Parameters::NUM_WALLS + 1, dimensions, nChannels);
+	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions, nChannels);
 
 	initVariables(numSamples, nChannels);
 	initWalls(samplerate);
@@ -203,8 +203,6 @@ void Room::updatePositions()
 
 		}
 	}
-
-	hasChanged = receiver.isChanging() || source.isChanging();
 }
 
 void Room::process(AudioBuffer<float>& sourceBuffer)
@@ -224,6 +222,7 @@ void Room::process(AudioBuffer<float>& sourceBuffer)
 		{
 			updatePositions();
 			processSample(sourceBuffer, currentReadPointer, i, maxIndex);
+			hasChanged = receiver.isChanging() || source.isChanging();
 		}
 	}
 	else
@@ -251,7 +250,7 @@ void Room::processSample(AudioBuffer<float>& sourceBuffer, const float* currentR
 {
 	source.process(currentSample, sourceBuffer, currentReadPointer, sampleIndex);
 	processNodes();
-	receiver.process(currentSample, sourceBuffer, sampleIndex, maxIndex);
+	receiver.process(currentSample, sourceBuffer, sampleIndex, maxIndex, hasChanged);
 	timeStep();
 }
 

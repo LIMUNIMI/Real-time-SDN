@@ -15,8 +15,8 @@ public:
 	Receiver();
 	~Receiver() { microphone.reset(); };
 
-	void init(Point3d normalPosition, int bufferSize, int nOfConnections, Point3d dimensions, int nChannels);
-	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex);
+	void init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions, int nChannels);
+	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
 
 	void updatePosition();
 	std::vector<WaveGuide*> inWaveguides;

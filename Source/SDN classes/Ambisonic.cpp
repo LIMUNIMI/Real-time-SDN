@@ -9,7 +9,7 @@ void Ambisonic::init()
 }
 
 void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
+	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
 
 	int i = 0;
@@ -19,19 +19,21 @@ void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position,
 	{
 		inputs[i] = guide->getCurrentSample();
 
-
-		//get azimuth and elevation
-		microphoneToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), position);
-		microphoneToNodeVector = currentRotation * microphoneToNodeVector;
-		newAzi = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
-		newElev = atan2f(microphoneToNodeVector.y(), microphoneToNodeVector.z());
-
-		//if different then update spherical harmonics values for this waveguide
-		if (newAzi != AZIMUTH(i) || newElev != ELEVATION(i))
+		if (hasChanged)
 		{
-			AZIMUTH(i) = newAzi;
-			ELEVATION(i) = newElev;
-			getSphericalHarmonics(i);
+			//get azimuth and elevation
+			microphoneToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), position);
+			microphoneToNodeVector = currentRotation * microphoneToNodeVector;
+			newAzi = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
+			newElev = atan2f(microphoneToNodeVector.y(), microphoneToNodeVector.z());
+
+			//if different then update spherical harmonics values for this waveguide
+			if (newAzi != AZIMUTH(i) || newElev != ELEVATION(i))
+			{
+				AZIMUTH(i) = newAzi;
+				ELEVATION(i) = newElev;
+				getSphericalHarmonics(i);
+			}
 		}
 
 		i++;

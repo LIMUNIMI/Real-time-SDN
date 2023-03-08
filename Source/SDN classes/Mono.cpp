@@ -5,7 +5,7 @@ void Mono::init()
 }
 
 void Mono::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample, 
-	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex)
+	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
 
 	for (WaveGuide* guide : inWaveguides)

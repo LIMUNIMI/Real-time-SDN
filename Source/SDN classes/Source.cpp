@@ -8,7 +8,7 @@ Source::Source()
 
 void Source::init(Point3d normalPosition, int bufferSize, int nOfConnections, double samplerate, Point3d dimensions)
 {
-	initRange(bufferSize, normalPosition, dimensions);
+	initRange(samplerate, normalPosition, dimensions);
 	setPosition(getSmoothedPos());
 	this->samplerate = samplerate;
 	this->bufferSize = bufferSize;

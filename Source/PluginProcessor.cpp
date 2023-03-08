@@ -251,6 +251,11 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
         {
             room.setOutputMode(value, getNumOutputChannels());
         }
+        else
+        {
+            parameters.getParameter(paramID)->setValueNotifyingHost(0);
+            room.setOutputMode(0, getNumOutputChannels());
+        }
     }
 
     if (paramID.substring(0, 11) == "ListenerRot")

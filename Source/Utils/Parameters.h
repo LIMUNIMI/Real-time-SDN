@@ -12,6 +12,7 @@ namespace Parameters
 	constexpr int STEREO_CHANNELS = 2;
 	constexpr int NUM_WAVEGUIDES_TO_OUTPUT = 7;
 	constexpr int NUM_OUT_MODES = 7;
+	constexpr float SMOOTHING_TIME_SECONDS = 0.015f;
 	constexpr char* outputModes[NUM_OUT_MODES] = {"Mono", "Stereo",
 		"1st order Ambisonic", "2nd order Ambisonic", "3rd order Ambisonic", "4th order Ambisonic", "5th order Ambisonic" };
 
