@@ -2,9 +2,10 @@
 
 using namespace Eigen;
 
-NodeRotation::NodeRotation()
+NodeRotation::NodeRotation() :
+	xyzRotation(Vector3f(0, 0, 0))
 {
-	xyzRotation = Vector3f(0, 0, 0);
+	//xyzRotation = Vector3f(0, 0, 0);
 	prevRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 	currentRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);

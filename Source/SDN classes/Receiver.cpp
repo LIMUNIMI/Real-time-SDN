@@ -8,6 +8,7 @@ Receiver::Receiver()
 	mono = std::make_shared<Mono>();
 	stereo = std::make_shared<Stereo>();
 	ambisonic = std::make_shared<Ambisonic>();
+	microphone = stereo;
 }
 
 void Receiver::init(Point3d normalPosition, int bufferSize, int nOfConnections, Point3d dimensions, int nChannels)
@@ -17,19 +18,7 @@ void Receiver::init(Point3d normalPosition, int bufferSize, int nOfConnections, 
 	setPosition(getSmoothedPos());
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
 
-	switch (nChannels)
-	{
-	case 1:
-		//microphone = std::make_unique<Mono>();
-		microphone = mono;
-		break;
-	case 2:
-		microphone = stereo;
-		break;
-	default:
-		microphone = stereo;
-		break;
-	}
+	setOutputMode(outModeIndex);
 	microphone->init();
 }
 
@@ -47,6 +36,8 @@ void Receiver::updatePosition()
 
 void Receiver::setOutputMode(int mode)
 {
+
+	outModeIndex = mode;
 
 	if (mode == 0)
 	{

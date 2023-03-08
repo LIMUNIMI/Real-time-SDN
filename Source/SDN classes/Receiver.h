@@ -45,6 +45,8 @@ private:
 	{
 		ambisonic->setAmbisonicOrder(newOrder);
 	}
+
+	int outModeIndex = 0;
 	
 	std::shared_ptr<Microphone> microphone;
 	std::shared_ptr<Mono> mono;

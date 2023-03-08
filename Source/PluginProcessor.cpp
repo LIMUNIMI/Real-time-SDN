@@ -244,6 +244,15 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     if (paramID == "ListenerZ")
         room.setListenerPos(newValue, 'z');
 
+    if (paramID == "OutputMode")
+    {
+        int value = newValue;
+        if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
+        {
+            room.setOutputMode(value, getNumOutputChannels());
+        }
+    }
+
     if (paramID.substring(0, 11) == "ListenerRot")
         room.setListenerRotation(newValue, paramID.getLastCharacter());
 
@@ -260,14 +269,6 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     if (paramID.substring(0, 4) == "freq")
         room.setWallFreqAbsorption(newValue, paramID.substring(4, 5).getIntValue(), paramID.substring(5,6).getIntValue());
     
-    if (paramID == "OutputMode")
-    {
-        int value = newValue;
-        if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
-        {
-            room.setOutputMode(value, getNumOutputChannels());
-        }
-    }
 
 }
 
