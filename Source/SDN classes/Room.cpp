@@ -69,6 +69,7 @@ void Room::setOutputMode(int mode, int numChannels)
 {
 	receiver.setOutputMode(mode);
 	currentSample.setSize(numChannels, 1);
+	hasChanged = true;
 }
 
 //void Room::setAmbisonicOrder(int newOrder)

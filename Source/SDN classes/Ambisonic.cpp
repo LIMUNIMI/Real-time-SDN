@@ -13,7 +13,7 @@ void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position,
 {
 
 	int i = 0;
-	int newAzi, newElev;
+	float newAzi, newElev;
 
 	for (WaveGuide* guide : inWaveguides)
 	{
