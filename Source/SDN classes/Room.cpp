@@ -205,13 +205,19 @@ void Room::updatePositions()
 	}
 }
 
-void Room::process(AudioBuffer<float>& sourceBuffer)
+void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 {
 
 	int bufferDim = sourceBuffer.getNumSamples();
-	int nChannels = sourceBuffer.getNumChannels();
+	int nChannels = numInputChannels;
 
-	if (sourceBuffer.getNumChannels() == 2) sourceBuffer.addFrom(0, 0, sourceBuffer, 1, 0, bufferDim); // source to mono // TODO handle more channels in input
+	if (nChannels >= 2)
+	{
+		for (int ch = 1; ch < nChannels; ch++)
+		{
+			sourceBuffer.addFrom(0, 0, sourceBuffer, ch, 0, bufferDim); // source to mono
+		}
+	}
 
 	int maxIndex = bufferDim - 1;
 	const float* currentReadPointer = currentSample.getReadPointer(0);

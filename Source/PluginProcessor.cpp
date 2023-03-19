@@ -197,7 +197,7 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    room.process(buffer);
+    room.process(buffer, totalNumInputChannels);
     
 }
 

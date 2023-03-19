@@ -23,9 +23,8 @@ void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position,
 		{
 			//get azimuth and elevation
 			microphoneToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), position);
-			microphoneToNodeVector = currentRotation * microphoneToNodeVector;
-			newAzi = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
-			newElev = atan2f(microphoneToNodeVector.y(), microphoneToNodeVector.z());
+			newAzi = -atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
+			newElev = atan2f(microphoneToNodeVector.y(), microphoneToNodeVector.norm());
 
 			//if different then update spherical harmonics values for this waveguide
 			if (newAzi != AZIMUTH(i) || newElev != ELEVATION(i))

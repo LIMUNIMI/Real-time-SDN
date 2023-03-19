@@ -3,7 +3,7 @@
 <JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
               pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes"
-              pluginChannelConfigs="{1, 1}, {1, 2}, {1, 4}, {1, 9}, {1, 16}, {1, 25}, {1, 36}">
+              pluginChannelConfigs="{25,25}, {36,36}, {4,4}, {9,9}, {16, 16}, {1,1}, {2,2}, {1,2}, {1,4}, {1,9}, {1, 16}, {1,25}, {1,36}">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{6651CF0C-09D6-4AF8-A451-373401B9214B}" name="Node classes">

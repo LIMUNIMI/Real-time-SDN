@@ -18,7 +18,7 @@ public:
 	Source* getSource() { return &source; };
 	Receiver* getPlayer() { return &receiver; };
 
-	void process(AudioBuffer<float>& sourceBuffer);
+	void process(AudioBuffer<float>& sourceBuffer, int numInputChannels);
 	void prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples);
 
 	void updatePositions();
