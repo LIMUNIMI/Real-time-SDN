@@ -44,6 +44,7 @@ private:
 	//ACN channel ordering / N3D normalization convention
 	void getSphericalHarmonics(int channel);
 
+	// does not include Condon-Shortley phase term
 	void unnormalisedLegendrePoly(int polyOrder, float x, float* poly1, float* poly2, float* outPoly);
 
 	void setGainsToZero() 
