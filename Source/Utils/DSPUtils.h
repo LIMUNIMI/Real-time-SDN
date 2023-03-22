@@ -10,7 +10,8 @@ namespace dspUtils
 {
 
 	//[b, a] = invfreqz(h, w, numOrder, denOrder, [], iter) from matlab
-	std::vector<std::vector<double>> invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize, int iter, double tol);
+	std::vector<std::vector<double>> invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize, 
+		double* weights, int iter, double tol);
 
 	std::vector<double> polystab(std::vector<double>& a);
 

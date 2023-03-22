@@ -79,17 +79,9 @@ void Room::setOutputMode(int mode, int numChannels)
 
 void Room::initWalls(double samplerate)
 {
-	//setNumberOfWalls(6);
-	//char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
+
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
-
-	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;
-
-	//sourceNode = std::vector<WaveGuide>(wallNumber);
-	//nodeListener = std::vector<WaveGuide>(wallNumber);
-	//NodeToNode = std::vector<WaveGuide>(wallNumber * (numConnectionsPerNode));
-
-	//wallNodes = std::vector<ScatteringNode>(wallNumber);
+	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;;
 
 	for (int i = 0; i < Parameters::NUM_WALLS; i++)
 	{

@@ -3,8 +3,8 @@
 
 using namespace Eigen;
 
-std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize,
-	int iter = 0, double tol = 0.01)
+std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize, 
+	double* weights, int iter = 0, double tol = 0.01)
 {
 	int nm = std::max(numOrder, denOrder);
 	numOrder++;
@@ -27,8 +27,13 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 	MatrixXcd D(Dva.rows(), Dva.cols() + Dvb.cols());
 	D << Dva, Dvb;
 
+	MatrixXd wf = (Map<MatrixXd>(weights, 1, wSize).transpose()).cwiseSqrt();
+	MatrixXd D_b = wf * MatrixXd::Ones(1, numOrder + denOrder);
+
+	D = D.array() * D_b.array();
+
 	MatrixXd R = (D.adjoint() * D).real();
-	MatrixXd Vd = (D.adjoint() * -h_t).real();
+	MatrixXd Vd = (D.adjoint() * (-h_t.array() * wf.array()).matrix()).real();
 
 	MatrixXd th = R.inverse() * Vd;
 	th = th.transpose();
@@ -58,7 +63,7 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 	MatrixXcd GC_a = aV.transpose() * OM.block(0, 0, denOrder + 1, OM.cols());
 
 	MatrixXcd GC = (GC_b.array() / GC_a.array()).transpose();
-	MatrixXcd e = GC - h_t;
+	MatrixXcd e = (GC - h_t).array() * wf.array();
 	MatrixXcd Vcap = e.adjoint() * e;
 
 	MatrixXd t(a.size() - 1 + b.size(), 1);
@@ -85,8 +90,10 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 
 		MatrixXcd D3(D31.rows(), D31.cols() + D32.cols());
 		D3 << D31, D32;
+		MatrixXd D3_b = wf * MatrixXd::Ones(1, numOrder + denOrder);
+		D3 = D3.array() * D3_b.array();
 
-		MatrixXcd e = GC - h_t;
+		e = (GC - h_t).array() * wf.array();
 		R = (D3.adjoint() * D3).real();
 		Vd = (D3.adjoint() * e).real();
 
@@ -118,7 +125,7 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 
 			GC = (GC_b.array() / GC_a.array()).transpose();
 
-			V1 = GC - h_t;
+			V1 = (GC - h_t).array() * wf.array();
 			V1 = V1.adjoint() * V1;
 			t1 = Map<VectorXd>(t1_v.data(), t1_v.size());
 
@@ -195,13 +202,12 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 	double	Fs = sampleRate;
 	double sizeFFT = 1024;
 
-	double amplitude[Parameters::NUM_FREQ] = { f125, f250, f500, f1000, f2000, f4000, f8000, f16000 };
+	double amplitude[Parameters::NUM_FREQ] = { 0.08, 0.3, 0.55, 0.65, 0.5, 0.4, 0.4, 0.4 };
 	double freq[Parameters::NUM_FREQ] = { 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
 
 	for (int i = 0; i < Parameters::NUM_FREQ; i++)
 	{
 		amplitude[i] = Decibels::gainToDecibels(sqrt(1 - amplitude[i]));
-		//w[i] = (w[i] / Fs) * MathConstants<double>::twoPi;
 	}
 
 	float ampExtended[Parameters::NUM_FREQ + 2], freqExtended[Parameters::NUM_FREQ + 2];
@@ -243,10 +249,9 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 		val = pow(10.0, (val / 20.0));
 	}
 
-	arma::vec wVec = (interpPoints / Fs) * MathConstants<double>::twoPi;
-	std::vector<double> w = arma::conv_to<std::vector<double>>::from(wVec);
+	arma::vec w = (interpPoints / Fs) * MathConstants<double>::twoPi;
 
-	std::vector<double> data = arma::conv_to<std::vector<double>>::from(minPhLogSpectrum);
+	arma::vec wWeights = 1.0 / (24.7 * (4.37 * (interpPoints * 0.001) + 1));
 
-	return invfreqz(h.data(), w.data(), N, N, w.size(), 10);
+	return invfreqz(h.data(), w.memptr(), N, N, w.size(), wWeights.memptr(), 10);
 }
