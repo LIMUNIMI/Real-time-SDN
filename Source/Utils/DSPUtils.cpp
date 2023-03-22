@@ -35,7 +35,7 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 	MatrixXd R = (D.adjoint() * D).real();
 	MatrixXd Vd = (D.adjoint() * (-h_t.array() * wf.array()).matrix()).real();
 
-	MatrixXd th = R.inverse() * Vd;
+	MatrixXd th = R.partialPivLu().solve(Vd).eval();
 	th = th.transpose();
 
 	std::vector<double> a;
@@ -97,7 +97,7 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 		R = (D3.adjoint() * D3).real();
 		Vd = (D3.adjoint() * e).real();
 
-		gndirMat = R.inverse() * Vd;
+		gndirMat = R.partialPivLu().solve(Vd).eval();
 		int ll = 0;
 		double k = 1.0;
 		MatrixXcd V1 = Vcap.array() + 1;
@@ -202,7 +202,7 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 	double	Fs = sampleRate;
 	double sizeFFT = 1024;
 
-	double amplitude[Parameters::NUM_FREQ] = { 0.08, 0.3, 0.55, 0.65, 0.5, 0.4, 0.4, 0.4 };
+	double amplitude[Parameters::NUM_FREQ] = { f125, f250, f500, f1000, f2000, f4000, f8000, f16000 };
 	double freq[Parameters::NUM_FREQ] = { 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
 
 	for (int i = 0; i < Parameters::NUM_FREQ; i++)
