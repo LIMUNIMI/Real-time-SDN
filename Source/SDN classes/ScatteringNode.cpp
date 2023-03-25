@@ -82,11 +82,8 @@ void ScatteringNode::getAllOutSamples()
 		float chInSample = inSamples[inSampleIndex];
 
 		float chSample = totLoudness - chInSample;
-		//chSample *= scatteringCoeff;
-		//chSample += chInSample * (scatteringCoeff - 1);
 		chSample = (chSample * scatteringCoeff) + (chInSample * (scatteringCoeff - 1));
 
-		//chSample *= wallAbsorption;
 		wallFilters[inSampleIndex].process(chSample);
 
 		outWaveguides[i]->pushNextSample(chSample);

@@ -32,5 +32,7 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 		}
 	}
 
+	params.push_back(std::make_unique<AudioParameterBool>("LOS", "Mute Line-of-sight", 0));
+
 	return { params.begin(), params.end() };
 }

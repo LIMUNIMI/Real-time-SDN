@@ -12,38 +12,55 @@ public:
 	Room();
 	~Room() { };
 
-	//int getNumberOfWalls() { return wallNumber; };
-	//void setNumberOfWalls(int newWalls) { wallNumber = newWalls; };
-
 	Source* getSource() { return &source; };
 	Receiver* getPlayer() { return &receiver; };
 
-	void process(AudioBuffer<float>& sourceBuffer, int numInputChannels);
+	//initialize all SDN components
 	void prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples);
+	
+	//main SDN processing function
+	void process(AudioBuffer<float>& sourceBuffer, int numInputChannels);
 
-	void updatePositions();
+
 	void setSourcePos(float newPos, const char& axis);
 	void setListenerPos(float newPos, const char& axis);
 	void setListenerRotation(float newValue, const char& axis);
 	void setDimensions(float newValue, const char& axis);
-
 	void setWallAbsorption(float newValue);
 	void setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex);
 
+	//choose output mode
 	void setOutputMode(int mode, int numChannels);
+	
+	//mute and unmute LOS component
+	void muteLOS(bool condition);
 
 private:
 
+	//initialize wall nodes
 	void initWalls(double samplerate);
+	
+	//initialize local variables
 	void initVariables(int numSamples, int nChannels);
+
+	//initialize waveguides and link to correct wall nodes
 	void initWaveguides(double samplerate);
-	void timeStep();
-	void processNodes();
+
+	//recalculate position of wall nodes and update variables accordingly
+	void updatePositions();
+
+	//process a sample insertion into the system
 	void processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex);
+
+	//process wall nodes
+	void processNodes();
+	
+	//advance simulation by one sample
+	void timeStep();
 
 
 	bool hasChanged = false;
-	//int wallNumber = 6;
+
 	WaveGuide sourceListener;
 	std::vector<WaveGuide> sourceNode;
 	std::vector<WaveGuide> NodeToNode;
@@ -56,6 +73,7 @@ private:
 
 	Point3d dimensions = { 0.0f, 0.0f, 0.0f };
 
+	bool mutedLOS = false;
 
 	AudioBuffer<float> currentSample;
 

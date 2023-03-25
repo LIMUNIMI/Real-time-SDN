@@ -31,6 +31,7 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
     parameters.addParameterListener("DimensionsY", this);
     parameters.addParameterListener("DimensionsZ", this);
     parameters.addParameterListener("OutputMode", this);
+    parameters.addParameterListener("LOS", this);
 
 
 
@@ -274,7 +275,8 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     if (paramID.substring(0, 4) == "freq")
         room.setWallFreqAbsorption(newValue, paramID.substring(4, 5).getIntValue(), paramID.substring(5,6).getIntValue());
     
-
+    if (paramID == "LOS")
+        room.muteLOS((int)newValue);
 }
 
 //==============================================================================

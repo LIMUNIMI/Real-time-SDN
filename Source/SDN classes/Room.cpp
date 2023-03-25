@@ -12,76 +12,27 @@ Room::Room()
 	NodeToNode = std::vector<WaveGuide>(Parameters::NUM_WALLS * (numConnectionsPerNode));
 }
 
-void Room::setListenerPos(float newPos, const char& axis)
+//
+//	Init functions
+//
+
+void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples)
 {
-	receiver.setNormalPos(newPos, dimensions, axis);
-	hasChanged = true;
+	this->dimensions = dimensions;
+	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
+	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions, nChannels);
+
+	initVariables(numSamples, nChannels);
+	initWalls(samplerate);
+	initWaveguides(samplerate);
+	
 }
-
-void Room::setListenerRotation(float newValue, const char& axis)
-{
-	receiver.setRotation(DEG2RAD(newValue), axis);
-	receiver.updateQuaternion();
-}
-
-void Room::setSourcePos(float newPos, const char& axis)
-{
-	source.setNormalPos(newPos, dimensions, axis);
-	hasChanged = true;
-}
-
-void Room::setDimensions(float newValue, const char& axis)
-{
-	source.scaleToDim(newValue, axis);
-	receiver.scaleToDim(newValue, axis);
-	switch (axis)
-	{
-		case 'x':
-			dimensions.x = newValue;
-			break;
-		case 'y':
-			dimensions.y = newValue;
-			break;
-		case 'z':
-			dimensions.z = newValue;
-			break;
-		default:
-			break;
-	}
-
-	hasChanged = true;
-}
-
-void Room::setWallAbsorption(float newValue)
-{
-	for ( ScatteringNode& wall : wallNodes )
-	{
-		wall.setAbsorption(1 - newValue);
-	}
-}
-
-void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
-{
-	wallNodes[wallIndex].setFreqAbsorption(newValue, freqIndex);
-}
-
-void Room::setOutputMode(int mode, int numChannels)
-{
-	receiver.setOutputMode(mode);
-	currentSample.setSize(numChannels, 1);
-	hasChanged = true;
-}
-
-//void Room::setAmbisonicOrder(int newOrder)
-//{
-//	receiver.setAmbisonicOrder(newOrder);
-//}
 
 void Room::initWalls(double samplerate)
 {
 
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
-	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;;
+	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;
 
 	for (int i = 0; i < Parameters::NUM_WALLS; i++)
 	{
@@ -142,17 +93,9 @@ void Room::initWaveguides(double samplerate)
 
 }
 
-void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Point3d playerPos, int nChannels, int numSamples)
-{
-	this->dimensions = dimensions;
-	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
-	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions, nChannels);
-
-	initVariables(numSamples, nChannels);
-	initWalls(samplerate);
-	initWaveguides(samplerate);
-	
-}
+//
+//	Processing functions
+//
 
 void Room::updatePositions()
 {
@@ -160,8 +103,6 @@ void Room::updatePositions()
 
 	source.updatePosition();
 	receiver.updatePosition();
-
-	//char axishelper[6] = { 'x', 'x', 'y', 'y', 'z', 'z' };
 
 	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
 
@@ -173,7 +114,11 @@ void Room::updatePositions()
 
 	float sourceListenerDist = MathUtils::distanceCalc(source.getPosition(), receiver.getPosition());
 	sourceListener.setDistance(sourceListenerDist);
-	sourceListener.setAttenuation(1 / sourceListenerDist);
+
+	if (!mutedLOS)
+	{
+		sourceListener.setAttenuation(1 / sourceListenerDist);
+	}
 
 
 	for (int i = 0; i < Parameters::NUM_WALLS; i++)
@@ -276,3 +221,75 @@ void Room::timeStep()
 	receiver.sync();
 
 }
+
+
+//
+//	Parameters set functions
+//
+
+void Room::setListenerPos(float newPos, const char& axis)
+{
+	receiver.setNormalPos(newPos, dimensions, axis);
+	hasChanged = true;
+}
+
+void Room::setListenerRotation(float newValue, const char& axis)
+{
+	receiver.setRotation(DEG2RAD(newValue), axis);
+	receiver.updateQuaternion();
+}
+
+void Room::setSourcePos(float newPos, const char& axis)
+{
+	source.setNormalPos(newPos, dimensions, axis);
+	hasChanged = true;
+}
+
+void Room::setDimensions(float newValue, const char& axis)
+{
+	source.scaleToDim(newValue, axis);
+	receiver.scaleToDim(newValue, axis);
+	switch (axis)
+	{
+	case 'x':
+		dimensions.x = newValue;
+		break;
+	case 'y':
+		dimensions.y = newValue;
+		break;
+	case 'z':
+		dimensions.z = newValue;
+		break;
+	default:
+		break;
+	}
+
+	hasChanged = true;
+}
+
+void Room::setWallAbsorption(float newValue)
+{
+	for (ScatteringNode& wall : wallNodes)
+	{
+		wall.setAbsorption(1 - newValue);
+	}
+}
+
+void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
+{
+	wallNodes[wallIndex].setFreqAbsorption(newValue, freqIndex);
+}
+
+void Room::setOutputMode(int mode, int numChannels)
+{
+	receiver.setOutputMode(mode);
+	currentSample.setSize(numChannels, 1);
+	hasChanged = true;
+}
+
+void Room::muteLOS(bool condition)
+{
+	mutedLOS = condition;
+	sourceListener.setAttenuation(!condition * (1 / sourceListener.getDistance()));
+}
+
