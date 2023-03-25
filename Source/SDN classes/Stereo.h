@@ -5,7 +5,7 @@
 #include <WaveGuide.h>
 #include <Parameters.h>
 
-
+//implements stereo output, handles head rotation
 class Stereo : public Microphone, public NodeRotation
 {
 public:
@@ -14,12 +14,14 @@ public:
 
 	void init() override;
 
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) override;
+	//pan from azimuth angle
+	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+		int sampleIndex, int maxIndex, bool hasChanged) override;
 
 
 private:
 	
+	//square law panning function
 	void panMonoToStereo(float panAmount);
 
 	std::vector<float> monoToStereoDummy;

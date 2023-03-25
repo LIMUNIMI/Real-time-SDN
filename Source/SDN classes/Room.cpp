@@ -20,9 +20,8 @@ void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Poi
 {
 	this->dimensions = dimensions;
 	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
-	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions, nChannels);
+	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions);
 
-	initVariables(numSamples, nChannels);
 	initWalls(samplerate);
 	initWaveguides(samplerate);
 	
@@ -41,11 +40,6 @@ void Room::initWalls(double samplerate)
 		wallNodes[i].init(samplerate, refl, numConnectionsPerNode, &sourceNode[i], &nodeListener[i]);
 
 	}
-}
-
-void Room::initVariables(int numSamples, int nChannels)
-{
-	currentSample.setSize(nChannels, 1);
 }
 
 void Room::initWaveguides(double samplerate)
@@ -158,7 +152,7 @@ void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 	}
 
 	int maxIndex = bufferDim - 1;
-	const float* currentReadPointer = currentSample.getReadPointer(0);
+	const float* currentReadPointer = sourceBuffer.getReadPointer(0);
 	
 	if (hasChanged)
 	{
@@ -192,9 +186,9 @@ void Room::processNodes()
 
 void Room::processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex)
 {
-	source.process(currentSample, sourceBuffer, currentReadPointer, sampleIndex);
+	source.process(currentReadPointer, sampleIndex);
 	processNodes();
-	receiver.process(currentSample, sourceBuffer, sampleIndex, maxIndex, hasChanged);
+	receiver.process(sourceBuffer, sampleIndex, maxIndex, hasChanged);
 	timeStep();
 }
 
@@ -267,14 +261,6 @@ void Room::setDimensions(float newValue, const char& axis)
 	hasChanged = true;
 }
 
-void Room::setWallAbsorption(float newValue)
-{
-	for (ScatteringNode& wall : wallNodes)
-	{
-		wall.setAbsorption(1 - newValue);
-	}
-}
-
 void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
 {
 	wallNodes[wallIndex].setFreqAbsorption(newValue, freqIndex);
@@ -283,7 +269,6 @@ void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
 void Room::setOutputMode(int mode, int numChannels)
 {
 	receiver.setOutputMode(mode);
-	currentSample.setSize(numChannels, 1);
 	hasChanged = true;
 }
 

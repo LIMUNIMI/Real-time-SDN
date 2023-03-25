@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+//delay line implementation for waveguides, uses an all-pass filter to extract samples
 class DelayLine
 {
 public:

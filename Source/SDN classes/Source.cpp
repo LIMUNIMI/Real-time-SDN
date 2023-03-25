@@ -15,15 +15,11 @@ void Source::init(Point3d normalPosition, int bufferSize, int nOfConnections, do
 	outWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
 }
 
-void Source::process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex)
+void Source::process(const float* currentReadPointer, int sampleIndex)
 {
-	currentSample.clear();
-
-	currentSample.copyFrom(0, 0, sourceBuffer, 0, sampleIndex, 1);
-
 	for (WaveGuide* guide : outWaveguides)
 	{
-		guide->pushNextSample(currentReadPointer);
+		guide->pushNextSample(currentReadPointer[sampleIndex]);
 	}
 }
 

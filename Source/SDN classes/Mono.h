@@ -4,6 +4,7 @@
 #include <WaveGuide.h>
 #include <Parameters.h>
 
+//handles MONO output
 class Mono : public Microphone
 {
 public:
@@ -12,8 +13,8 @@ public:
 
 	void init() override;
 
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) override;
+	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+		int sampleIndex, int maxIndex, bool hasChanged) override;
 
 private:
 

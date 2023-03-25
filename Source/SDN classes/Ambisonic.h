@@ -12,6 +12,7 @@
 #define AZIMUTH(channel) inputs_angles(channel, 0)
 #define ELEVATION(channel) inputs_angles(channel, 1)
 
+//handles Ambisonic output from first to fifth order, uses the ACN/N3D format
 class Ambisonic : public Microphone
 {
 public:
@@ -20,8 +21,8 @@ public:
 
 	void init() override;
 
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) override;
+	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+		int sampleIndex, int maxIndex, bool hasChanged) override;
 
 	void setAmbisonicOrder(int newOrder)
 	{
@@ -68,12 +69,12 @@ private:
 		leg_n_1[6] = { 0.0f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f, }, 
 		leg_n_2[6] = { 0.0f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f, }, 
 		sin_el = 0.0f;
+
+	//precomputed factorials
 	float factorials[11] = { 1.0f, 1.0f, 2.0f, 6.0f, 24.0f, 120.0f, 720.0f, 5040.0f, 40320.0f, 362880.0f, 3628800.0f };
 
 	int ambisonicOrder = 0;
 	int nSH = 0;
-
-	//const int piDivided180 = MathConstants<float>::pi / 180;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ambisonic);
 

@@ -2,6 +2,7 @@
 #include "Point3d.h"
 #include <JuceHeader.h>
 
+//virtual class for all objects with a position
 class Node
 {
 public:
@@ -11,8 +12,6 @@ public:
 	void setY(float newPos) { position.y = newPos; };
 	void setZ(float newPos) { position.z = newPos; };
 	Point3d& getPosition() { return position; };
-
-	//virtual void addToBuffer(AudioBuffer<float>& inWave) = 0;
 
 	virtual ~Node() = default;
 

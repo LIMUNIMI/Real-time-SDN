@@ -3,6 +3,7 @@
 #include <Eigen/Geometry>
 #include "MathUtils.h"
 
+//handles rotation for any node object, Y-up left handed system
 class NodeRotation
 {
 public:
@@ -12,8 +13,11 @@ public:
 
 	void init();
 
+	//change current xyz rotation
 	void setRotation(float newValue, const char axis);
+	//set target rotation quaternion to current xyz rotation
 	void updateQuaternion();
+	//set current rotation quaternion to target rotation
 	void sync();
 
 protected:

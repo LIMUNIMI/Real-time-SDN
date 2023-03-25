@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 
+//IIR filter implemented in direct form II, accepts any filter order
 class IIRBase
 {
 public:
@@ -12,15 +13,7 @@ public:
 
 private:
 
-	//filter memory
-	//float buffer1, buffer2;
-
 	std::vector<double> memory;
-
-	//filter coeffs
-	//float b0, b1, b2;
-	//float a1, a2;
-
 	std::vector<double> *a, *b;
 
 	double sampleRate;

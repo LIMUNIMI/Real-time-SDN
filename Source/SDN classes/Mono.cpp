@@ -4,15 +4,14 @@ void Mono::init()
 {
 }
 
-void Mono::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample, 
-	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
+void Mono::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+	int sampleIndex, int maxIndex, bool hasChanged)
 {
+	sourceBuffer.clear(sampleIndex, 1);
 
 	for (WaveGuide* guide : inWaveguides)
 	{
-		currentSample.addSample(0, 0, guide->getCurrentSample());
+		sourceBuffer.addSample(0, sampleIndex, guide->getCurrentSample());
 	}
-
-	sourceBuffer.copyFrom(0, sampleIndex, currentSample, 0, 0, 1);
 
 }

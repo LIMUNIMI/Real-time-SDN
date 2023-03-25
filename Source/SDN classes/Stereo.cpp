@@ -5,9 +5,10 @@ void Stereo::init()
 	NodeRotation::init();
 }
 
-void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample, 
-	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
+void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+	int sampleIndex, int maxIndex, bool hasChanged)
 {
+	sourceBuffer.clear(sampleIndex,1);
 
 	float panValue, azimuth;
 	currentRotation = prevRotation.slerp((float)sampleIndex / maxIndex, targetRotation).normalized().toRotationMatrix();
@@ -27,13 +28,8 @@ void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Au
 		for (int ch = 0; ch < Parameters::STEREO_CHANNELS; ch++)
 		{
 			float sampleToAdd = monoToStereoDummy[ch];
-			currentSample.addSample(ch, 0, sampleToAdd);
+			sourceBuffer.addSample(ch, sampleIndex, sampleToAdd);
 		}
-	}
-
-	for (int ch = 0; ch < Parameters::STEREO_CHANNELS; ch++)
-	{
-		sourceBuffer.copyFrom(ch, sampleIndex, currentSample, ch, 0, 1);
 	}
 
 }

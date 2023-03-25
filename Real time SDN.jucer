@@ -47,13 +47,9 @@
         <FILE id="iJ1YQJ" name="DSPUtils.h" compile="0" resource="0" file="Source/Utils/DSPUtils.h"/>
         <FILE id="pzkqfb" name="MathUtils.cpp" compile="1" resource="0" file="Source/Utils/MathUtils.cpp"/>
         <FILE id="AuLsct" name="MathUtils.h" compile="0" resource="0" file="Source/Utils/MathUtils.h"/>
-        <FILE id="FfWYcv" name="Panner.cpp" compile="1" resource="0" file="Source/Utils/Panner.cpp"/>
-        <FILE id="rUbAV5" name="Panner.h" compile="0" resource="0" file="Source/Utils/Panner.h"/>
         <FILE id="zLHjn1" name="Parameters.cpp" compile="1" resource="0" file="Source/Utils/Parameters.cpp"/>
         <FILE id="C8cRDX" name="Parameters.h" compile="0" resource="0" file="Source/Utils/Parameters.h"/>
         <FILE id="vdmeKW" name="Point3d.h" compile="0" resource="0" file="Source/Utils/Point3d.h"/>
-        <FILE id="NJwKpe" name="WallFilters.cpp" compile="1" resource="0" file="Source/Utils/WallFilters.cpp"/>
-        <FILE id="hEP6JO" name="WallFilters.h" compile="0" resource="0" file="Source/Utils/WallFilters.h"/>
       </GROUP>
       <FILE id="zjmnKl" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

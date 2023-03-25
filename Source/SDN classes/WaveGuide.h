@@ -4,6 +4,7 @@
 #include <DelayLine.h>
 #include <Parameters.h>
 
+//waveguides that connect all the nodes in the SDN architecture
 class WaveGuide
 {
 public:
@@ -20,22 +21,24 @@ public:
 	void prepare(double samplerate, Node* start, Node* end, float dist);
 
 	float& getCurrentSample() { return delay.readNextSample(); };
+
+	//push sample into the delay-line
 	void pushNextSample(AudioBuffer<float>& sample) 
 	{
 		if (attenuation != 1.0f) sample.applyGain(attenuation);
 		delay.storeInDelay(sample); 
 	}
-
 	void pushNextSample(const float* sampleReadPointer)
 	{
 		delay.storeInDelay(sampleReadPointer, attenuation);
 	}
-
 	void pushNextSample(float sample)
 	{
 		if (attenuation != 1.0f) sample *= attenuation;
 		delay.storeInDelay(sample);
 	}
+
+	//advance delay-line by one sample
 	void stepForward() { delay.advanceWriteIndex(); };
 
 

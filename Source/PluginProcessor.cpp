@@ -26,7 +26,6 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
     parameters.addParameterListener("ListenerRotx", this);
     parameters.addParameterListener("ListenerRoty", this);
     parameters.addParameterListener("ListenerRotz", this);
-    parameters.addParameterListener("WallAbsorption", this);
     parameters.addParameterListener("DimensionsX", this);
     parameters.addParameterListener("DimensionsY", this);
     parameters.addParameterListener("DimensionsZ", this);
@@ -124,7 +123,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerY"),
         *parameters.getRawParameterValue("ListenerZ") };
     
-    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumInputChannels(), samplesPerBlock);
+    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), samplesPerBlock);
 
     for (int i = 0; i < 3; i++)
     {
@@ -252,9 +251,6 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
 
     if (paramID.substring(0, 11) == "ListenerRot")
         room.setListenerRotation(newValue, paramID.getLastCharacter());
-
-    if (paramID == "WallAbsorption")
-        room.setWallAbsorption(newValue);
 
     if (paramID == "DimensionsX")
         room.setDimensions(newValue, 'x');

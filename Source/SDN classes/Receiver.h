@@ -9,17 +9,20 @@
 #include <Mono.h>
 #include <Ambisonic.h>
 
+//Listener node in the SDN architecture, can output mono, stereo or ambisonics
 class Receiver : public Node, public NormalPosition
 {
 public:
 	Receiver();
 	~Receiver() { microphone.reset(); };
 
-	void init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions, int nChannels);
-	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
+	//initialize all output instances to save performance during playback
+	void init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions);
+
+	void process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
 
 	void updatePosition();
-	std::vector<WaveGuide*> inWaveguides;
+	
 
 	void setRotation(float newValue, const char& axis)
 	{
@@ -38,14 +41,11 @@ public:
 
 	void setOutputMode(int mode);
 
+	std::vector<WaveGuide*> inWaveguides;
 
 private:
 
-	void setAmbisonicOrder(int newOrder)
-	{
-		ambisonic->setAmbisonicOrder(newOrder);
-	}
-
+	//currently selected output mode 0-Mono 1-Stereo 2->6 Ambisonic
 	int outModeIndex = 0;
 	
 	std::shared_ptr<Microphone> microphone;

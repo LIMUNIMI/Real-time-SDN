@@ -4,6 +4,7 @@
 #include "NormalPosition.h"
 #include <WaveGuide.h>
 
+//Source node in the SDN architecture
 class Source : public Node, public NormalPosition
 {
 public:
@@ -12,8 +13,7 @@ public:
 
 	void init(Point3d normalPosition, int bufferSize, int nOfConnections, double samplerate, Point3d dimensions);
 
-	void process(AudioBuffer<float>& currentSample, AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex);
-	//void addToBuffer(AudioBuffer<float>& inWave) override {};
+	void process(const float* currentReadPointer, int sampleIndex);
 
 	void updatePosition();
 

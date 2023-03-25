@@ -26,7 +26,6 @@ public:
 	void setListenerPos(float newPos, const char& axis);
 	void setListenerRotation(float newValue, const char& axis);
 	void setDimensions(float newValue, const char& axis);
-	void setWallAbsorption(float newValue);
 	void setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex);
 
 	//choose output mode
@@ -39,9 +38,6 @@ private:
 
 	//initialize wall nodes
 	void initWalls(double samplerate);
-	
-	//initialize local variables
-	void initVariables(int numSamples, int nChannels);
 
 	//initialize waveguides and link to correct wall nodes
 	void initWaveguides(double samplerate);
@@ -74,8 +70,6 @@ private:
 	Point3d dimensions = { 0.0f, 0.0f, 0.0f };
 
 	bool mutedLOS = false;
-
-	AudioBuffer<float> currentSample;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Room);
 };

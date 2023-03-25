@@ -4,7 +4,7 @@
 #include <WaveGuide.h>
 #include <NodeRotation.h>
 
-
+//virtual class for output modes
 class Microphone
 {
 public:
@@ -14,8 +14,8 @@ public:
 
 	virtual void init() {};
 
-	virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) {};
+	virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
+		int sampleIndex, int maxIndex, bool hasChanged) {};
 
 private:
 

@@ -3,6 +3,7 @@
 
 #define ORDER2NSH(order) ((order+1)*(order+1))
 
+//holds all the generic constants used in the project and the function to generate plugin parameters
 namespace Parameters
 {
 	constexpr auto SOUND_SPEED = 343;

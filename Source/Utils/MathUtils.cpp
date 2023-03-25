@@ -40,20 +40,6 @@ Point3d MathUtils::reflectionPoint(Point3d a, Point3d b, char reflAxis, float wa
 
 }
 
-//float MathUtils::magnitude(Point3d vector)
-//{
-//	float magnitude = sqrt(powf(vector.x, 2) + powf(vector.y, 2)
-//		+ powf(vector.z, 2));
-//
-//	return magnitude;
-//}
-//
-//float MathUtils::distanceCalc(Point3d& vector)
-//{
-//	float dist = MathUtils::magnitude(vector);
-//	return dist < 1 ? 1.0f : dist;
-//}
-
 float MathUtils::distanceCalc(Point3d& startPos, Point3d& endPos)
 {
 	float distance = sqrtf(powf((startPos.x - endPos.x), 2) + powf((startPos.y - endPos.y), 2)
@@ -62,29 +48,6 @@ float MathUtils::distanceCalc(Point3d& startPos, Point3d& endPos)
 	if (distance < 1) distance = 1.0f;
 
 	return distance;
-}
-
-//Point3d MathUtils::crossProduct(Vector3f& vector1, Vector3f& vector2)
-//{
-//	float x, y, z;
-//	x = vector1.y() * vector2.z() - vector1.z() * vector2.y();
-//	y = -(vector1.x() * vector2.z() - vector1.z() * vector2.x());
-//	z = vector1.x() * vector2.y() - vector1.y() * vector2.x();
-//
-//	return { x, y, z };
-//}
-
-float MathUtils::sinOfVectorsAngle(Vector3f vector1, Vector3f vector2)
-{
-	float numerator = (vector1.cross(vector2)).norm();
-	float denum = vector1.norm() * vector2.norm();
-
-	return numerator / denum;
-}
-
-float MathUtils::sinOfAzimuth(Vector3f vector1, Vector3f vector2)
-{
-	return sinOfVectorsAngle(Vector3f( vector1.x(), 0, vector1.z()), Vector3f(vector2.x(), 0, vector2.z()));
 }
 
 
