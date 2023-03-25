@@ -3,7 +3,6 @@
 #include <Receiver.h>
 #include <Source.h>
 #include <ScatteringNode.h>
-#include <Panner.h>
 
 class Room
 {
