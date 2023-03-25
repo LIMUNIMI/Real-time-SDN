@@ -20,10 +20,6 @@ public:
 
 	void init() override;
 
-	void setRotation(float newValue, const char axis) {};
-	void updateQuaternion() {};
-	void sync() {};
-
 	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& currentSample,
 		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged) override;
 

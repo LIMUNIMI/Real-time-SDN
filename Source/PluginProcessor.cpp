@@ -125,11 +125,9 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerZ") };
     
     room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumInputChannels(), samplesPerBlock);
-    //room.setWallAbsorption(*parameters.getRawParameterValue("WallAbsorption"));
 
     for (int i = 0; i < 3; i++)
     {
-        //String a = "ListenerRot" + String::charToString(Parameters::axishelper[i * 2]);
         room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + String::charToString(Parameters::axishelper[i * 2])), 
             Parameters::axishelper[i * 2]);
     }
@@ -180,14 +178,6 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    //if (wrongOutput)
-    //{
-    //    parameters.getParameter("OutputMode")->beginChangeGesture();
-    //    parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
-    //    parameters.getParameter("OutputMode")->endChangeGesture();
-    //    wrongOutput = false;
-    //}
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -248,6 +238,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     if (paramID == "OutputMode")
     {
         int value = newValue;
+        //check if chosen output can be done with available channels if not default to MONO
         if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
         {
             room.setOutputMode(value, getNumOutputChannels());

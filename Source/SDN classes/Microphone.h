@@ -5,7 +5,7 @@
 #include <NodeRotation.h>
 
 
-class Microphone : public NodeRotation
+class Microphone
 {
 public:
 

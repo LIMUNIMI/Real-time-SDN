@@ -23,17 +23,17 @@ public:
 
 	void setRotation(float newValue, const char& axis)
 	{
-		microphone->setRotation(newValue, axis);
+		stereo->setRotation(newValue, axis);
 	}
 
 	void updateQuaternion()
 	{
-		microphone->updateQuaternion();
+		stereo->updateQuaternion();
 	}
 
 	void sync()
 	{
-		microphone->sync();
+		stereo->sync();
 	}
 
 	void setOutputMode(int mode);

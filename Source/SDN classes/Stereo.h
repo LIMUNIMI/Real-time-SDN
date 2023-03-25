@@ -6,7 +6,7 @@
 #include <Parameters.h>
 
 
-class Stereo : public Microphone
+class Stereo : public Microphone, public NodeRotation
 {
 public:
 	Stereo() : monoToStereoDummy(2, 0.0f) {};
