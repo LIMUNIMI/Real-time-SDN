@@ -19,7 +19,9 @@ void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerat
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
 
 	setOutputMode(outModeIndex);
-	microphone->init();
+	mono->init();
+	stereo->init(samplerate);
+	ambisonic->init();
 }
 
 void Receiver::process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)

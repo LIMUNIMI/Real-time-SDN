@@ -1,8 +1,8 @@
 #include "Stereo.h"
 
-void Stereo::init()
+void Stereo::init(double sampleRate)
 {
-	NodeRotation::init();
+	NodeRotation::init(sampleRate);
 }
 
 void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
@@ -10,20 +10,24 @@ void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Au
 {
 	sourceBuffer.clear(sampleIndex,1);
 
-	float panValue, azimuth;
-	currentRotation = prevRotation.slerp((float)sampleIndex / maxIndex, targetRotation).normalized().toRotationMatrix();
+	float azimuth;
 
-	for (WaveGuide* guide : inWaveguides)
+	interpolateQuaternions();
+
+	for (int i = 0; i < Parameters::NUM_WAVEGUIDES_TO_OUTPUT; i++)
 	{
-		microphoneToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), position);
-		microphoneToNodeVector = currentRotation * microphoneToNodeVector;
-		azimuth = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
-		panValue = sin(azimuth);
+		if (hasChanged || isRotating())
+		{
+			microphoneToNodeVector = MathUtils::dirVector(inWaveguides[i]->getStart()->getPosition(), position);
+			microphoneToNodeVector = currentRotation * microphoneToNodeVector;
+			azimuth = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
+			panValues[i] = sin(azimuth);
+		}
 
-		monoToStereoDummy.at(0) = guide->getCurrentSample();
+		monoToStereoDummy.at(0) = inWaveguides[i]->getCurrentSample();
 		monoToStereoDummy.at(1) = 0.0f;
 
-		panMonoToStereo(panValue);
+		panMonoToStereo(panValues[i]);
 
 		for (int ch = 0; ch < Parameters::STEREO_CHANNELS; ch++)
 		{

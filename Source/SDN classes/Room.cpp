@@ -173,6 +173,14 @@ void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 
 }
 
+void Room::processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex)
+{
+	source.process(currentReadPointer, sampleIndex);
+	processNodes();
+	receiver.process(sourceBuffer, sampleIndex, maxIndex, hasChanged);
+	timeStep();
+}
+
 void Room::processNodes()
 {
 	for (ScatteringNode& node : wallNodes)
@@ -184,13 +192,6 @@ void Room::processNodes()
 	}
 }
 
-void Room::processSample(AudioBuffer<float>& sourceBuffer, const float* currentReadPointer, int sampleIndex, int maxIndex)
-{
-	source.process(currentReadPointer, sampleIndex);
-	processNodes();
-	receiver.process(sourceBuffer, sampleIndex, maxIndex, hasChanged);
-	timeStep();
-}
 
 void Room::timeStep()
 {
@@ -211,8 +212,6 @@ void Room::timeStep()
 	}
 
 	sourceListener.stepForward();
-
-	receiver.sync();
 
 }
 

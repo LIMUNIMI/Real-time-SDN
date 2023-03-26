@@ -34,11 +34,6 @@ public:
 		stereo->updateQuaternion();
 	}
 
-	void sync()
-	{
-		stereo->sync();
-	}
-
 	void setOutputMode(int mode);
 
 	std::vector<WaveGuide*> inWaveguides;

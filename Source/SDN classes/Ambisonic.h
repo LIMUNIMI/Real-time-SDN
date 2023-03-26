@@ -5,10 +5,6 @@
 #include <Parameters.h>
 #include <Eigen/Geometry>
 
-/**
- * Converts spherical harmonic order to number of spherical harmonic components
- * i.e: (order+1)^2 */
-
 #define AZIMUTH(channel) inputs_angles(channel, 0)
 #define ELEVATION(channel) inputs_angles(channel, 1)
 

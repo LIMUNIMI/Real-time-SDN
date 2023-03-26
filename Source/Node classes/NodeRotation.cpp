@@ -10,12 +10,14 @@ NodeRotation::NodeRotation() :
 	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 }
 
-void NodeRotation::init()
+void NodeRotation::init(double samplerate)
 {
 	xyzRotation = Vector3f(0, 0, 0);
 	prevRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 	currentRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
 	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+
+	smoothingDuration = samplerate * Parameters::SMOOTHING_TIME_SECONDS;
 }
 
 void NodeRotation::setRotation(float newValue, const char axis)
@@ -38,10 +40,17 @@ void NodeRotation::setRotation(float newValue, const char axis)
 
 void NodeRotation::updateQuaternion()
 {
+	prevRotation = currentRotation;
 	targetRotation = MathUtils::eulerXYZ_to_Quaternion(xyzRotation);
+	interpolationIndex = 0;
 }
 
-void NodeRotation::sync()
+void NodeRotation::interpolateQuaternions()
 {
-	if (prevRotation != targetRotation) prevRotation = targetRotation;
+	if (interpolationIndex <= smoothingDuration)
+	{
+		currentRotation = prevRotation.slerp((float)interpolationIndex / (float)smoothingDuration, targetRotation).normalized().toRotationMatrix();
+		interpolationIndex++;
+	}
 }
+
