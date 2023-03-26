@@ -45,6 +45,7 @@ void Receiver::setOutputMode(int mode)
 	}
 	else if (mode == 1)
 	{
+		stereo->sync();
 		microphone = stereo;
 	}
 	else

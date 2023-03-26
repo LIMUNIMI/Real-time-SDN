@@ -45,6 +45,16 @@ void NodeRotation::updateQuaternion()
 	interpolationIndex = 0;
 }
 
+void NodeRotation::sync()
+{
+	if (prevRotation != targetRotation)
+	{
+		prevRotation = targetRotation;
+		currentRotation = targetRotation.normalized().toRotationMatrix();
+		interpolationIndex = smoothingDuration + 1;
+	}
+}
+
 void NodeRotation::interpolateQuaternions()
 {
 	if (interpolationIndex <= smoothingDuration)

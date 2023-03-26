@@ -19,6 +19,8 @@ public:
 	//set target rotation quaternion to current xyz rotation
 	void updateQuaternion();
 
+	void sync();
+
 	bool isRotating() { return interpolationIndex <= smoothingDuration; };
 
 protected:
