@@ -98,7 +98,9 @@ void Room::updatePositions()
 	source.updatePosition();
 	receiver.updatePosition();
 
-	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
+	dimHelper[1] = dimensions.x;
+	dimHelper[3] = dimensions.y;
+	dimHelper[5] = dimensions.z;
 
 	for (int i = 0; i < Parameters::NUM_WALLS; i++)
 	{
@@ -191,7 +193,6 @@ void Room::processNodes()
 		node.process();
 	}
 }
-
 
 void Room::timeStep()
 {

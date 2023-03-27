@@ -69,6 +69,7 @@ private:
 	Point3d dimensions = { 0.0f, 0.0f, 0.0f };
 
 	bool mutedLOS = false;
+	float dimHelper[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Room);
 };
