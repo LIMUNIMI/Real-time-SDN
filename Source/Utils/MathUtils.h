@@ -11,7 +11,7 @@
 //Namespace with some generic math functions
 namespace MathUtils
 {	
-	//returns vector from point a to point b
+	//returns vector from point b to point a
 	Eigen::Vector3f dirVector(Point3d& a, Point3d& b);
 
 	//return point of specular reflection between a and b on the wall aligned with reflAxis at distance WallPosition

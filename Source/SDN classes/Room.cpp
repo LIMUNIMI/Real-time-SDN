@@ -30,7 +30,9 @@ void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Poi
 void Room::initWalls(double samplerate)
 {
 
-	float dimHelper[6] = { 0, dimensions.x, 0, dimensions.y, 0, dimensions.z };
+	dimHelper[1] = dimensions.x;
+	dimHelper[3] = dimensions.y;
+	dimHelper[5] = dimensions.z;
 	int numConnectionsPerNode = Parameters::NUM_WALLS - 1;
 
 	for (int i = 0; i < Parameters::NUM_WALLS; i++)
@@ -143,11 +145,10 @@ void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 {
 
 	int bufferDim = sourceBuffer.getNumSamples();
-	int nChannels = numInputChannels;
 
-	if (nChannels >= 2)
+	if (numInputChannels >= 2)
 	{
-		for (int ch = 1; ch < nChannels; ch++)
+		for (int ch = 1; ch < numInputChannels; ch++)
 		{
 			sourceBuffer.addFrom(0, 0, sourceBuffer, ch, 0, bufferDim); // source to mono
 		}

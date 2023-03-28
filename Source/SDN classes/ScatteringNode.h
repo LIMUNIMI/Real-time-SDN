@@ -46,7 +46,7 @@ private:
 	void getAllOutSamples();
 
 	std::vector<float> inSamples;
-	AudioBuffer<float> toListenerSample;
+	float toListenerSample = 0;
 	float totLoudness = 0;
 
 	std::vector<IIRBase> wallFilters;

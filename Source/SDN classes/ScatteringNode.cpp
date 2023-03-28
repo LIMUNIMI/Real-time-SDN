@@ -17,7 +17,7 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 	listenerGuide = nodeListenerGuide;
 
 	inSamples = std::vector<float>(nOfConnections);
-	toListenerSample.setSize(1, 1);
+	toListenerSample = 0;
 	wallFilters = std::vector<IIRBase>(nOfConnections);
 	totLoudness = 0.0f;
 
@@ -39,13 +39,12 @@ void ScatteringNode::process()
 {
 
 	totLoudness = 0;
-	float sourceSample = sourceGuide->getCurrentSample();
+	float sourceSample = sourceGuide->getCurrentSample() / 2.0f;
 
 	for (int i = 0; i < nOfConnections; i++)
 	{
-		inSamples[i] = inWaveguides[i]->getCurrentSample();
+		inSamples[i] = inWaveguides[i]->getCurrentSample() + sourceSample;
 
-		inSamples[i] += sourceSample / 2.0f;
 		totLoudness += inSamples[i];
 	}
 	
@@ -56,7 +55,7 @@ void ScatteringNode::process()
 void ScatteringNode::getAllOutSamples()
 {
 
-	toListenerSample.clear();
+	toListenerSample = 0;
 	int inSampleIndex = 0;
 
 	for (int i = 0; i < nOfConnections; i++)
@@ -78,19 +77,18 @@ void ScatteringNode::getAllOutSamples()
 			}
 		}
 
-
 		float chInSample = inSamples[inSampleIndex];
 
 		float chSample = totLoudness - chInSample;
 		chSample = (chSample * scatteringCoeff) + (chInSample * (scatteringCoeff - 1));
 
-		wallFilters[inSampleIndex].process(chSample);
+		wallFilters[i].process(chSample);
 
 		outWaveguides[i]->pushNextSample(chSample);
-		toListenerSample.addSample(0, 0, chSample);
+		toListenerSample += chSample;
 	}
 
-	toListenerSample.applyGain(scatteringCoeff);
+	toListenerSample *= scatteringCoeff;
 	listenerGuide->pushNextSample(toListenerSample);
 
 }
