@@ -18,7 +18,8 @@ void WaveGuide::prepare(double samplerate, Node* start, Node* end, float dist)
 	Point3d endPos = endNode->getPosition();
 	toSamplesConst = samplerate / Parameters::SOUND_SPEED;
 
-	delay.prepare(samplerate, (int)samplerate * 5, distance * toSamplesConst);
+	delay.prepare(samplerate, ceilf(sqrtf(Parameters::ROOM_MAX_DIMENSION * Parameters::ROOM_MAX_DIMENSION * 3.0f) * toSamplesConst), 
+		distance * toSamplesConst);
 
 }
 

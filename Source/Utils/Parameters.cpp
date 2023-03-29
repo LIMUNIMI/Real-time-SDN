@@ -19,9 +19,9 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	params.push_back(std::make_unique<AudioParameterChoice>("OutputMode", "Output mode", 
 		StringArray(outputModes, NUM_OUT_MODES), 0));
 
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsX", "Dimensions X", 1.0f, 100.0f, 10.0f));
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsY", "Dimensions Y", 1.0f, 100.0f, 10.0f));
-	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsZ", "Dimensions Z", 1.0f, 100.0f, 10.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsX", "Dimensions X", 1.0f, ROOM_MAX_DIMENSION, 10.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsY", "Dimensions Y", 1.0f, ROOM_MAX_DIMENSION, 10.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("DimensionsZ", "Dimensions Z", 1.0f, ROOM_MAX_DIMENSION, 10.0f));
 
 	//freq + wallIndex + freqIndex
 	for (int i = 0; i < NUM_WALLS; i++)

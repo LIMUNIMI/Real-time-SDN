@@ -79,10 +79,10 @@ void Room::initWaveguides(double samplerate)
 			wallNodes[j].inWaveguides[i] = wallNodes[i].outWaveguides[(j - 1)];
 
 			wallNodes[i].inWaveguides[(j - 1)]->prepare(samplerate, &wallNodes[j], &wallNodes[i], nodeDist);
-			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f);
+			wallNodes[i].inWaveguides[(j - 1)]->setAttenuation(1.0f / nodeDist);
 
 			wallNodes[i].outWaveguides[(j - 1)]->prepare(samplerate, &wallNodes[i], &wallNodes[j], nodeDist);
-			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f);
+			wallNodes[i].outWaveguides[(j - 1)]->setAttenuation(1.0f / nodeDist);
 
 		}
 	}
@@ -134,8 +134,10 @@ void Room::updatePositions()
 			float nodeDist = MathUtils::distanceCalc(wallNodes[j].getPosition(), wallNodes[i].getPosition());
 
 			NodeToNode[(j * numConnectionsPerNode) + i].setDistance(nodeDist); //j node to i node
+			NodeToNode[(j * numConnectionsPerNode) + i].setAttenuation(1.0f / nodeDist);
 
 			NodeToNode[(i * numConnectionsPerNode) + (j - 1)].setDistance(nodeDist); //i node to j node
+			NodeToNode[(i * numConnectionsPerNode) + (j - 1)].setAttenuation(1.0f / nodeDist);
 
 		}
 	}
