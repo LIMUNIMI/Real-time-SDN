@@ -25,7 +25,7 @@ public:
 	//push sample into the delay-line
 	void pushNextSample(AudioBuffer<float>& sample) 
 	{
-		sample.applyGain(attenuation);
+		if (attenuation != 1.0f) sample.applyGain(attenuation);
 		delay.storeInDelay(sample); 
 	}
 	void pushNextSample(const float* sampleReadPointer)
@@ -34,7 +34,7 @@ public:
 	}
 	void pushNextSample(float sample)
 	{
-		sample *= attenuation;
+		if (attenuation != 1.0f) sample *= attenuation;
 		delay.storeInDelay(sample);
 	}
 
