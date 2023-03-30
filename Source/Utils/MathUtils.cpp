@@ -53,12 +53,12 @@ float MathUtils::distanceCalc(Point3d& startPos, Point3d& endPos)
 
 Quaternionf MathUtils::eulerXYZ_to_Quaternion(Vector3f eulerXYZ)
 {
-	double cr = cos(eulerXYZ.z() * 0.5);
-	double sr = sin(eulerXYZ.z() * 0.5);
-	double cp = cos(eulerXYZ.x() * 0.5);
-	double sp = sin(eulerXYZ.x() * 0.5);
-	double cy = cos(eulerXYZ.y() * 0.5);
-	double sy = sin(eulerXYZ.y() * 0.5);
+	float cr = cosf(eulerXYZ.z() * 0.5);
+	float sr = sinf(eulerXYZ.z() * 0.5);
+	float cp = cosf(eulerXYZ.x() * 0.5);
+	float sp = sinf(eulerXYZ.x() * 0.5);
+	float cy = cosf(eulerXYZ.y() * 0.5);
+	float sy = sinf(eulerXYZ.y() * 0.5);
 
 	float w = cp * cy * cr + sp * sy * sr;
 	float x = sp * cy * cr - cp * sy * sr;

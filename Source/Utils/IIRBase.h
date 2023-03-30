@@ -11,6 +11,11 @@ public:
 	void init(double samplerate, std::vector<double>* a, std::vector<double>* b);
 	void process(float& sample);
 
+	void clearMemory() 
+	{
+		std::fill(memory.begin(), memory.end(), 0.0f);
+	}
+
 private:
 
 	std::vector<double> memory;

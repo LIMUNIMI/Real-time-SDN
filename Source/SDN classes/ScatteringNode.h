@@ -33,6 +33,11 @@ public:
 		a = coeffs[1];
 		b = coeffs[0];
 
+		for (IIRBase& filter : wallFilters)
+		{
+			filter.clearMemory();
+		}
+
 		newAbsorption = false;
 	}
 
