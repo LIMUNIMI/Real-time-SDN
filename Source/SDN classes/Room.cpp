@@ -144,6 +144,8 @@ void Room::updatePositions()
 void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 {
 
+	sourceBuffer.applyGain(source.getGain());
+
 	int bufferDim = sourceBuffer.getNumSamples();
 
 	if (numInputChannels >= 2)
@@ -265,6 +267,11 @@ void Room::setDimensions(float newValue, const char& axis)
 void Room::setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex)
 {
 	wallNodes[wallIndex].setFreqAbsorption(newValue, freqIndex);
+}
+
+void Room::setSourceGain(float newValue)
+{
+	source.setGain(newValue);
 }
 
 void Room::setOutputMode(int mode, int numChannels)

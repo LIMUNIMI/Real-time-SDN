@@ -19,12 +19,16 @@ public:
 
 	int getBufferSize() { return bufferSize; };
 	double getSamplerate() { return samplerate; };
+	float getGain() { return gain; };
+
+	void setGain(float newValue) { gain = newValue; };
 
 	std::vector<WaveGuide*> outWaveguides;
 
 private:
 	int bufferSize = 0;
 	double samplerate = 48000;
+	float gain = 1.0f;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Source);
 };

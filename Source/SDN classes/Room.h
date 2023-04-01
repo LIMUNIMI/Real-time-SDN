@@ -26,6 +26,7 @@ public:
 	void setListenerRotation(float newValue, const char& axis);
 	void setDimensions(float newValue, const char& axis);
 	void setWallFreqAbsorption(float newValue, int wallIndex, int freqIndex);
+	void setSourceGain(float newValue);
 
 	//choose output mode
 	void setOutputMode(int mode, int numChannels);

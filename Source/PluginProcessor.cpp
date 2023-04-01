@@ -26,6 +26,7 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
     parameters.addParameterListener("ListenerRotx", this);
     parameters.addParameterListener("ListenerRoty", this);
     parameters.addParameterListener("ListenerRotz", this);
+    parameters.addParameterListener("sourceGain", this);
     parameters.addParameterListener("DimensionsX", this);
     parameters.addParameterListener("DimensionsY", this);
     parameters.addParameterListener("DimensionsZ", this);
@@ -251,6 +252,9 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
 
     if (paramID.substring(0, 11) == "ListenerRot")
         room.setListenerRotation(newValue, paramID.getLastCharacter());
+
+    if (paramID == "sourceGain")
+        room.setSourceGain(newValue);
 
     if (paramID == "DimensionsX")
         room.setDimensions(newValue, 'x');
