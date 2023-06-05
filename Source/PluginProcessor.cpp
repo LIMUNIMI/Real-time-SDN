@@ -1,6 +1,6 @@
 #include "PluginProcessor.h"
-//#include "PluginEditor.h"
-#include "RoomEditor.h"
+#include "PluginEditor.h"
+//#include "RoomEditor.h"
 
 //==============================================================================
 RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
@@ -195,7 +195,7 @@ bool RealtimeSDNAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* RealtimeSDNAudioProcessor::createEditor()
 {
-    return new RoomEditor (*this, parameters);
+    return new RealtimeSDNAudioProcessorEditor(*this, parameters);
 }
 
 //==============================================================================

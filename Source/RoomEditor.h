@@ -37,7 +37,7 @@ typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class RoomEditor  : public juce::AudioProcessorEditor,
+class RoomEditor  : public juce::Component,
                     public juce::Button::Listener
 {
 public:

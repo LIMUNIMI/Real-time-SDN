@@ -5,7 +5,8 @@
               pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes"
               pluginAUMainType="'aufx'" pluginManufacturer="LIM" companyName="Laboratorio di Informatica Musicale"
               companyWebsite="www.lim.di.unimi.it" bundleIdentifier="com.lim.RealtimeSDN"
-              pluginFormats="buildAU,buildStandalone,buildVST3" pluginManufacturerCode="LIM!">
+              pluginFormats="buildAU,buildStandalone,buildVST3" pluginManufacturerCode="LIM!"
+              defines="JUCE_MODAL_LOOPS_PERMITTED = 1">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">

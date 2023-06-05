@@ -1,33 +1,25 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "RoomEditor.h"
 
-//==============================================================================
-/**
-*/
 class RealtimeSDNAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    RealtimeSDNAudioProcessorEditor (RealtimeSDNAudioProcessor&);
+    RealtimeSDNAudioProcessorEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
     ~RealtimeSDNAudioProcessorEditor() override;
 
-    //==============================================================================
-    void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-    RealtimeSDNAudioProcessor& audioProcessor;
+    static constexpr int originalWidth{ 1018 };
+    static constexpr int originalHeight{ 720 };
+    static constexpr double minimumScale{ 0.75 };
+    static constexpr double maximumScale{ 2.00 };
+
+    RoomEditor roomEditor;
+    ApplicationProperties applicationProperties;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessorEditor)
 };

@@ -54,6 +54,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
+
 private:
 
     void parameterChanged(const String& paramID, float newValue) override;

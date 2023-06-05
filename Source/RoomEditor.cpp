@@ -28,7 +28,7 @@
 
 //==============================================================================
 RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
-    : AudioProcessorEditor(&p), processor(p), valueTreeState(vts)
+    : processor(p), valueTreeState(vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -641,11 +641,40 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == load.get())
     {
         //[UserButtonCode_load] -- add your button handler code here..
+        juce::FileChooser chooser("Select preset to load...", processor.defaultLoc, "*.xml");
+
+        if (chooser.browseForFileToOpen())
+        {
+            auto fileToLoad = chooser.getResult();
+            MemoryBlock sourceData;
+            fileToLoad.loadFileAsData(sourceData);
+            processor.setStateInformation(sourceData.getData(), sourceData.getSize());
+            processor.defaultLoc = fileToLoad.getParentDirectory();
+        }
         //[/UserButtonCode_load]
     }
     else if (buttonThatWasClicked == save.get())
     {
         //[UserButtonCode_save] -- add your button handler code here..
+        juce::FileChooser chooser("Select save position...", processor.defaultLoc, "*.xml");
+
+        if (chooser.browseForFileToSave(true))
+        {
+            auto file = chooser.getResult();
+
+            if (file.exists())
+                file.deleteFile();
+
+            juce::FileOutputStream outputStream(file);
+
+            if (outputStream.openedOk())
+            {
+                MemoryBlock destData;
+                processor.getStateInformation(destData);
+                outputStream.write(destData.getData(), destData.getSize());
+                processor.defaultLoc = file.getParentDirectory();
+            }
+        }
         //[/UserButtonCode_save]
     }
     else if (buttonThatWasClicked == undo.get())
@@ -681,10 +710,10 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RoomEditor" componentName=""
-                 parentClasses="public juce::AudioProcessorEditor" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
-                 variableInitialisers="AudioProcessorEditor(&amp;p), processor(p), valueTreeState(vts)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="1018" initialHeight="720">
+                 parentClasses="public juce::Component" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
+                 initialWidth="1018" initialHeight="720">
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="24 216 296 112" fill="solid: ffffffff" hasStroke="1" stroke="1.5, mitered, butt"
           strokeColour="solid: ff000000"/>
