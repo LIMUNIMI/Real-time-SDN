@@ -1,9 +1,10 @@
 #include "PluginProcessor.h"
-#include "PluginEditor.h"
+//#include "PluginEditor.h"
+#include "RoomEditor.h"
 
 //==============================================================================
 RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
-    parameters(*this, nullptr, "pluginParams", Parameters::createParameterLayout())
+    parameters(*this, &undo, "pluginParams", Parameters::createParameterLayout())
 #ifndef JucePlugin_PreferredChannelConfigurations
      , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -179,12 +180,6 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
@@ -195,12 +190,12 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 //==============================================================================
 bool RealtimeSDNAudioProcessor::hasEditor() const
 {
-    return false; // (change this to false if you choose to not supply an editor)
+    return true; // (change this to false if you choose to not supply an editor)
 }
 
 juce::AudioProcessorEditor* RealtimeSDNAudioProcessor::createEditor()
 {
-    return new RealtimeSDNAudioProcessorEditor (*this);
+    return new RoomEditor (*this, parameters);
 }
 
 //==============================================================================
@@ -254,7 +249,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
         room.setListenerRotation(newValue, paramID.getLastCharacter());
 
     if (paramID == "sourceGain")
-        room.setSourceGain(newValue);
+        room.setSourceGain(Decibels::decibelsToGain(newValue));
 
     if (paramID == "DimensionsX")
         room.setDimensions(newValue, 'x');
@@ -267,7 +262,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
         room.setWallFreqAbsorption(newValue, paramID.substring(4, 5).getIntValue(), paramID.substring(5,6).getIntValue());
     
     if (paramID == "LOS")
-        room.muteLOS((int)newValue);
+        room.muteLOS(newValue < 0.5f);
 }
 
 //==============================================================================

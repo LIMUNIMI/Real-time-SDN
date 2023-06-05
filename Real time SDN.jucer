@@ -3,9 +3,20 @@
 <JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
               pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes"
-              pluginAUMainType="'aufx'" pluginManufacturer="Marco Fontana">
+              pluginAUMainType="'aufx'" pluginManufacturer="LIM" companyName="Laboratorio di Informatica Musicale"
+              companyWebsite="www.lim.di.unimi.it" bundleIdentifier="com.lim.RealtimeSDN"
+              pluginFormats="buildAU,buildStandalone,buildVST3" pluginManufacturerCode="LIM!">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
+      <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">
+        <FILE id="gbKqNX" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/PluginEditor.cpp"/>
+        <FILE id="xDPraX" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+        <FILE id="gNAoAl" name="Absorp.cpp" compile="1" resource="0" file="Source/Absorp.cpp"/>
+        <FILE id="QIPjWH" name="Absorp.h" compile="0" resource="0" file="Source/Absorp.h"/>
+        <FILE id="eUAYGW" name="RoomEditor.cpp" compile="1" resource="0" file="Source/RoomEditor.cpp"/>
+        <FILE id="Koz3CF" name="RoomEditor.h" compile="0" resource="0" file="Source/RoomEditor.h"/>
+      </GROUP>
       <GROUP id="{6651CF0C-09D6-4AF8-A451-373401B9214B}" name="Node classes">
         <FILE id="jNFPEs" name="Node.h" compile="0" resource="0" file="Source/Node classes/Node.h"/>
         <FILE id="bHyf09" name="NodeRotation.cpp" compile="1" resource="0"
@@ -54,9 +65,6 @@
             file="Source/PluginProcessor.cpp"/>
       <FILE id="YoweId" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="gbKqNX" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="xDPraX" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
@@ -82,6 +90,48 @@
         <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_dsp" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:\Users\Giorgio\JUCE\modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_dsp" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:\Users\Giorgio\JUCE\modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
