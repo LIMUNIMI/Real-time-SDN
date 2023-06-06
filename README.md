@@ -28,6 +28,11 @@ Some other info about the plugin:
 * Only one omnidirectional source and one listener
 * Multi-channel inputs are treated as mono (input channels are summed up)
 
+## Dependencies
+* [JUCE](https://juce.com/)
+* [Eigen](https://eigen.tuxfamily.org/)
+* [Armadillo](https://arma.sourceforge.net/)
+
 ## References
 This work is based on the following publications:
 > Fontana, M. (2023). Scattering delay networks for real time audio in augmented reality. Master thesis. Università degli Studi di Milano. Milan.
@@ -36,7 +41,3 @@ This work is based on the following publications:
 
 > De Sena, E., Hacιhabiboğlu, H., Cvetković, Z., & Smith, J. O. (2015). Efficient synthesis of room acoustics via scattering delay networks. IEEE/ACM Transactions on Audio, Speech, and Language Processing, 23(9), 1478-1492.
 
-## Dependencies
-* [JUCE](https://juce.com/)
-* [Eigen](https://eigen.tuxfamily.org/)
-* [Armadillo](https://arma.sourceforge.net/)
