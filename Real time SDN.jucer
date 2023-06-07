@@ -10,6 +10,8 @@
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">
+        <FILE id="rjfpHA" name="RoomPlane.cpp" compile="1" resource="0" file="Source/RoomPlane.cpp"/>
+        <FILE id="E7cuLV" name="RoomPlane.h" compile="0" resource="0" file="Source/RoomPlane.h"/>
         <FILE id="gbKqNX" name="PluginEditor.cpp" compile="1" resource="0"
               file="Source/PluginEditor.cpp"/>
         <FILE id="xDPraX" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>

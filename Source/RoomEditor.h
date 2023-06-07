@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.5
+  Created with Projucer version: 6.1.6
 
   ------------------------------------------------------------------------------
 
@@ -22,6 +22,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "Absorp.h"
+#include "RoomPlane.h"
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
@@ -53,11 +54,6 @@ public:
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
-    // Binary resources:
-    static const char* axis_png;
-    static const int axis_pngSize;
-    static const char* roomExample_png;
-    static const int roomExample_pngSize;
 
 
 private:
@@ -109,8 +105,8 @@ private:
     std::unique_ptr<juce::TextButton> save;
     std::unique_ptr<juce::TextButton> undo;
     std::unique_ptr<juce::TextButton> redo;
-    juce::Image cachedImage_axis_png_1;
-    juce::Image cachedImage_roomExample_png_2;
+    std::unique_ptr<RoomPlane> TopDown;
+    std::unique_ptr<RoomPlane> TopDown2;
 
 
     //==============================================================================

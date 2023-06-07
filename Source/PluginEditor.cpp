@@ -13,11 +13,15 @@ RealtimeSDNAudioProcessorEditor::RealtimeSDNAudioProcessorEditor (RealtimeSDNAud
     options.osxLibrarySubFolder = "Application Support";
     applicationProperties.setStorageParameters(options);
 
+    Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea; 
+    int screenWidth = r.getWidth() - 200; 
+    int screenHeight = r.getHeight() - 200;
+
     if (auto* currConstrainer = getConstrainer())
     {
         currConstrainer->setFixedAspectRatio(static_cast<double> (originalWidth) / static_cast<double> (originalHeight));
         currConstrainer->setSizeLimits(static_cast<int>(originalWidth * minimumScale), static_cast<int>(originalHeight * minimumScale),
-            static_cast<int>(originalWidth * maximumScale), static_cast<int>(originalHeight * maximumScale));
+            static_cast<int>(screenWidth), static_cast<int>(screenHeight));
     }
 
     auto sizeRatio{ 1.0 };
