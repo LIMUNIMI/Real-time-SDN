@@ -14,6 +14,10 @@ public:
     void resized() override;
     void timerCallback() override;
 
+    void mouseDown(const MouseEvent& event) override;
+    void mouseDrag(const MouseEvent& event) override;
+    void mouseUp(const MouseEvent& event) override;
+
 private:
 
     float verticalPosToPointCoord(String positionParam);
@@ -22,10 +26,16 @@ private:
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
+    
     char horizontalAxis, verticalAxis;
+    String listenerHorizParam, listenerVertParam, sourceHorizParam, sourceVertParam;
+    
     float drawableAspectRatio = 1.0f;
     juce::Rectangle<int> roomArea; 
-    juce::Rectangle<float> sourceRect;
+    juce::Rectangle<float> listenerRect, sourceRect;
+
+    bool movingListener = false, 
+        movingSource = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RoomPlane)
 };

@@ -32,7 +32,6 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 		for (int j = 0; j < NUM_FREQ; j++)
 		{
 			params.push_back(std::make_unique<AudioParameterFloat>("freq" + String(i) + String(j), String(125 * pow(2, j)) + "HZ Wall " + String::charToString(axishelper[i]).toUpperCase() + " " + String(i % 2), 0.0001f, 1.0f, 0.25f + 0.5f * (float)j/NUM_FREQ));
-			DBG("freq" + String(i) + String(j));
 		}
 	}
 
