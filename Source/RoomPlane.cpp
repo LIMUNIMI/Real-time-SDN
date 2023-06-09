@@ -14,17 +14,61 @@ RoomPlane::~RoomPlane()
 {
 }
 
-//TODO only calc postion on param change
 void RoomPlane::paint (juce::Graphics& g)
 {
 
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
+    //Only update coordinates on params changes
+    if (processor.geometryHasChanged())
+    {
+        //Use desired aspect ratio to calculate new rectangle scaled to local dimensions
+        float targetRatio = getRoomAspectRatio();
+        if (targetRatio > drawableAspectRatio)
+        {
+            roomArea.setSize(getWidth(), getHeight() * (drawableAspectRatio / targetRatio));
+        }
+        else if (targetRatio < drawableAspectRatio)
+        {
+            roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
+        }
+        roomArea.setCentre(getLocalBounds().getCentre());
+
+        listenerCenter.setXY(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+        listenerRect.setCentre(listenerCenter);
+
+        sourceCenter.setXY(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
+        sourceRect.setCentre(sourceCenter);
+    }
+
     //
-    //Draw roomArea
+    //Draw room outline
     //
     g.setColour(Colours::grey);
-    //Use desired aspect ratio to calculate new rectangle scaled to local dimensions
+    g.drawRect(roomArea, 1);
+
+    g.setColour(Colours::white);
+
+    //
+    //Draw listener as a cross
+    //
+    g.drawLine(listenerCenter.getX() - figureSize / 2, listenerCenter.getY() - figureSize / 2, listenerCenter.getX() + figureSize / 2, listenerCenter.getY() + figureSize / 2);
+    g.drawLine(listenerCenter.getX() - figureSize / 2, listenerCenter.getY() + figureSize / 2, listenerCenter.getX() + figureSize / 2, listenerCenter.getY() - figureSize / 2);
+
+    //
+    //Draw Emitter as a circle
+    //
+    g.drawEllipse(sourceRect, 1.0f);
+
+}
+
+void RoomPlane::resized()
+{
+    drawableAspectRatio = getLocalBounds().getAspectRatio();
+    figureSize = 0.05 * getWidth();
+    sourceRect.setSize(figureSize, figureSize);
+    listenerRect.setSize(figureSize, figureSize);
+
     float targetRatio = getRoomAspectRatio();
     if (targetRatio > drawableAspectRatio)
     {
@@ -35,34 +79,11 @@ void RoomPlane::paint (juce::Graphics& g)
         roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
     }
     roomArea.setCentre(getLocalBounds().getCentre());
-    g.drawRect(roomArea, 1);
 
-    //
-    //Draw listener as a cross
-    //
-    float pointSize = 0.05 * getWidth();
-    g.setColour(Colours::white);
-    float ListenerHorizontal = horizontalPosToPointCoord(listenerHorizParam);
-    float ListenerVertical = verticalPosToPointCoord(listenerVertParam);
-    listenerRect.setSize(pointSize, pointSize);
-    listenerRect.setCentre(ListenerHorizontal, ListenerVertical);
-    g.drawLine(ListenerHorizontal - pointSize / 2, ListenerVertical - pointSize / 2, ListenerHorizontal + pointSize / 2, ListenerVertical + pointSize / 2);
-    g.drawLine(ListenerHorizontal - pointSize / 2, ListenerVertical + pointSize / 2, ListenerHorizontal + pointSize / 2, ListenerVertical - pointSize / 2);
-
-    //
-    //Draw Emitter as a circle
-    //
-    float SourceHorizontal = horizontalPosToPointCoord(sourceHorizParam);
-    float SourceVertical = verticalPosToPointCoord(sourceVertParam);
-    sourceRect.setSize(pointSize, pointSize);
-    sourceRect.setCentre(SourceHorizontal, SourceVertical);
-    g.drawEllipse(sourceRect, 1.0f);
-
-}
-
-void RoomPlane::resized()
-{
-    drawableAspectRatio = getLocalBounds().getAspectRatio();
+    listenerCenter.setXY(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+    listenerRect.setCentre(listenerCenter);
+    sourceCenter.setXY(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
+    sourceRect.setCentre(sourceCenter);
 }
 
 void RoomPlane::timerCallback()
@@ -125,7 +146,7 @@ void RoomPlane::mouseUp(const MouseEvent& event)
 
 float RoomPlane::verticalPosToPointCoord(String positionParam)
 {
-    return valueTreeState.getParameter(positionParam)->getValue() * roomArea.getHeight() + roomArea.getY();
+    return (1.0f - valueTreeState.getParameter(positionParam)->getValue()) * roomArea.getHeight() + roomArea.getY();
 }
 
 float RoomPlane::horizontalPosToPointCoord(String positionParam)

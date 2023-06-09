@@ -31,8 +31,10 @@ private:
     String listenerHorizParam, listenerVertParam, sourceHorizParam, sourceVertParam;
     
     float drawableAspectRatio = 1.0f;
+    float figureSize = 0.0f;
     juce::Rectangle<int> roomArea; 
     juce::Rectangle<float> listenerRect, sourceRect;
+    Point<float> listenerCenter, sourceCenter;
 
     bool movingListener = false, 
         movingSource = false;

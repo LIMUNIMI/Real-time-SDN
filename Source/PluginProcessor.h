@@ -56,6 +56,8 @@ public:
 
     File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
 
+    bool geometryHasChanged() { return room.geometryHasChanged(); }
+
 private:
 
     void parameterChanged(const String& paramID, float newValue) override;

@@ -34,6 +34,8 @@ public:
 	//mute and unmute LOS component
 	void muteLOS(bool condition);
 
+	bool geometryHasChanged() { return hasChanged; }
+
 private:
 
 	//initialize wall nodes
