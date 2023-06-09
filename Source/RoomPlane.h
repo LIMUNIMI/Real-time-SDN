@@ -20,9 +20,10 @@ public:
 
 private:
 
-    float verticalPosToPointCoord(String positionParam);
     float horizontalPosToPointCoord(String positionParam);
+    float verticalPosToPointCoord(String positionParam);
     float getRoomAspectRatio();
+    void positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam);
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
@@ -34,7 +35,6 @@ private:
     float figureSize = 0.0f;
     juce::Rectangle<int> roomArea; 
     juce::Rectangle<float> listenerRect, sourceRect;
-    Point<float> listenerCenter, sourceCenter;
 
     bool movingListener = false, 
         movingSource = false;

@@ -34,11 +34,8 @@ void RoomPlane::paint (juce::Graphics& g)
         }
         roomArea.setCentre(getLocalBounds().getCentre());
 
-        listenerCenter.setXY(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
-        listenerRect.setCentre(listenerCenter);
-
-        sourceCenter.setXY(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
-        sourceRect.setCentre(sourceCenter);
+        listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+        sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
     }
 
     //
@@ -52,8 +49,8 @@ void RoomPlane::paint (juce::Graphics& g)
     //
     //Draw listener as a cross
     //
-    g.drawLine(listenerCenter.getX() - figureSize / 2, listenerCenter.getY() - figureSize / 2, listenerCenter.getX() + figureSize / 2, listenerCenter.getY() + figureSize / 2);
-    g.drawLine(listenerCenter.getX() - figureSize / 2, listenerCenter.getY() + figureSize / 2, listenerCenter.getX() + figureSize / 2, listenerCenter.getY() - figureSize / 2);
+    g.drawLine(listenerRect.getCentreX() - figureSize / 2, listenerRect.getCentreY() - figureSize / 2, listenerRect.getCentreX() + figureSize / 2, listenerRect.getCentreY() + figureSize / 2);
+    g.drawLine(listenerRect.getCentreX() - figureSize / 2, listenerRect.getCentreY() + figureSize / 2, listenerRect.getCentreX() + figureSize / 2, listenerRect.getCentreY() - figureSize / 2);
 
     //
     //Draw Emitter as a circle
@@ -80,10 +77,8 @@ void RoomPlane::resized()
     }
     roomArea.setCentre(getLocalBounds().getCentre());
 
-    listenerCenter.setXY(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
-    listenerRect.setCentre(listenerCenter);
-    sourceCenter.setXY(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
-    sourceRect.setCentre(sourceCenter);
+    listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+    sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
 }
 
 void RoomPlane::timerCallback()
@@ -108,31 +103,11 @@ void RoomPlane::mouseDrag(const MouseEvent& event)
 {
     if (movingSource)
     {
-        Point<int> newCoord = event.getMouseDownPosition() + event.getOffsetFromDragStart() - roomArea.getPosition();
-        float newPosHoriz = std::max(std::min((float)newCoord.getX() / roomArea.getWidth(), 1.0f), 0.0f);
-        float newPosVert = std::max(std::min((float)newCoord.getY() / roomArea.getHeight(), 1.0f), 0.0f);
-
-        valueTreeState.getParameter(sourceHorizParam)->beginChangeGesture();
-        valueTreeState.getParameter(sourceHorizParam)->setValueNotifyingHost(newPosHoriz);
-        valueTreeState.getParameter(sourceHorizParam)->endChangeGesture();
-
-        valueTreeState.getParameter(sourceVertParam)->beginChangeGesture();
-        valueTreeState.getParameter(sourceVertParam)->setValueNotifyingHost(newPosVert);
-        valueTreeState.getParameter(sourceVertParam)->endChangeGesture();
+        positionChangeOnMouseDrag(event, sourceHorizParam, sourceVertParam);
     }
     else if (movingListener)
     {
-        Point<int> newCoord = event.getMouseDownPosition() + event.getOffsetFromDragStart() - roomArea.getPosition();
-        float newPosHoriz = std::max(std::min((float)newCoord.getX() / roomArea.getWidth(), 1.0f), 0.0f);
-        float newPosVert = std::max(std::min((float)newCoord.getY() / roomArea.getHeight(), 1.0f), 0.0f);
-
-        valueTreeState.getParameter(listenerHorizParam)->beginChangeGesture();
-        valueTreeState.getParameter(listenerHorizParam)->setValueNotifyingHost(newPosHoriz);
-        valueTreeState.getParameter(listenerHorizParam)->endChangeGesture();
-
-        valueTreeState.getParameter(listenerVertParam)->beginChangeGesture();
-        valueTreeState.getParameter(listenerVertParam)->setValueNotifyingHost(newPosVert);
-        valueTreeState.getParameter(listenerVertParam)->endChangeGesture();
+        positionChangeOnMouseDrag(event, listenerHorizParam, listenerVertParam);
     }
 }
 
@@ -142,20 +117,33 @@ void RoomPlane::mouseUp(const MouseEvent& event)
     movingListener = false;
 }
 
-
+float RoomPlane::horizontalPosToPointCoord(String positionParam)
+{
+    return valueTreeState.getParameter(positionParam)->getValue() * roomArea.getWidth() + roomArea.getX();
+}
 
 float RoomPlane::verticalPosToPointCoord(String positionParam)
 {
     return (1.0f - valueTreeState.getParameter(positionParam)->getValue()) * roomArea.getHeight() + roomArea.getY();
 }
 
-float RoomPlane::horizontalPosToPointCoord(String positionParam)
-{
-    return valueTreeState.getParameter(positionParam)->getValue() * roomArea.getWidth() + roomArea.getX();
-}
-
 float RoomPlane::getRoomAspectRatio()
 {
     return *valueTreeState.getRawParameterValue(String("Dimensions") + String::charToString(horizontalAxis))
         / *valueTreeState.getRawParameterValue(String("Dimensions") + String::charToString(verticalAxis));
+}
+
+void RoomPlane::positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam)
+{
+    Point<int> newCoord = event.getMouseDownPosition() + event.getOffsetFromDragStart() - roomArea.getPosition();
+    float newPosHoriz = std::max(std::min((float)newCoord.getX() / roomArea.getWidth(), 1.0f), 0.0f);
+    float newPosVert = std::max(std::min((float)newCoord.getY() / roomArea.getHeight(), 1.0f), 0.0f);
+
+    valueTreeState.getParameter(horizontalParam)->beginChangeGesture();
+    valueTreeState.getParameter(horizontalParam)->setValueNotifyingHost(newPosHoriz);
+    valueTreeState.getParameter(horizontalParam)->endChangeGesture();
+
+    valueTreeState.getParameter(veticalParam)->beginChangeGesture();
+    valueTreeState.getParameter(veticalParam)->setValueNotifyingHost(1.0f - newPosVert);
+    valueTreeState.getParameter(veticalParam)->endChangeGesture();
 }
