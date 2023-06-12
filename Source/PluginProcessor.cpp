@@ -18,33 +18,9 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
 {
 
 
-    parameters.addParameterListener("SourceX", this);
-    parameters.addParameterListener("SourceY", this);
-    parameters.addParameterListener("SourceZ", this);
-    parameters.addParameterListener("ListenerX", this);
-    parameters.addParameterListener("ListenerY", this);
-    parameters.addParameterListener("ListenerZ", this);
-    parameters.addParameterListener("ListenerRotx", this);
-    parameters.addParameterListener("ListenerRoty", this);
-    parameters.addParameterListener("ListenerRotz", this);
-    parameters.addParameterListener("sourceGain", this);
-    parameters.addParameterListener("DimensionsX", this);
-    parameters.addParameterListener("DimensionsY", this);
-    parameters.addParameterListener("DimensionsZ", this);
-    parameters.addParameterListener("OutputMode", this);
-    parameters.addParameterListener("LOS", this);
-
-
-
-
-    for (int i = 0; i < Parameters::NUM_WALLS; i++)
-    {
-        for (int j = 0; j < Parameters::NUM_FREQ; j++)
-        {
-            parameters.addParameterListener("freq" + String(i) + String(j), this);
-        }
-    }
+    Parameters::addListenerToAllParameters(parameters, this);
 }
+
 
 RealtimeSDNAudioProcessor::~RealtimeSDNAudioProcessor()
 {

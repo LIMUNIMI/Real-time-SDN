@@ -24,6 +24,7 @@ private:
     float verticalPosToPointCoord(String positionParam);
     float getRoomAspectRatio();
     void positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam);
+    void updatePlaneCoords();
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;

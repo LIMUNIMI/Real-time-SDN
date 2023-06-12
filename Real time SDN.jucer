@@ -10,6 +10,16 @@
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">
+        <FILE id="ePxlrW" name="DragAndDropPanel.cpp" compile="1" resource="0"
+              file="Source/DragAndDropPanel.cpp"/>
+        <FILE id="MODJhT" name="DragAndDropPanel.h" compile="0" resource="0"
+              file="Source/DragAndDropPanel.h"/>
+        <FILE id="VyTuuH" name="GeometryPanel.cpp" compile="1" resource="0"
+              file="Source/GeometryPanel.cpp"/>
+        <FILE id="ZODAYH" name="GeometryPanel.h" compile="0" resource="0" file="Source/GeometryPanel.h"/>
+        <FILE id="aJbMrH" name="WallFiltersUI.cpp" compile="1" resource="0"
+              file="Source/WallFiltersUI.cpp"/>
+        <FILE id="KGNbwf" name="WallFiltersUI.h" compile="0" resource="0" file="Source/WallFiltersUI.h"/>
         <FILE id="rjfpHA" name="RoomPlane.cpp" compile="1" resource="0" file="Source/RoomPlane.cpp"/>
         <FILE id="E7cuLV" name="RoomPlane.h" compile="0" resource="0" file="Source/RoomPlane.h"/>
         <FILE id="gbKqNX" name="PluginEditor.cpp" compile="1" resource="0"

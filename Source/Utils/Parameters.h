@@ -20,4 +20,15 @@ namespace Parameters
 
 
 	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
+	static void addListenerToAllParameters(AudioProcessorValueTreeState& valueTreeState, AudioProcessorValueTreeState::Listener* listener)
+	{
+		std::unique_ptr<XmlElement> xml(valueTreeState.copyState().createXml());
+
+		for (auto element : xml->getChildWithTagNameIterator("PARAM"))
+		{
+			const String& id = element->getStringAttribute("id");
+			valueTreeState.addParameterListener(id, listener);
+		}
+	}
 }

@@ -22,20 +22,7 @@ void RoomPlane::paint (juce::Graphics& g)
     //Only update coordinates on params changes
     if (processor.geometryHasChanged())
     {
-        //Use desired aspect ratio to calculate new rectangle scaled to local dimensions
-        float targetRatio = getRoomAspectRatio();
-        if (targetRatio > drawableAspectRatio)
-        {
-            roomArea.setSize(getWidth(), getHeight() * (drawableAspectRatio / targetRatio));
-        }
-        else if (targetRatio < drawableAspectRatio)
-        {
-            roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
-        }
-        roomArea.setCentre(getLocalBounds().getCentre());
-
-        listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
-        sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
+        updatePlaneCoords();
     }
 
     //
@@ -66,19 +53,7 @@ void RoomPlane::resized()
     sourceRect.setSize(figureSize, figureSize);
     listenerRect.setSize(figureSize, figureSize);
 
-    float targetRatio = getRoomAspectRatio();
-    if (targetRatio > drawableAspectRatio)
-    {
-        roomArea.setSize(getWidth(), getHeight() * (drawableAspectRatio / targetRatio));
-    }
-    else if (targetRatio < drawableAspectRatio)
-    {
-        roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
-    }
-    roomArea.setCentre(getLocalBounds().getCentre());
-
-    listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
-    sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
+    updatePlaneCoords();
 }
 
 void RoomPlane::timerCallback()
@@ -146,4 +121,22 @@ void RoomPlane::positionChangeOnMouseDrag(const MouseEvent& event, String& horiz
     valueTreeState.getParameter(veticalParam)->beginChangeGesture();
     valueTreeState.getParameter(veticalParam)->setValueNotifyingHost(1.0f - newPosVert);
     valueTreeState.getParameter(veticalParam)->endChangeGesture();
+}
+
+void RoomPlane::updatePlaneCoords()
+{
+    //Use desired aspect ratio to calculate new rectangle scaled to local dimensions
+    float targetRatio = getRoomAspectRatio();
+    if (targetRatio >= drawableAspectRatio)
+    {
+        roomArea.setSize(getWidth(), getHeight() * (drawableAspectRatio / targetRatio));
+    }
+    else if (targetRatio < drawableAspectRatio)
+    {
+        roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
+    }
+    roomArea.setCentre(getLocalBounds().getCentre());
+
+    listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+    sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
 }

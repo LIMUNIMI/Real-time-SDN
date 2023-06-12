@@ -38,7 +38,8 @@ typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class Absorp  : public juce::Component
+class Absorp  : public juce::Component,
+                public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -51,11 +52,14 @@ public:
 
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    void setAllAbsorptionToTarget(float newValue);
+
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
     int wallID;
@@ -80,6 +84,9 @@ private:
     std::unique_ptr<juce::Slider> abs6;
     std::unique_ptr<juce::Slider> abs7;
     std::unique_ptr<juce::Slider> abs8;
+    std::unique_ptr<juce::TextButton> to1;
+    std::unique_ptr<juce::TextButton> toHalf;
+    std::unique_ptr<juce::TextButton> to0;
 
 
     //==============================================================================

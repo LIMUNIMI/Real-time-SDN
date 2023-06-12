@@ -39,7 +39,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs1->setSliderStyle (juce::Slider::LinearVertical);
     abs1->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs1->setBounds (16, 8, 32, 112);
+    abs1->setBounds (5, 8, 32, 112);
 
     abs2.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs2.get());
@@ -47,7 +47,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs2->setSliderStyle (juce::Slider::LinearVertical);
     abs2->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs2->setBounds (48, 8, 32, 112);
+    abs2->setBounds (37, 8, 32, 112);
 
     abs3.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs3.get());
@@ -55,7 +55,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs3->setSliderStyle (juce::Slider::LinearVertical);
     abs3->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs3->setBounds (80, 8, 32, 112);
+    abs3->setBounds (69, 8, 32, 112);
 
     abs4.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs4.get());
@@ -63,7 +63,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs4->setSliderStyle (juce::Slider::LinearVertical);
     abs4->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs4->setBounds (112, 8, 32, 112);
+    abs4->setBounds (101, 8, 32, 112);
 
     abs5.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs5.get());
@@ -71,7 +71,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs5->setSliderStyle (juce::Slider::LinearVertical);
     abs5->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs5->setBounds (144, 8, 32, 112);
+    abs5->setBounds (133, 8, 32, 112);
 
     abs6.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs6.get());
@@ -79,7 +79,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs6->setSliderStyle (juce::Slider::LinearVertical);
     abs6->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs6->setBounds (176, 8, 32, 112);
+    abs6->setBounds (165, 8, 32, 112);
 
     abs7.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs7.get());
@@ -87,7 +87,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs7->setSliderStyle (juce::Slider::LinearVertical);
     abs7->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs7->setBounds (208, 8, 32, 112);
+    abs7->setBounds (197, 8, 32, 112);
 
     abs8.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs8.get());
@@ -95,7 +95,31 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs8->setSliderStyle (juce::Slider::LinearVertical);
     abs8->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs8->setBounds (240, 8, 32, 112);
+    abs8->setBounds (229, 8, 32, 112);
+
+    to1.reset (new juce::TextButton ("new button"));
+    addAndMakeVisible (to1.get());
+    to1->setButtonText (TRANS("1"));
+    to1->addListener (this);
+    to1->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
+
+    to1->setBounds (267, 16, 24, 24);
+
+    toHalf.reset (new juce::TextButton ("new button"));
+    addAndMakeVisible (toHalf.get());
+    toHalf->setButtonText (TRANS("0.5"));
+    toHalf->addListener (this);
+    toHalf->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
+
+    toHalf->setBounds (267, 56, 24, 24);
+
+    to0.reset (new juce::TextButton ("new button"));
+    addAndMakeVisible (to0.get());
+    to0->setButtonText (TRANS("0"));
+    to0->addListener (this);
+    to0->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
+
+    to0->setBounds (267, 88, 24, 24);
 
 
     //[UserPreSize]
@@ -141,6 +165,9 @@ Absorp::~Absorp()
     abs6 = nullptr;
     abs7 = nullptr;
     abs8 = nullptr;
+    to1 = nullptr;
+    toHalf = nullptr;
+    to0 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -168,9 +195,48 @@ void Absorp::resized()
     //[/UserResized]
 }
 
+void Absorp::buttonClicked (juce::Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == to1.get())
+    {
+        //[UserButtonCode_to1] -- add your button handler code here..
+        setAllAbsorptionToTarget(1.0f);
+        //[/UserButtonCode_to1]
+    }
+    else if (buttonThatWasClicked == toHalf.get())
+    {
+        //[UserButtonCode_toHalf] -- add your button handler code here..
+        setAllAbsorptionToTarget(0.5f);
+        //[/UserButtonCode_toHalf]
+    }
+    else if (buttonThatWasClicked == to0.get())
+    {
+        //[UserButtonCode_to0] -- add your button handler code here..
+        setAllAbsorptionToTarget(0.0f);
+        //[/UserButtonCode_to0]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void Absorp::setAllAbsorptionToTarget(float newValue)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->beginChangeGesture();
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->setValueNotifyingHost(newValue);
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->endChangeGesture();
+    }
+}
+
 //[/MiscUserCode]
 
 
@@ -190,37 +256,46 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="296" initialHeight="128">
   <BACKGROUND backgroundColour="ff151e23"/>
   <SLIDER name="new slider" id="b4b171872c85c136" memberName="abs1" virtualName=""
-          explicitFocusOrder="0" pos="16 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="5 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="598b52f443341c0f" memberName="abs2" virtualName=""
-          explicitFocusOrder="0" pos="48 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="37 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="e1150341e40ea0a3" memberName="abs3" virtualName=""
-          explicitFocusOrder="0" pos="80 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="69 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="2a33624419138f8e" memberName="abs4" virtualName=""
-          explicitFocusOrder="0" pos="112 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="101 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="7a240c37526ae377" memberName="abs5" virtualName=""
-          explicitFocusOrder="0" pos="144 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="133 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="920a09d6d9d59cd6" memberName="abs6" virtualName=""
-          explicitFocusOrder="0" pos="176 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="165 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="7104ac664bc507a6" memberName="abs7" virtualName=""
-          explicitFocusOrder="0" pos="208 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="197 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="6009a5f8ebb42858" memberName="abs8" virtualName=""
-          explicitFocusOrder="0" pos="240 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="229 8 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
+  <TEXTBUTTON name="new button" id="fc8177dc40c04905" memberName="to1" virtualName=""
+              explicitFocusOrder="0" pos="267 16 24 24" bgColOff="ff051111"
+              buttonText="1" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="7d7768b1aebd5283" memberName="toHalf" virtualName=""
+              explicitFocusOrder="0" pos="267 56 24 24" bgColOff="ff051111"
+              buttonText="0.5" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="b7e60a045cc4019d" memberName="to0" virtualName=""
+              explicitFocusOrder="0" pos="267 88 24 24" bgColOff="ff051111"
+              buttonText="0" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

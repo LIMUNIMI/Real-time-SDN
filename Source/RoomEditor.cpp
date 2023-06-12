@@ -33,85 +33,13 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    emitterX.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (emitterX.get());
-    emitterX->setRange (0, 10, 0);
-    emitterX->setSliderStyle (juce::Slider::LinearHorizontal);
-    emitterX->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    emitterX->setBounds (360, 88, 192, 24);
-
-    emitterY.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (emitterY.get());
-    emitterY->setRange (0, 10, 0);
-    emitterY->setSliderStyle (juce::Slider::LinearHorizontal);
-    emitterY->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    emitterY->setBounds (360, 128, 192, 24);
-
-    emitterZ.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (emitterZ.get());
-    emitterZ->setRange (0, 10, 0);
-    emitterZ->setSliderStyle (juce::Slider::LinearHorizontal);
-    emitterZ->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    emitterZ->setBounds (360, 168, 192, 24);
-
-    listenerX.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerX.get());
-    listenerX->setRange (0, 10, 0);
-    listenerX->setSliderStyle (juce::Slider::LinearHorizontal);
-    listenerX->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    listenerX->setBounds (582, 91, 192, 24);
-
-    listenerY.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerY.get());
-    listenerY->setRange (0, 10, 0);
-    listenerY->setSliderStyle (juce::Slider::LinearHorizontal);
-    listenerY->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    listenerY->setBounds (582, 131, 192, 24);
-
-    listenerZ.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerZ.get());
-    listenerZ->setRange (0, 10, 0);
-    listenerZ->setSliderStyle (juce::Slider::LinearHorizontal);
-    listenerZ->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    listenerZ->setBounds (582, 171, 192, 24);
-
-    listenerYaw.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerYaw.get());
-    listenerYaw->setRange (0, 10, 0);
-    listenerYaw->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    listenerYaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    listenerYaw->setBounds (360, 232, 95, 96);
-
-    listenerPitch.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerPitch.get());
-    listenerPitch->setRange (0, 10, 0);
-    listenerPitch->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    listenerPitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    listenerPitch->setBounds (464, 232, 95, 96);
-
-    listenerRoll.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerRoll.get());
-    listenerRoll->setRange (0, 10, 0);
-    listenerRoll->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    listenerRoll->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    listenerRoll->setBounds (560, 232, 95, 96);
-
     gain.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (gain.get());
     gain->setRange (0, 10, 0);
     gain->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     gain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    gain->setBounds (696, 232, 96, 96);
+    gain->setBounds (40, 600, 96, 96);
 
     microphone.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (microphone.get());
@@ -119,7 +47,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     microphone->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     microphone->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    microphone->setBounds (888, 232, 104, 96);
+    microphone->setBounds (232, 600, 104, 96);
 
     los.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (los.get());
@@ -127,67 +55,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     los->addListener (this);
     los->setToggleState (true, juce::dontSendNotification);
 
-    los->setBounds (808, 304, 72, 24);
-
-    roomX.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (roomX.get());
-    roomX->setRange (0, 10, 0);
-    roomX->setSliderStyle (juce::Slider::LinearHorizontal);
-    roomX->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    roomX->setBounds (806, 92, 192, 24);
-
-    roomY.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (roomY.get());
-    roomY->setRange (0, 10, 0);
-    roomY->setSliderStyle (juce::Slider::LinearHorizontal);
-    roomY->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    roomY->setBounds (806, 132, 192, 24);
-
-    roomZ.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (roomZ.get());
-    roomZ->setRange (0, 10, 0);
-    roomZ->setSliderStyle (juce::Slider::LinearHorizontal);
-    roomZ->setTextBoxStyle (juce::Slider::TextBoxRight, false, 80, 20);
-
-    roomZ->setBounds (806, 172, 192, 24);
-
-    wall1.reset (new Absorp (processor, valueTreeState, 2));
-    addAndMakeVisible (wall1.get());
-    wall1->setName ("new component");
-
-    wall1->setBounds (24, 400, 296, 128);
-
-    wall2.reset (new Absorp (processor, valueTreeState, 4));
-    addAndMakeVisible (wall2.get());
-    wall2->setName ("new component");
-
-    wall2->setBounds (360, 400, 296, 128);
-
-    wall3.reset (new Absorp (processor, valueTreeState, 0));
-    addAndMakeVisible (wall3.get());
-    wall3->setName ("new component");
-
-    wall3->setBounds (696, 400, 296, 128);
-
-    wall4.reset (new Absorp (processor, valueTreeState, 3));
-    addAndMakeVisible (wall4.get());
-    wall4->setName ("new component");
-
-    wall4->setBounds (24, 568, 296, 128);
-
-    wall5.reset (new Absorp (processor, valueTreeState, 5));
-    addAndMakeVisible (wall5.get());
-    wall5->setName ("new component");
-
-    wall5->setBounds (360, 568, 296, 128);
-
-    wall6.reset (new Absorp (processor, valueTreeState, 1));
-    addAndMakeVisible (wall6.get());
-    wall6->setName ("new component");
-
-    wall6->setBounds (696, 568, 296, 128);
+    los->setBounds (152, 672, 72, 24);
 
     load.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (load.get());
@@ -217,13 +85,13 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     redo->setBounds (576, 16, 56, 24);
 
-    TopDown.reset (new RoomPlane (processor, valueTreeState,
-                                  'Z',
-                                  'Y'));
-    addAndMakeVisible (TopDown.get());
-    TopDown->setName ("new component");
+    backView.reset (new RoomPlane (processor, valueTreeState,
+                                   'X',
+                                   'Y'));
+    addAndMakeVisible (backView.get());
+    backView->setName ("new component");
 
-    TopDown->setBounds (24, 232, 296, 128);
+    backView->setBounds (8, 344, 360, 224);
 
     TopDown2.reset (new RoomPlane (processor, valueTreeState,
                                    'X',
@@ -231,24 +99,36 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     addAndMakeVisible (TopDown2.get());
     TopDown2->setName ("new component");
 
-    TopDown2->setBounds (24, 64, 296, 128);
+    TopDown2->setBounds (8, 88, 360, 224);
+
+    load_HRTF.reset (new juce::TextButton ("new button"));
+    addAndMakeVisible (load_HRTF.get());
+    load_HRTF->setButtonText (TRANS("Load HRTF"));
+    load_HRTF->addListener (this);
+
+    load_HRTF->setBounds (160, 608, 48, 48);
+
+    juce__tabbedComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
+    addAndMakeVisible (juce__tabbedComponent.get());
+    juce__tabbedComponent->setTabBarDepth (30);
+    juce__tabbedComponent->addTab (TRANS("Tab 0"), juce::Colours::lightgrey, new GeometryPanel (processor, valueTreeState), true);
+    juce__tabbedComponent->addTab (TRANS("Tab 1"), juce::Colours::lightgrey, new WallFiltersUI (processor, valueTreeState), true);
+    juce__tabbedComponent->setCurrentTabIndex (0);
+
+    juce__tabbedComponent->setBounds (376, 64, 630, 600);
+
+    HRTF_dragAndDrop.reset (new juce::Viewport ("new viewport"));
+    addAndMakeVisible (HRTF_dragAndDrop.get());
+    HRTF_dragAndDrop->setScrollBarsShown (false, false);
+    HRTF_dragAndDrop->setViewedComponent (new DragAndDropPanel (processor, valueTreeState));
+
+    HRTF_dragAndDrop->setBounds (344, 208, 472, 240);
 
 
     //[UserPreSize]
+    HRTF_dragAndDrop->setVisible(false);
 
-    emitterXAttachment.reset(new SliderAttachment(valueTreeState, "SourceX", *emitterX));
-    emitterYAttachment.reset(new SliderAttachment(valueTreeState, "SourceY", *emitterY));
-    emitterZAttachment.reset(new SliderAttachment(valueTreeState, "SourceZ", *emitterZ));
-    listenerXAttachment.reset(new SliderAttachment(valueTreeState, "ListenerX", *listenerX));
-    listenerYAttachment.reset(new SliderAttachment(valueTreeState, "ListenerY", *listenerY));
-    listenerZAttachment.reset(new SliderAttachment(valueTreeState, "ListenerZ", *listenerZ));
-    listenerYawAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRotx", *listenerYaw));
-    listenerPitchAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRoty", *listenerPitch));
-    listenerRollAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRotz", *listenerRoll));
     gainAttachment.reset(new SliderAttachment(valueTreeState, "sourceGain", *gain));
-    roomXAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsX", *roomX));
-    roomYAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsY", *roomY));
-    roomZAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsZ", *roomZ));
     microphoneAttachment.reset(new SliderAttachment(valueTreeState, "OutputMode", *microphone));
     losAttachment.reset(new ButtonAttachment(valueTreeState, "LOS", *los));
 
@@ -264,50 +144,23 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 RoomEditor::~RoomEditor()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
-    emitterXAttachment.reset();
-    emitterYAttachment.reset();
-    emitterZAttachment.reset();
-    listenerXAttachment.reset();
-    listenerYAttachment.reset();
-    listenerZAttachment.reset();
-    listenerYawAttachment.reset();
-    listenerPitchAttachment.reset();
-    listenerRollAttachment.reset();
     gainAttachment.reset();
-    roomXAttachment.reset();
-    roomYAttachment.reset();
-    roomZAttachment.reset();
     microphoneAttachment.reset();
     losAttachment.reset();
     //[/Destructor_pre]
 
-    emitterX = nullptr;
-    emitterY = nullptr;
-    emitterZ = nullptr;
-    listenerX = nullptr;
-    listenerY = nullptr;
-    listenerZ = nullptr;
-    listenerYaw = nullptr;
-    listenerPitch = nullptr;
-    listenerRoll = nullptr;
     gain = nullptr;
     microphone = nullptr;
     los = nullptr;
-    roomX = nullptr;
-    roomY = nullptr;
-    roomZ = nullptr;
-    wall1 = nullptr;
-    wall2 = nullptr;
-    wall3 = nullptr;
-    wall4 = nullptr;
-    wall5 = nullptr;
-    wall6 = nullptr;
     load = nullptr;
     save = nullptr;
     undo = nullptr;
     redo = nullptr;
-    TopDown = nullptr;
+    backView = nullptr;
     TopDown2 = nullptr;
+    load_HRTF = nullptr;
+    juce__tabbedComponent = nullptr;
+    HRTF_dragAndDrop = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -323,103 +176,7 @@ void RoomEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colour (0xff323e44));
 
     {
-        int x = 368, y = 56, width = 192, height = 30;
-        juce::String text (TRANS("Emitter"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 584, y = 56, width = 192, height = 30;
-        juce::String text (TRANS("Listener"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 556, y = 92, width = 32, height = 20;
-        juce::String text (TRANS("X"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 556, y = 132, width = 32, height = 20;
-        juce::String text (TRANS("Y"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 556, y = 172, width = 32, height = 20;
-        juce::String text (TRANS("Z"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 372, y = 212, width = 76, height = 20;
-        juce::String text (TRANS("Pitch"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 476, y = 212, width = 76, height = 20;
-        juce::String text (TRANS("Yaw"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 572, y = 212, width = 76, height = 20;
-        juce::String text (TRANS("Roll"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 884, y = 212, width = 108, height = 20;
+        int x = 228, y = 588, width = 108, height = 20;
         juce::String text (TRANS("Output format"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -431,55 +188,7 @@ void RoomEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 780, y = 92, width = 32, height = 20;
-        juce::String text (TRANS("X"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 780, y = 132, width = 32, height = 20;
-        juce::String text (TRANS("Y"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 780, y = 172, width = 32, height = 20;
-        juce::String text (TRANS("Z"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 808, y = 56, width = 192, height = 30;
-        juce::String text (TRANS("Room"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 700, y = 212, width = 84, height = 20;
+        int x = 44, y = 588, width = 84, height = 20;
         juce::String text (TRANS("Gain"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -515,109 +224,25 @@ void RoomEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 24, y = 377, width = 296, height = 23;
-        juce::String text (TRANS("Floor"));
+        int x = 8, y = 312, width = 360, height = 30;
+        juce::String text (TRANS("Back view"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::Font (21.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centred, true);
     }
 
     {
-        int x = 24, y = 545, width = 296, height = 23;
-        juce::String text (TRANS("Ceiling"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 360, y = 377, width = 296, height = 23;
-        juce::String text (TRANS("Front"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 360, y = 545, width = 296, height = 23;
-        juce::String text (TRANS("Back"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 696, y = 377, width = 296, height = 23;
-        juce::String text (TRANS("Left"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 696, y = 545, width = 296, height = 23;
-        juce::String text (TRANS("Right"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 32, y = 344, width = 960, height = 24;
-        juce::String text (TRANS("Walls absorption coefficients:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (18.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 24, y = 208, width = 296, height = 30;
-        juce::String text (TRANS("Side view"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centred, true);
-    }
-
-    {
-        int x = 24, y = 40, width = 296, height = 30;
+        int x = 8, y = 56, width = 360, height = 30;
         juce::String text (TRANS("Top-down view"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (juce::Font (21.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centred, true);
     }
@@ -696,6 +321,13 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         valueTreeState.undoManager->redo();
         //[/UserButtonCode_redo]
     }
+    else if (buttonThatWasClicked == load_HRTF.get())
+    {
+        //[UserButtonCode_load_HRTF] -- add your button handler code here..
+        //CallOutBox::launchAsynchronously(std::make_unique<DragAndDropPanel>(), Rectangle<int>(0, 0, 0, 0), this);
+        HRTF_dragAndDrop->setVisible(!HRTF_dragAndDrop->isVisible());
+        //[/UserButtonCode_load_HRTF]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -722,46 +354,10 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="1018" initialHeight="720">
   <BACKGROUND backgroundColour="ff323e44">
-    <TEXT pos="368 56 192 30" fill="solid: ffffffff" hasStroke="0" text="Emitter"
+    <TEXT pos="228 588 108 20" fill="solid: ffffffff" hasStroke="0" text="Output format"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="584 56 192 30" fill="solid: ffffffff" hasStroke="0" text="Listener"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="556 92 32 20" fill="solid: ffffffff" hasStroke="0" text="X"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="556 132 32 20" fill="solid: ffffffff" hasStroke="0" text="Y"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="556 172 32 20" fill="solid: ffffffff" hasStroke="0" text="Z"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="372 212 76 20" fill="solid: ffffffff" hasStroke="0" text="Pitch"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="476 212 76 20" fill="solid: ffffffff" hasStroke="0" text="Yaw"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="572 212 76 20" fill="solid: ffffffff" hasStroke="0" text="Roll"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="884 212 108 20" fill="solid: ffffffff" hasStroke="0" text="Output format"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="780 92 32 20" fill="solid: ffffffff" hasStroke="0" text="X"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="780 132 32 20" fill="solid: ffffffff" hasStroke="0" text="Y"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="780 172 32 20" fill="solid: ffffffff" hasStroke="0" text="Z"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="808 56 192 30" fill="solid: ffffffff" hasStroke="0" text="Room"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="700 212 84 20" fill="solid: ffffffff" hasStroke="0" text="Gain"
+    <TEXT pos="44 588 84 20" fill="solid: ffffffff" hasStroke="0" text="Gain"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="20 12 484 30" fill="solid: ffffffff" hasStroke="0" text="SDN Reverb by Laboratorio di Informatica Musicale"
@@ -770,125 +366,26 @@ BEGIN_JUCER_METADATA
     <TEXT pos="788 12 200 30" fill="solid: ffffffff" hasStroke="0" text="Coded by Marco Fontana"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="34"/>
-    <TEXT pos="24 377 296 23" fill="solid: ffffffff" hasStroke="0" text="Floor"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+    <TEXT pos="8 312 360 30" fill="solid: ffffffff" hasStroke="0" text="Back view"
+          fontname="Default font" fontsize="21.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="24 545 296 23" fill="solid: ffffffff" hasStroke="0" text="Ceiling"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="360 377 296 23" fill="solid: ffffffff" hasStroke="0" text="Front"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="360 545 296 23" fill="solid: ffffffff" hasStroke="0" text="Back"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="696 377 296 23" fill="solid: ffffffff" hasStroke="0" text="Left"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="696 545 296 23" fill="solid: ffffffff" hasStroke="0" text="Right"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="32 344 960 24" fill="solid: ffffffff" hasStroke="0" text="Walls absorption coefficients:"
-          fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
-          italic="0" justification="36" typefaceStyle="Bold"/>
-    <TEXT pos="24 208 296 30" fill="solid: ffffffff" hasStroke="0" text="Side view"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
-    <TEXT pos="24 40 296 30" fill="solid: ffffffff" hasStroke="0" text="Top-down view"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+    <TEXT pos="8 56 360 30" fill="solid: ffffffff" hasStroke="0" text="Top-down view"
+          fontname="Default font" fontsize="21.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
   </BACKGROUND>
-  <SLIDER name="new slider" id="5eefdf8daf8c33cc" memberName="emitterX"
-          virtualName="" explicitFocusOrder="0" pos="360 88 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="4e911c7506c2297d" memberName="emitterY"
-          virtualName="" explicitFocusOrder="0" pos="360 128 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="84fd187cedf47c2a" memberName="emitterZ"
-          virtualName="" explicitFocusOrder="0" pos="360 168 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="c338155edb0fe879" memberName="listenerX"
-          virtualName="" explicitFocusOrder="0" pos="582 91 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="6baf213ecebc204c" memberName="listenerY"
-          virtualName="" explicitFocusOrder="0" pos="582 131 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="76893f504b069909" memberName="listenerZ"
-          virtualName="" explicitFocusOrder="0" pos="582 171 192 24" min="0.0"
-          max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="9e818101edc1d3d7" memberName="listenerYaw"
-          virtualName="" explicitFocusOrder="0" pos="360 232 95 96" min="0.0"
-          max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="1337db1e7de08" memberName="listenerPitch"
-          virtualName="" explicitFocusOrder="0" pos="464 232 95 96" min="0.0"
-          max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="6641584aea36d9b3" memberName="listenerRoll"
-          virtualName="" explicitFocusOrder="0" pos="560 232 95 96" min="0.0"
-          max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
   <SLIDER name="new slider" id="3b7355fbb7fbc0bf" memberName="gain" virtualName=""
-          explicitFocusOrder="0" pos="696 232 96 96" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="40 600 96 96" min="0.0" max="10.0"
           int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="new slider" id="6d6dc1f71cee9106" memberName="microphone"
-          virtualName="" explicitFocusOrder="0" pos="888 232 104 96" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="232 600 104 96" min="0.0"
           max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
   <TOGGLEBUTTON name="new toggle button" id="dd7455385ad38f23" memberName="los"
-                virtualName="" explicitFocusOrder="0" pos="808 304 72 24" buttonText="LOS"
+                virtualName="" explicitFocusOrder="0" pos="152 672 72 24" buttonText="LOS"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="1"/>
-  <SLIDER name="new slider" id="7a0b7eca39c454d6" memberName="roomX" virtualName=""
-          explicitFocusOrder="0" pos="806 92 192 24" min="0.0" max="10.0"
-          int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="91a47596aec4655a" memberName="roomY" virtualName=""
-          explicitFocusOrder="0" pos="806 132 192 24" min="0.0" max="10.0"
-          int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="new slider" id="82aaefc651798196" memberName="roomZ" virtualName=""
-          explicitFocusOrder="0" pos="806 172 192 24" min="0.0" max="10.0"
-          int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
-  <GENERICCOMPONENT name="new component" id="28e5ac1a4cac4c04" memberName="wall1"
-                    virtualName="" explicitFocusOrder="0" pos="24 400 296 128" class="Absorp"
-                    params="processor, valueTreeState, 2"/>
-  <GENERICCOMPONENT name="new component" id="f48b2a76dbd4d152" memberName="wall2"
-                    virtualName="" explicitFocusOrder="0" pos="360 400 296 128" class="Absorp"
-                    params="processor, valueTreeState, 4"/>
-  <GENERICCOMPONENT name="new component" id="f1737d42e43f94ce" memberName="wall3"
-                    virtualName="" explicitFocusOrder="0" pos="696 400 296 128" class="Absorp"
-                    params="processor, valueTreeState, 0"/>
-  <GENERICCOMPONENT name="new component" id="384f4c598c80770d" memberName="wall4"
-                    virtualName="" explicitFocusOrder="0" pos="24 568 296 128" class="Absorp"
-                    params="processor, valueTreeState, 3"/>
-  <GENERICCOMPONENT name="new component" id="eccd39e48289ca7" memberName="wall5"
-                    virtualName="" explicitFocusOrder="0" pos="360 568 296 128" class="Absorp"
-                    params="processor, valueTreeState, 5"/>
-  <GENERICCOMPONENT name="new component" id="11aaf23cd9b2f28d" memberName="wall6"
-                    virtualName="" explicitFocusOrder="0" pos="696 568 296 128" class="Absorp"
-                    params="processor, valueTreeState, 1"/>
   <TEXTBUTTON name="new button" id="318695e64a9a5be0" memberName="load" virtualName=""
               explicitFocusOrder="0" pos="656 16 56 24" buttonText="Load" connectedEdges="0"
               needsCallback="1" radioGroupId="0"/>
@@ -901,12 +398,27 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="new button" id="405ee4fbbda32d65" memberName="redo" virtualName=""
               explicitFocusOrder="0" pos="576 16 56 24" buttonText="Redo" connectedEdges="0"
               needsCallback="1" radioGroupId="0"/>
-  <GENERICCOMPONENT name="new component" id="237d2c8ded89baef" memberName="TopDown"
-                    virtualName="" explicitFocusOrder="0" pos="24 232 296 128" class="RoomPlane"
-                    params="processor, valueTreeState,&#10;'Z',&#10;'Y'"/>
+  <GENERICCOMPONENT name="new component" id="237d2c8ded89baef" memberName="backView"
+                    virtualName="" explicitFocusOrder="0" pos="8 344 360 224" class="RoomPlane"
+                    params="processor, valueTreeState,&#10;'X',&#10;'Y'"/>
   <GENERICCOMPONENT name="new component" id="2a2fc017b3736040" memberName="TopDown2"
-                    virtualName="" explicitFocusOrder="0" pos="24 64 296 128" class="RoomPlane"
+                    virtualName="" explicitFocusOrder="0" pos="8 88 360 224" class="RoomPlane"
                     params="processor, valueTreeState,&#10;'X',&#10;'Z'"/>
+  <TEXTBUTTON name="new button" id="fb9edc7d920f375" memberName="load_HRTF"
+              virtualName="" explicitFocusOrder="0" pos="160 608 48 48" buttonText="Load HRTF"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TABBEDCOMPONENT name="new tabbed component" id="7ac39ee7e4771e11" memberName="juce__tabbedComponent"
+                   virtualName="" explicitFocusOrder="0" pos="376 64 630 600" orientation="top"
+                   tabBarDepth="30" initialTab="0">
+    <TAB name="Tab 0" colour="ffd3d3d3" useJucerComp="0" contentClassName="GeometryPanel"
+         constructorParams="processor, valueTreeState" jucerComponentFile=""/>
+    <TAB name="Tab 1" colour="ffd3d3d3" useJucerComp="0" contentClassName="WallFiltersUI"
+         constructorParams="processor, valueTreeState" jucerComponentFile=""/>
+  </TABBEDCOMPONENT>
+  <VIEWPORT name="new viewport" id="46f4e61477c28f26" memberName="HRTF_dragAndDrop"
+            virtualName="" explicitFocusOrder="0" pos="344 208 472 240" vscroll="0"
+            hscroll="0" scrollbarThickness="8" contentType="2" jucerFile=""
+            contentClass="DragAndDropPanel" constructorParams="processor, valueTreeState"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

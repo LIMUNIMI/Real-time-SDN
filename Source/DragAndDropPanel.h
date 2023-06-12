@@ -21,14 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
-#include "Absorp.h"
-#include "RoomPlane.h"
-#include "WallFiltersUI.h"
-#include "DragAndDropPanel.h"
-#include "GeometryPanel.h"
-
-typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
-typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+#include "PluginProcessor.h"
 //[/Headers]
 
 
@@ -41,52 +34,41 @@ typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class RoomEditor  : public juce::Component,
-                    public juce::Button::Listener
+class DragAndDropPanel  : public juce::Component,
+                          public juce::FileDragAndDropTarget
 {
 public:
     //==============================================================================
-    RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
-    ~RoomEditor() override;
+    DragAndDropPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    ~DragAndDropPanel() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    bool isInterestedInFileDrag(const StringArray& files) override;
+    void fileDragEnter(const StringArray& files, int x, int y) override;
+    void fileDragMove(const StringArray& files, int x, int y) override;
+    void fileDragExit(const StringArray& files) override;
+    void filesDropped(const StringArray& files, int x, int y) override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    juce::Colour customColour = juce::Colour(0xff3d92a3);
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
-
-    std::unique_ptr<SliderAttachment> gainAttachment;
-    std::unique_ptr<SliderAttachment> microphoneAttachment;
-    std::unique_ptr<ButtonAttachment> losAttachment;
-
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::Slider> gain;
-    std::unique_ptr<juce::Slider> microphone;
-    std::unique_ptr<juce::ToggleButton> los;
-    std::unique_ptr<juce::TextButton> load;
-    std::unique_ptr<juce::TextButton> save;
-    std::unique_ptr<juce::TextButton> undo;
-    std::unique_ptr<juce::TextButton> redo;
-    std::unique_ptr<RoomPlane> backView;
-    std::unique_ptr<RoomPlane> TopDown2;
-    std::unique_ptr<juce::TextButton> load_HRTF;
-    std::unique_ptr<juce::TabbedComponent> juce__tabbedComponent;
-    std::unique_ptr<juce::Viewport> HRTF_dragAndDrop;
+    std::unique_ptr<juce::Label> fileName_label;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RoomEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DragAndDropPanel)
 };
 
 //[EndFile] You can add extra defines here...
