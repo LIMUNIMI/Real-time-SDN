@@ -1,5 +1,7 @@
 #include "RoomPlane.h"
 
+using namespace Eigen;
+
 RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, char horizAxis, char vertAxis)
     : processor(p), valueTreeState(vts), horizontalAxis(horizAxis), verticalAxis(vertAxis)
 {
@@ -8,6 +10,38 @@ RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState&
     listenerVertParam = String("Listener") + String::charToString(vertAxis);
     sourceHorizParam = String("Source") + String::charToString(horizAxis);
     sourceVertParam = String("Source") + String::charToString(vertAxis);
+
+    rotatedListener = Vector3f(0, 0, 1);
+    
+    switch (horizAxis)
+    {
+    case 'X':
+        horizRot = &rotatedListener.x();
+        break;
+    case 'Y':
+        horizRot = &rotatedListener.y();
+        break;
+    case 'Z':
+        horizRot = &rotatedListener.z();
+        break;
+    default:
+        break;
+    }
+
+    switch (vertAxis)
+    {
+    case 'X':
+        vertRot = &rotatedListener.x();
+        break;
+    case 'Y':
+        vertRot = &rotatedListener.y();
+        break;
+    case 'Z':
+        vertRot = &rotatedListener.z();
+        break;
+    default:
+        break;
+    }
 }
 
 RoomPlane::~RoomPlane()
@@ -34,15 +68,17 @@ void RoomPlane::paint (juce::Graphics& g)
     g.setColour(Colours::white);
 
     //
-    //Draw listener as a cross
+    //Draw listener as a circle + "nose" to represent rotation
     //
-    g.drawLine(listenerRect.getCentreX() - figureSize / 2, listenerRect.getCentreY() - figureSize / 2, listenerRect.getCentreX() + figureSize / 2, listenerRect.getCentreY() + figureSize / 2);
-    g.drawLine(listenerRect.getCentreX() - figureSize / 2, listenerRect.getCentreY() + figureSize / 2, listenerRect.getCentreX() + figureSize / 2, listenerRect.getCentreY() - figureSize / 2);
+    g.drawEllipse(listenerRect, 1.0f);
+    g.drawEllipse(listenerRotRect, 1.0f);
 
     //
-    //Draw Emitter as a circle
+    //Draw Emitter as a concentric circles
     //
     g.drawEllipse(sourceRect, 1.0f);
+    g.drawEllipse(sourceRect.getX() + sourceRect.getWidth() * 0.125, sourceRect.getY() + sourceRect.getWidth() * 0.125, sourceRect.getWidth() * 0.75, sourceRect.getWidth() * 0.75, 1.0f);
+    g.drawEllipse(sourceRect.getX() + sourceRect.getWidth() * 0.25, sourceRect.getY() + sourceRect.getWidth() * 0.25, sourceRect.getWidth() * 0.5, sourceRect.getWidth() * 0.5, 1.0f);
 
 }
 
@@ -52,6 +88,7 @@ void RoomPlane::resized()
     figureSize = 0.05 * getWidth();
     sourceRect.setSize(figureSize, figureSize);
     listenerRect.setSize(figureSize, figureSize);
+    listenerRotRect.setSize(figureSize / 4, figureSize / 4);
 
     updatePlaneCoords();
 }
@@ -138,5 +175,19 @@ void RoomPlane::updatePlaneCoords()
     roomArea.setCentre(getLocalBounds().getCentre());
 
     listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
+    updateRotation();
     sourceRect.setCentre(horizontalPosToPointCoord(sourceHorizParam), verticalPosToPointCoord(sourceVertParam));
+}
+
+void RoomPlane::updateRotation()
+{
+    listenerRot = AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotz")), Vector3f::UnitZ())
+        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRoty")), Vector3f::UnitY())
+        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotx")), Vector3f::UnitX());
+
+    rotatedListener = listenerRot * forward;
+    rotatedListener.normalize();
+
+    listenerRotRect.setCentre(listenerRect.getCentreX() + (figureSize * 0.5 * *horizRot), 
+        listenerRect.getCentreY() - (figureSize * 0.5 * *vertRot));
 }

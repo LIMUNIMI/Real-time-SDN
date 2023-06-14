@@ -2,7 +2,9 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include <Eigen/Geometry>
 
+#define forward Eigen::Vector3f(0, 0, 1)
 
 class RoomPlane : public juce::Component, public Timer
 {
@@ -25,6 +27,7 @@ private:
     float getRoomAspectRatio();
     void positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam);
     void updatePlaneCoords();
+    void updateRotation();
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
@@ -35,7 +38,10 @@ private:
     float drawableAspectRatio = 1.0f;
     float figureSize = 0.0f;
     juce::Rectangle<int> roomArea; 
-    juce::Rectangle<float> listenerRect, sourceRect;
+    juce::Rectangle<float> listenerRect, sourceRect, listenerRotRect;
+    Eigen::Matrix3f listenerRot;
+    Eigen::Vector3f rotatedListener;
+    float* horizRot, *vertRot;
 
     bool movingListener = false, 
         movingSource = false;

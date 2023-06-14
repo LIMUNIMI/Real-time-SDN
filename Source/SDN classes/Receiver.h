@@ -34,6 +34,11 @@ public:
 		stereo->updateQuaternion();
 	}
 
+	bool isRotating()
+	{
+		return stereo->isRotating();
+	}
+
 	void setOutputMode(int mode);
 
 	std::vector<WaveGuide*> inWaveguides;

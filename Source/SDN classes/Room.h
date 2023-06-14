@@ -34,7 +34,7 @@ public:
 	//mute and unmute LOS component
 	void muteLOS(bool condition);
 
-	bool geometryHasChanged() { return hasChanged; }
+	bool geometryHasChanged() { return hasChanged || receiver.isRotating(); }
 
 private:
 
