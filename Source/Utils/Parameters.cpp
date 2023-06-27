@@ -18,7 +18,7 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotz", "Listener Roll", 0.0f, 360.0f, 0.0f));
 
 	params.push_back(std::make_unique<AudioParameterChoice>("OutputMode", "Output mode", 
-		StringArray(outputModes, NUM_OUT_MODES), 0));
+		StringArray(outputModes, NUM_OUT_MODES), 1));
 
 	params.push_back(std::make_unique<AudioParameterFloat>("sourceGain", "Source Gain (dB)", -12.0f, 12.0f, 0.0f));
 

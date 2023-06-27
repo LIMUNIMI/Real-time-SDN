@@ -210,7 +210,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     {
         int value = newValue;
         //check if chosen output can be done with available channels if not default to MONO
-        if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
+        if (value == 0 || (value > 2 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) || (value == 2 && getNumOutputChannels() > 1))
         {
             room.setOutputMode(value, getNumOutputChannels());
         }

@@ -8,10 +8,11 @@ Receiver::Receiver()
 	mono = std::make_shared<Mono>();
 	stereo = std::make_shared<Stereo>();
 	ambisonic = std::make_shared<Ambisonic>();
+	hrtf = std::make_shared<HRTF_output>();
 	microphone = stereo;
 }
 
-void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions)
+void Receiver::init(Point3d normalPosition, int numsamples, int nOfConnections, double samplerate, Point3d dimensions)
 {
 	initRange(samplerate, normalPosition, dimensions);
 	
@@ -22,6 +23,7 @@ void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerat
 	mono->init();
 	stereo->init(samplerate);
 	ambisonic->init();
+	hrtf->init(samplerate, numsamples);
 }
 
 void Receiver::process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
@@ -48,10 +50,14 @@ void Receiver::setOutputMode(int mode)
 		stereo->sync();
 		microphone = stereo;
 	}
-	else
+	else if (mode == 2)
+	{
+		microphone = hrtf;
+	}
+	else if (mode > 2 )
 	{
 		microphone = ambisonic;
-		ambisonic->setAmbisonicOrder(mode - 1);
+		ambisonic->setAmbisonicOrder(mode - 2);
 	}
 	
 }

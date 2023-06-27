@@ -20,7 +20,7 @@ void Room::prepare(double samplerate, Point3d dimensions, Point3d sourcePos, Poi
 {
 	this->dimensions = dimensions;
 	source.init(sourcePos, numSamples, Parameters::NUM_WALLS + 1, samplerate, dimensions);
-	receiver.init(playerPos, Parameters::NUM_WALLS + 1, samplerate, dimensions);
+	receiver.init(playerPos, numSamples,  Parameters::NUM_WALLS + 1, samplerate, dimensions);
 
 	initWalls(samplerate);
 	initWaveguides(samplerate);

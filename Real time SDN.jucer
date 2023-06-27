@@ -2,11 +2,11 @@
 
 <JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes"
+              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes&#10;..\..\..\BRTLibrary-main\include"
               pluginAUMainType="'aufx'" pluginManufacturer="LIM" companyName="Laboratorio di Informatica Musicale"
               companyWebsite="www.lim.di.unimi.it" bundleIdentifier="com.lim.RealtimeSDN"
               pluginFormats="buildAU,buildStandalone,buildVST3" pluginManufacturerCode="LIM!"
-              defines="JUCE_MODAL_LOOPS_PERMITTED = 1">
+              defines="JUCE_MODAL_LOOPS_PERMITTED = 1" cppLanguageStandard="17">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">
@@ -41,6 +41,8 @@
               file="Source/Node classes/NormalPosition.h"/>
       </GROUP>
       <GROUP id="{EE374E07-0E79-BD79-DF98-3B4EF9714970}" name="SDN classes">
+        <FILE id="LJzQny" name="HRTF_output.cpp" compile="1" resource="0" file="Source/SDN classes/HRTF_output.cpp"/>
+        <FILE id="iYkS4G" name="HRTF_output.h" compile="0" resource="0" file="Source/SDN classes/HRTF_output.h"/>
         <FILE id="ZWLb6h" name="Ambisonic.cpp" compile="1" resource="0" file="Source/SDN classes/Ambisonic.cpp"/>
         <FILE id="Aqb2Ib" name="Ambisonic.h" compile="0" resource="0" file="Source/SDN classes/Ambisonic.h"/>
         <FILE id="KR4AUA" name="Mono.cpp" compile="1" resource="0" file="Source/SDN classes/Mono.cpp"/>
@@ -82,7 +84,7 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022">
+    <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="..\..\..\BRTLibrary-main\include\third_party_libraries\libmysofa\lib\vs\x64\Release\mysofa.lib&#10;..\..\..\BRTLibrary-main\include\third_party_libraries\libmysofa\lib\vs\x64\Release\zlibstatic.lib&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="Real time SDN" optimisation="3"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Real time SDN"/>
