@@ -7,6 +7,7 @@
 #include <BRTLibrary.h>
 
 #define HRTFRESAMPLINGSTEP 15
+#define HRTF_BUFFER_SIZE 512
 
 class HRTF_output: public Microphone
 {

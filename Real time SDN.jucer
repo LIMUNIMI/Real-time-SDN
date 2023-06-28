@@ -64,6 +64,10 @@
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
+        <FILE id="JLwSnI" name="CircularBuffer.cpp" compile="1" resource="0"
+              file="Source/Utils/CircularBuffer.cpp"/>
+        <FILE id="zGMlws" name="CircularBuffer.h" compile="0" resource="0"
+              file="Source/Utils/CircularBuffer.h"/>
         <FILE id="zSoRKv" name="IIRBase.cpp" compile="1" resource="0" file="Source/Utils/IIRBase.cpp"/>
         <FILE id="tfys2b" name="IIRBase.h" compile="0" resource="0" file="Source/Utils/IIRBase.h"/>
         <FILE id="LRJeKg" name="DelayLine.cpp" compile="1" resource="0" file="Source/Utils/DelayLine.cpp"/>

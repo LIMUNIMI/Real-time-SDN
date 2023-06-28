@@ -13,6 +13,7 @@ namespace Parameters
 	constexpr int STEREO_CHANNELS = 2;
 	constexpr int NUM_WAVEGUIDES_TO_OUTPUT = 7;
 	constexpr int NUM_OUT_MODES = 8;
+	constexpr int INTERNAL_PROCESS_BLOCK_SIZE = 256;
 	constexpr float ROOM_MAX_DIMENSION = 100.0f;
 	constexpr float SMOOTHING_TIME_SECONDS = 0.015f;
 	constexpr char* outputModes[NUM_OUT_MODES] = {"Mono", "Stereo", "HRTF",

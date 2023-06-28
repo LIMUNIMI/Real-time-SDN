@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include <Room.h>
+#include <CircularBuffer.h>
 
 //==============================================================================
 /**
@@ -65,6 +66,9 @@ private:
     Room room;
     AudioProcessorValueTreeState parameters;
     UndoManager undo;
+    CircularBuffer inBuffer, outBuffer;
+    AudioBuffer<float> internalBuffer;
+
     //bool wrongOutput = false;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessor)

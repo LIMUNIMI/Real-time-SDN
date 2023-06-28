@@ -27,6 +27,8 @@ void HRTF_output::init(double samplerate, int buffersize)
 	{
 		envSourceBuffers[i] = CMonoBuffer<float>(buffersize);
 	}
+	bufferProcessed.left = CMonoBuffer<float>(buffersize);
+	bufferProcessed.right = CMonoBuffer<float>(buffersize);
 
 	int sampleRateInSOFAFile = sofaReader.GetSampleRateFromSofa(std::string("C:/Users/Marco/Documents/Juce/hrtf.sofa"));
 	if (sampleRateInSOFAFile == -1) {

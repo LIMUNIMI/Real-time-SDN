@@ -101,7 +101,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerY"),
         *parameters.getRawParameterValue("ListenerZ") };
     
-    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), samplesPerBlock);
+    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
 
     for (int i = 0; i < 3; i++)
     {
@@ -116,6 +116,11 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
             room.setWallFreqAbsorption(*parameters.getRawParameterValue("freq" + String(i) + String(j)), i, j);
         }
     }
+
+    inBuffer.prepare(sampleRate, getTotalNumInputChannels(), sampleRate * 5);
+    outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5);
+    internalBuffer.setSize(getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -159,7 +164,23 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    room.process(buffer, totalNumInputChannels);
+    inBuffer.storeInBuffer(buffer);
+
+    while (inBuffer.getNumNotReadSamples() >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
+    {
+        inBuffer.readFromBuffer(internalBuffer);
+        room.process(internalBuffer, totalNumInputChannels);
+        outBuffer.storeInBuffer(internalBuffer);
+    }
+
+    if (outBuffer.getNumNotReadSamples() < buffer.getNumSamples())
+    {
+        buffer.clear();
+    }
+    else
+    {
+        outBuffer.readFromBuffer(buffer);
+    }
     
 }
 
