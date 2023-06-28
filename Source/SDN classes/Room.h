@@ -34,6 +34,8 @@ public:
 	//mute and unmute LOS component
 	void muteLOS(bool condition);
 
+	void setHRTF(std::string& newPath);
+
 	bool geometryHasChanged() { return hasChanged || receiver.isRotating(); }
 
 private:

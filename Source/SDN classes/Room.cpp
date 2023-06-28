@@ -286,3 +286,8 @@ void Room::muteLOS(bool condition)
 	sourceListener.setAttenuation(!condition * (1 / sourceListener.getDistance()));
 }
 
+void Room::setHRTF(std::string& newPath)
+{
+	receiver.setHRTF(newPath);
+}
+

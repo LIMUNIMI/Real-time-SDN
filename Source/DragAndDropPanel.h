@@ -49,6 +49,7 @@ public:
     void fileDragMove(const StringArray& files, int x, int y) override;
     void fileDragExit(const StringArray& files) override;
     void filesDropped(const StringArray& files, int x, int y) override;
+    void visibilityChanged() override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;

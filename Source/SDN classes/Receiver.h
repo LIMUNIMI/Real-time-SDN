@@ -40,6 +40,11 @@ public:
 		return stereo->isRotating();
 	}
 
+	void setHRTF(std::string& newPath)
+	{
+		hrtf->setHRTF(newPath);
+	}
+
 	void setOutputMode(int mode);
 
 	std::vector<WaveGuide*> inWaveguides;

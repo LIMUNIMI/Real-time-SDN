@@ -17,7 +17,6 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
 #endif
 {
 
-
     Parameters::addListenerToAllParameters(parameters, this);
 }
 
@@ -121,6 +120,9 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5);
     internalBuffer.setSize(getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+
+    parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", "", nullptr);
+    room.setHRTF(parameters.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().toStdString());
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -208,7 +210,16 @@ void RealtimeSDNAudioProcessor::setStateInformation (const void* data, int sizeI
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState.get() != nullptr)
         if (xmlState->hasTagName(parameters.state.getType()))
+        {
             parameters.replaceState(ValueTree::fromXml(*xmlState));
+            room.setHRTF(parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).getProperty("HRTF_file_path").toString().toStdString());
+        }
+}
+
+void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
+{
+    parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", newPath, nullptr);
+    room.setHRTF(newPath.toStdString());
 }
 
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)

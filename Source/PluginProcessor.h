@@ -57,6 +57,8 @@ public:
 
     File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
 
+    void setHRTF(const String& newPath);
+
     bool geometryHasChanged() { return room.geometryHasChanged(); }
 
 private:

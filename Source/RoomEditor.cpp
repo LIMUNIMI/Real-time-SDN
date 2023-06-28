@@ -127,6 +127,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     //[UserPreSize]
     HRTF_dragAndDrop->setVisible(false);
+    HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
 
     gainAttachment.reset(new SliderAttachment(valueTreeState, "sourceGain", *gain));
     microphoneAttachment.reset(new SliderAttachment(valueTreeState, "OutputMode", *microphone));
@@ -326,6 +327,7 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         //[UserButtonCode_load_HRTF] -- add your button handler code here..
         //CallOutBox::launchAsynchronously(std::make_unique<DragAndDropPanel>(), Rectangle<int>(0, 0, 0, 0), this);
         HRTF_dragAndDrop->setVisible(!HRTF_dragAndDrop->isVisible());
+        HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
         //[/UserButtonCode_load_HRTF]
     }
 

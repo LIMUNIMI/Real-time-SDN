@@ -13,6 +13,7 @@ HRTF_output::HRTF_output()
 		envListener->ConnectSoundSource(envSources[i]);
 	}
 	envSources[Parameters::NUM_WALLS] = envManager.CreateSoundSource<BRTSourceModel::CSourceSimpleModel>("LOS");
+	envListener->ConnectSoundSource(envSources[Parameters::NUM_WALLS]);
 	envManager.EndSetup();
 
 	hrtf_loaded = std::make_shared<BRTServices::CHRTF>();
@@ -29,16 +30,6 @@ void HRTF_output::init(double samplerate, int buffersize)
 	}
 	bufferProcessed.left = CMonoBuffer<float>(buffersize);
 	bufferProcessed.right = CMonoBuffer<float>(buffersize);
-
-	int sampleRateInSOFAFile = sofaReader.GetSampleRateFromSofa(std::string("C:/Users/Marco/Documents/Juce/hrtf.sofa"));
-	if (sampleRateInSOFAFile == -1) {
-		std::cout << ("Error loading HRTF Sofa file") << std::endl;
-	}
-
-	//will be moved to onchange
-	bool result = sofaReader.ReadHRTFFromSofa(std::string("C:/Users/Marco/Documents/Juce/hrtf.sofa"), hrtf_loaded, HRTFRESAMPLINGSTEP);
-
-	if(result) envListener->SetHRTF(hrtf_loaded);
 
 }
 

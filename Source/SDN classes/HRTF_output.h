@@ -20,6 +20,19 @@ public:
 	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer,
 		int sampleIndex, int maxIndex, bool hasChanged) override;
 
+	//bugs randomly on HRTF switch
+	void setHRTF(std::string& newPath)
+	{
+		envListener->RemoveHRTF();
+		hrtf_loaded = std::make_shared<BRTServices::CHRTF>();
+		bool result = sofaReader.ReadHRTFFromSofa(newPath, hrtf_loaded, HRTFRESAMPLINGSTEP);
+
+		if (result) 
+		{
+			envListener->SetHRTF(hrtf_loaded);
+		}
+	}
+
 private:
 
 	Common::CGlobalParameters globalParameters;
