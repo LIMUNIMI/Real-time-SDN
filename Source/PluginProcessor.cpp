@@ -120,11 +120,10 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
 
-    if (!parameters.state.hasType("nonAutoParams"))
+    if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
     {
-        parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", "", nullptr);
+        room.setHRTF(hrtfPath.toStdString());
     }
-    room.setHRTF(parameters.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().toStdString());
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -213,6 +212,7 @@ void RealtimeSDNAudioProcessor::getStateInformation (juce::MemoryBlock& destData
 {
     auto state = parameters.copyState();
     std::unique_ptr<XmlElement> xml(state.createXml());
+    xml->setAttribute("HRTF_file_path", hrtfPath);
     copyXmlToBinary(*xml, destData);
 }
 
@@ -223,14 +223,17 @@ void RealtimeSDNAudioProcessor::setStateInformation (const void* data, int sizeI
         if (xmlState->hasTagName(parameters.state.getType()))
         {
             parameters.replaceState(ValueTree::fromXml(*xmlState));
-            room.setHRTF(parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).getProperty("HRTF_file_path").toString().toStdString());
+            setHRTF(xmlState->getStringAttribute("HRTF_file_path"));
         }
 }
 
 void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
 {
-    parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", newPath, nullptr);
-    room.setHRTF(newPath.toStdString());
+    if (newPath.fromLastOccurrenceOf(".", false, false) == "sofa")
+    {
+        hrtfPath = newPath;
+        room.setHRTF(newPath.toStdString());
+    }
 }
 
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)

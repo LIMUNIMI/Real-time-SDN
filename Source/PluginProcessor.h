@@ -58,6 +58,7 @@ public:
     File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
 
     void setHRTF(const String& newPath);
+    String getHRTFPath() { return hrtfPath; };
 
     bool geometryHasChanged() { return room.geometryHasChanged(); }
 
@@ -71,6 +72,7 @@ private:
     CircularBuffer outBuffer;
     AudioBuffer<float> internalBuffer;
     int internalBufferFill = 0;
+    String hrtfPath = "";
 
     //bool wrongOutput = false;
     //==============================================================================

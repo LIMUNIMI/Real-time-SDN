@@ -160,17 +160,17 @@ void DragAndDropPanel::filesDropped(const StringArray& files, int x, int y)
 
     processor.setHRTF(files[0]);
     fileName_label->setText("Current HRTF file: \n" +
-        valueTreeState.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().fromLastOccurrenceOf("\\", false, false),
+        processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
         NotificationType::dontSendNotification);
 
     repaint();
 }
 void DragAndDropPanel::visibilityChanged()
 {
-    if (valueTreeState.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString() != "")
+    if (processor.getHRTFPath().fromLastOccurrenceOf(".", false, false) == "sofa")
     {
         fileName_label->setText("Current HRTF file: \n" +
-            valueTreeState.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().fromLastOccurrenceOf("\\", false, false),
+            processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
             NotificationType::dontSendNotification);
     }
 }
