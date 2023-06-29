@@ -8,7 +8,7 @@ public:
 	CircularBuffer() {};
 	~CircularBuffer() {};
 
-	void prepare(double samplerate, int nchannels, int maxLength);
+	void prepare(double samplerate, int nchannels, int maxLength, int writeHead = 0);
 
 	void storeInBuffer(const AudioBuffer<float>& buffer);
 	void readFromBuffer(AudioBuffer<float>& destBuffer);

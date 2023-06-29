@@ -68,8 +68,9 @@ private:
     Room room;
     AudioProcessorValueTreeState parameters;
     UndoManager undo;
-    CircularBuffer inBuffer, outBuffer;
+    CircularBuffer outBuffer;
     AudioBuffer<float> internalBuffer;
+    int internalBufferFill = 0;
 
     //bool wrongOutput = false;
     //==============================================================================

@@ -116,12 +116,14 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         }
     }
 
-    inBuffer.prepare(sampleRate, getTotalNumInputChannels(), sampleRate * 5);
-    outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5);
-    internalBuffer.setSize(getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5, Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
 
-    parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", "", nullptr);
+    if (!parameters.state.hasType("nonAutoParams"))
+    {
+        parameters.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", "", nullptr);
+    }
     room.setHRTF(parameters.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().toStdString());
 }
 
@@ -166,23 +168,32 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    inBuffer.storeInBuffer(buffer);
+    int samplesToProcess = buffer.getNumSamples() + internalBufferFill;
+    int inBufferSamplesProcessed = 0;
 
-    while (inBuffer.getNumNotReadSamples() >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
+    while (samplesToProcess >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
     {
-        inBuffer.readFromBuffer(internalBuffer);
+        for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
+        {
+            internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill);
+        }
+
         room.process(internalBuffer, totalNumInputChannels);
+
         outBuffer.storeInBuffer(internalBuffer);
+
+        samplesToProcess -= Parameters::INTERNAL_PROCESS_BLOCK_SIZE;
+        inBufferSamplesProcessed += Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill;
+        internalBufferFill = 0;
     }
 
-    if (outBuffer.getNumNotReadSamples() < buffer.getNumSamples())
+    for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
     {
-        buffer.clear();
+        internalBuffer.copyFrom(ch, 0, buffer, ch, inBufferSamplesProcessed, samplesToProcess);
     }
-    else
-    {
-        outBuffer.readFromBuffer(buffer);
-    }
+    internalBufferFill = samplesToProcess;
+
+    outBuffer.readFromBuffer(buffer);
     
 }
 

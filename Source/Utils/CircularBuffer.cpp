@@ -1,11 +1,12 @@
 #include "CircularBuffer.h"
 
-void CircularBuffer::prepare(double samplerate, int nchannels, int maxLength)
+void CircularBuffer::prepare(double samplerate, int nchannels, int maxLength, int writeHead)
 {
 	maxBufferLength = maxLength;
 	circularBuffer.setSize(nchannels, maxBufferLength);
 	circularBuffer.clear();
 	sampleRate = samplerate;
+	writeIndex = writeHead % maxBufferLength;
 }
 
 void CircularBuffer::storeInBuffer(const AudioBuffer<float>& buffer)
