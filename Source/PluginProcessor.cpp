@@ -188,7 +188,7 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
     {
-        internalBuffer.copyFrom(ch, 0, buffer, ch, inBufferSamplesProcessed, samplesToProcess);
+        internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, buffer.getNumSamples() - inBufferSamplesProcessed);
     }
     internalBufferFill = samplesToProcess;
 
