@@ -57,8 +57,8 @@ Quaternionf MathUtils::eulerXYZ_to_Quaternion(Vector3f eulerXYZ)
 	float sRoll = sinf(eulerXYZ.z() * 0.5);
 	float cPitch = cosf(eulerXYZ.x() * 0.5);
 	float sPitch = sinf(eulerXYZ.x() * 0.5);
-	float cYaw = cosf(eulerXYZ.y() * 0.5);
-	float sYaw = sinf(eulerXYZ.y() * 0.5);
+	float cYaw = cosf(-eulerXYZ.y() * 0.5);
+	float sYaw = sinf(-eulerXYZ.y() * 0.5);
 
 	float w = cPitch * cYaw * cRoll + sPitch * sYaw * sRoll;
 	float x = sPitch * cYaw * cRoll - cPitch * sYaw * sRoll;

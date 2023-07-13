@@ -29,7 +29,7 @@ protected:
 	void interpolateQuaternions();
 
 	Eigen::Quaternionf prevRotation, targetRotation;
-	Eigen::Matrix3f currentRotation;
+	Eigen::Quaternionf currentRotation;
 	Eigen::Vector3f xyzRotation;
 
 	int smoothingDuration = 0;

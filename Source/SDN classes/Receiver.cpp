@@ -15,6 +15,7 @@ Receiver::Receiver()
 void Receiver::init(Point3d normalPosition, int numsamples, int nOfConnections, double samplerate, Point3d dimensions)
 {
 	initRange(samplerate, normalPosition, dimensions);
+	NodeRotation::init(samplerate);
 	
 	setPosition(getSmoothedPos());
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
@@ -28,7 +29,9 @@ void Receiver::init(Point3d normalPosition, int numsamples, int nOfConnections, 
 
 void Receiver::process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
-	microphone->process(inWaveguides, getPosition(), sourceBuffer, sampleIndex, maxIndex, hasChanged);
+	interpolateQuaternions();
+	microphone->process(inWaveguides, getPosition(), currentRotation, sourceBuffer, 
+		sampleIndex, maxIndex, hasChanged, isRotating());
 }
 
 void Receiver::updatePosition()
@@ -47,7 +50,6 @@ void Receiver::setOutputMode(int mode)
 	}
 	else if (mode == 1)
 	{
-		stereo->sync();
 		microphone = stereo;
 	}
 	else if (mode == 2)

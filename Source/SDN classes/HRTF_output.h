@@ -17,8 +17,8 @@ public:
 
 	void init(double samplerate, int buffersize);
 
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer,
-		int sampleIndex, int maxIndex, bool hasChanged) override;
+	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
+		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
 	//bugs randomly on HRTF switch
 	void setHRTF(std::string& newPath)

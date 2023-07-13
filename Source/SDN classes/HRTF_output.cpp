@@ -33,7 +33,8 @@ void HRTF_output::init(double samplerate, int buffersize)
 
 }
 
-void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
+void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
+	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating)
 {
 
 	int j = 0;
@@ -44,7 +45,7 @@ void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d positio
 		j++;
 	}
 
-	if (hasChanged)
+	if (hasChanged || isRotating)
 		newPos = true;
 
 	if (sampleIndex == maxIndex)
@@ -53,8 +54,11 @@ void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d positio
 		{
 			//convert axis reference to y-right, z-up
 			tempTransform.SetPosition(Common::CVector3(position.z, -position.x, position.y));
+			tempTransform.SetOrientation(Common::CQuaternion(currentRotation.w(), currentRotation.z(),
+				currentRotation.x(), currentRotation.y()));
 			envListener->SetListenerTransform(tempTransform);
 
+			tempTransform.SetOrientation(Common::CQuaternion());
 			int i = 0;
 			for (WaveGuide* guide : inWaveguides)
 			{

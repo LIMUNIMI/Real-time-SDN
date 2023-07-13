@@ -2,24 +2,21 @@
 
 void Stereo::init(double sampleRate)
 {
-	NodeRotation::init(sampleRate);
 }
 
-void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
-	int sampleIndex, int maxIndex, bool hasChanged)
+void Stereo::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
+	int sampleIndex, int maxIndex, bool hasChanged, bool isRotating)
 {
 	sourceBuffer.clear(sampleIndex,1);
 
 	float azimuth;
 
-	interpolateQuaternions();
-
 	for (int i = 0; i < Parameters::NUM_WAVEGUIDES_TO_OUTPUT; i++)
 	{
-		if (hasChanged || isRotating())
+		if (hasChanged || isRotating)
 		{
 			microphoneToNodeVector = MathUtils::dirVector(inWaveguides[i]->getStart()->getPosition(), position);
-			microphoneToNodeVector = currentRotation * microphoneToNodeVector;
+			microphoneToNodeVector = currentRotation.toRotationMatrix() * microphoneToNodeVector;
 			azimuth = atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
 			panValues[i] = sin(azimuth);
 		}

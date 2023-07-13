@@ -8,8 +8,8 @@ void Ambisonic::init()
 	setGainsToZero();
 }
 
-void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
-	int sampleIndex, int maxIndex, bool hasChanged)
+void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
+	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating)
 {
 
 	int i = 0;

@@ -11,7 +11,7 @@
 #include <HRTF_output.h>
 
 //Listener node in the SDN architecture, can output mono, stereo or ambisonics
-class Receiver : public Node, public NormalPosition
+class Receiver : public Node, public NormalPosition, public NodeRotation
 {
 public:
 	Receiver();
@@ -23,22 +23,6 @@ public:
 	void process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
 
 	void updatePosition();
-	
-
-	void setRotation(float newValue, const char& axis)
-	{
-		stereo->setRotation(newValue, axis);
-	}
-
-	void updateQuaternion()
-	{
-		stereo->updateQuaternion();
-	}
-
-	bool isRotating()
-	{
-		return stereo->isRotating();
-	}
 
 	void setHRTF(std::string& newPath)
 	{

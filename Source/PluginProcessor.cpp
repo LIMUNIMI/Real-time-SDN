@@ -119,6 +119,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5, Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    internalBufferFill = 0;
 
     if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
     {
