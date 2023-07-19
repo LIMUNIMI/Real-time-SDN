@@ -42,7 +42,9 @@ typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
                                                                     //[/Comments]
 */
 class RoomEditor  : public juce::Component,
-                    public juce::Button::Listener
+                    public juce::Timer,
+                    public juce::Button::Listener,
+                    public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -51,11 +53,13 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void timerCallback() override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -65,14 +69,16 @@ private:
     AudioProcessorValueTreeState& valueTreeState;
 
     std::unique_ptr<SliderAttachment> gainAttachment;
-    std::unique_ptr<SliderAttachment> microphoneAttachment;
     std::unique_ptr<ButtonAttachment> losAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> outputModeAttachment;
+    int numOutChannels = 0;
+
+    void setDropDownAvailableOptions(int numCh);
 
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<juce::Slider> gain;
-    std::unique_ptr<juce::Slider> microphone;
     std::unique_ptr<juce::ToggleButton> los;
     std::unique_ptr<juce::TextButton> load;
     std::unique_ptr<juce::TextButton> save;
@@ -83,6 +89,7 @@ private:
     std::unique_ptr<juce::TextButton> load_HRTF;
     std::unique_ptr<juce::TabbedComponent> juce__tabbedComponent;
     std::unique_ptr<juce::Viewport> HRTF_dragAndDrop;
+    std::unique_ptr<juce::ComboBox> Output_mode_comboBox;
 
 
     //==============================================================================

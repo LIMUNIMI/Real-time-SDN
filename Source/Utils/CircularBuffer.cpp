@@ -12,7 +12,7 @@ void CircularBuffer::prepare(double samplerate, int nchannels, int maxLength, in
 
 void CircularBuffer::storeInBuffer(const AudioBuffer<float>& buffer)
 {
-	const auto numCh = buffer.getNumChannels();
+	const auto numCh = std::min(buffer.getNumChannels(), circularBuffer.getNumChannels());
 	const auto numInputSamples = buffer.getNumSamples();
 
 	for (int ch = 0; ch < numCh; ++ch)
@@ -47,7 +47,7 @@ void CircularBuffer::storeInBuffer(const AudioBuffer<float>& buffer)
 
 void CircularBuffer::readFromBuffer(AudioBuffer<float>& destBuffer)
 {
-	const auto numCh = destBuffer.getNumChannels();
+	const auto numCh = std::min(destBuffer.getNumChannels(), circularBuffer.getNumChannels());
 	const auto numOutputSamples = destBuffer.getNumSamples();
 
 	for (int ch = 0; ch < numCh; ++ch)

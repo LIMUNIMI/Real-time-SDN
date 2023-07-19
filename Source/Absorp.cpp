@@ -103,7 +103,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     to1->addListener (this);
     to1->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
 
-    to1->setBounds (267, 16, 24, 24);
+    to1->setBounds (267, 8, 24, 24);
 
     toHalf.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (toHalf.get());
@@ -111,7 +111,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     toHalf->addListener (this);
     toHalf->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
 
-    toHalf->setBounds (267, 56, 24, 24);
+    toHalf->setBounds (267, 44, 24, 24);
 
     to0.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (to0.get());
@@ -119,7 +119,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     to0->addListener (this);
     to0->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
 
-    to0->setBounds (267, 88, 24, 24);
+    to0->setBounds (267, 80, 24, 24);
 
 
     //[UserPreSize]
@@ -288,13 +288,13 @@ BEGIN_JUCER_METADATA
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <TEXTBUTTON name="new button" id="fc8177dc40c04905" memberName="to1" virtualName=""
-              explicitFocusOrder="0" pos="267 16 24 24" bgColOff="ff051111"
+              explicitFocusOrder="0" pos="267 8 24 24" bgColOff="ff051111"
               buttonText="1" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="7d7768b1aebd5283" memberName="toHalf" virtualName=""
-              explicitFocusOrder="0" pos="267 56 24 24" bgColOff="ff051111"
+              explicitFocusOrder="0" pos="267 44 24 24" bgColOff="ff051111"
               buttonText="0.5" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="b7e60a045cc4019d" memberName="to0" virtualName=""
-              explicitFocusOrder="0" pos="267 88 24 24" bgColOff="ff051111"
+              explicitFocusOrder="0" pos="267 80 24 24" bgColOff="ff051111"
               buttonText="0" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 

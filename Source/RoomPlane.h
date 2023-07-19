@@ -9,7 +9,8 @@
 class RoomPlane : public juce::Component, public Timer
 {
 public:
-    RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, char horizAxis, char vertAxis);
+    RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, 
+        char horizAxis, char vertAxis, char depthAxis, bool negateDepth);
     ~RoomPlane();
 
     void paint (juce::Graphics&) override;
@@ -19,6 +20,13 @@ public:
     void mouseDown(const MouseEvent& event) override;
     void mouseDrag(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
+
+    void setRotationEnabled(bool shouldBeRotating)
+    {
+        rotationEnabled = shouldBeRotating;
+        updateRotation();
+        repaint();
+    }
 
 private:
 
@@ -41,10 +49,12 @@ private:
     juce::Rectangle<float> listenerRect, sourceRect, listenerRotRect;
     Eigen::Matrix3f listenerRot;
     Eigen::Vector3f rotatedListener;
-    float* horizRot, *vertRot;
+    float *horizRot, *vertRot, *depthRot;
+    bool nDepth;
 
     bool movingListener = false, 
-        movingSource = false;
+        movingSource = false,
+        rotationEnabled = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RoomPlane)
 };

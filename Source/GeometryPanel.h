@@ -45,6 +45,12 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void setRotationEnabled(bool shouldBeRotating)
+    {
+        listenerPitch->setEnabled(shouldBeRotating);
+        listenerYaw->setEnabled(shouldBeRotating);
+        listenerRoll->setEnabled(shouldBeRotating);
+    }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;

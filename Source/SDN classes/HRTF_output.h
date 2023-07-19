@@ -23,13 +23,14 @@ public:
 	//bugs randomly on HRTF switch
 	void setHRTF(std::string& newPath)
 	{
-		envListener->RemoveHRTF();
-		hrtf_loaded = std::make_shared<BRTServices::CHRTF>();
-		bool result = sofaReader.ReadHRTFFromSofa(newPath, hrtf_loaded, HRTFRESAMPLINGSTEP);
+		std::shared_ptr<BRTServices::CHRTF>  temp_hrtf_loaded = std::make_shared<BRTServices::CHRTF>();
+		bool result = sofaReader.ReadHRTFFromSofa(newPath, temp_hrtf_loaded, HRTFRESAMPLINGSTEP);
 
 		if (result) 
 		{
-			envListener->SetHRTF(hrtf_loaded);
+			envListener->RemoveHRTF();
+			envListener->SetHRTF(temp_hrtf_loaded);
+			hrtf_loaded = temp_hrtf_loaded;
 		}
 	}
 

@@ -14,7 +14,7 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerZ", "Listener Z", 0.0001f, 0.9999f, 0.25f));
 
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotx", "Listener Pitch", 0.0f, 360.0f, 0.0f));
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRoty", "Listener Yaw", 0.0f, 360.0f, 0.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRoty", "Listener Yaw", -180.0f, 180.0f, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotz", "Listener Roll", 0.0f, 360.0f, 0.0f));
 
 	params.push_back(std::make_unique<AudioParameterChoice>("OutputMode", "Output mode", 

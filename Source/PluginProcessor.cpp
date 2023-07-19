@@ -125,6 +125,19 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     {
         room.setHRTF(hrtfPath.toStdString());
     }
+
+    int outputMode = *parameters.getRawParameterValue("OutputMode");
+    //check if chosen output can be done with available channels if not default to MONO
+    if (outputMode == 0 || (outputMode > 2 && ORDER2NSH(outputMode - 2) <= getNumOutputChannels()) || (outputMode == 1 && getNumOutputChannels() > 1) || (outputMode == 2 && getNumOutputChannels() > 1))
+    {
+        room.setOutputMode(outputMode, getNumOutputChannels());
+    }
+    else
+    {
+        parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
+        room.setOutputMode(0, getNumOutputChannels());
+    }
+
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()

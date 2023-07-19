@@ -2,8 +2,9 @@
 
 using namespace Eigen;
 
-RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, char horizAxis, char vertAxis)
-    : processor(p), valueTreeState(vts), horizontalAxis(horizAxis), verticalAxis(vertAxis)
+RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, 
+    char horizAxis, char vertAxis, char depthAxis, bool negateDepth)
+    : processor(p), valueTreeState(vts), horizontalAxis(horizAxis), verticalAxis(vertAxis), nDepth(negateDepth)
 {
     startTimerHz(120);
     listenerHorizParam = String("Listener") + String::charToString(horizAxis);
@@ -42,6 +43,21 @@ RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState&
     default:
         break;
     }
+
+    switch (depthAxis)
+    {
+    case 'X':
+        depthRot = &rotatedListener.x();
+        break;
+    case 'Y':
+        depthRot = &rotatedListener.y();
+        break;
+    case 'Z':
+        depthRot = &rotatedListener.z();
+        break;
+    default:
+        break;
+    }
 }
 
 RoomPlane::~RoomPlane()
@@ -71,7 +87,10 @@ void RoomPlane::paint (juce::Graphics& g)
     //Draw listener as a circle + "nose" to represent rotation
     //
     g.drawEllipse(listenerRect, 1.0f);
-    g.drawEllipse(listenerRotRect, 1.0f);
+    if ((nDepth ? -*depthRot : *depthRot) >= 0)
+        g.fillEllipse(listenerRotRect);
+    else
+        g.drawEllipse(listenerRotRect, 1.0f);
 
     //
     //Draw Emitter as a concentric circles
@@ -88,7 +107,7 @@ void RoomPlane::resized()
     figureSize = 0.05 * getWidth();
     sourceRect.setSize(figureSize, figureSize);
     listenerRect.setSize(figureSize, figureSize);
-    listenerRotRect.setSize(figureSize / 4, figureSize / 4);
+    listenerRotRect.setSize(figureSize / 3.5, figureSize / 3.5);
 
     updatePlaneCoords();
 }
@@ -185,7 +204,7 @@ void RoomPlane::updateRotation()
         * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRoty")), Vector3f::UnitY())
         * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotx")), Vector3f::UnitX());
 
-    rotatedListener = listenerRot * forward;
+    rotatedListener = rotationEnabled ? listenerRot * forward : forward;
     rotatedListener.normalize();
 
     listenerRotRect.setCentre(listenerRect.getCentreX() + (figureSize * 0.5 * *horizRot), 
