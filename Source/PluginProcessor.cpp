@@ -244,6 +244,22 @@ void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
     }
 }
 
+void RealtimeSDNAudioProcessor::lookAtSource()
+{
+    Eigen::Vector3f dir = MathUtils::dirVector(room.getSource()->getPosition(), room.getPlayer()->getPosition());
+    dir.normalize();
+
+    float azi = atan2f(dir.x(), dir.z());
+    float elev = -asinf(dir.y() / dir.norm());
+
+    azi = radiansToDegrees(azi);
+    elev = radiansToDegrees(elev);
+
+    parameters.getParameter("ListenerRotx")->setValueNotifyingHost((elev + 180) / 360);
+    parameters.getParameter("ListenerRoty")->setValueNotifyingHost((azi + 180) / 360);
+    parameters.getParameter("ListenerRotz")->setValueNotifyingHost(0.5);
+}
+
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
     if (paramID == "SourceX")

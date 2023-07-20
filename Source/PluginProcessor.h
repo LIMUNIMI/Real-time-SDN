@@ -61,6 +61,7 @@ public:
     String getHRTFPath() { return hrtfPath; };
 
     bool geometryHasChanged() { return room.geometryHasChanged(); }
+    void lookAtSource();
 
 private:
 

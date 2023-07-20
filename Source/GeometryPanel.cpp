@@ -129,6 +129,13 @@ GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
 
     roomZ->setBounds (335, 203, 257, 24);
 
+    lookAtButton.reset (new juce::TextButton ("lookAtButton"));
+    addAndMakeVisible (lookAtButton.get());
+    lookAtButton->setButtonText (TRANS("Look at emitter"));
+    lookAtButton->addListener (this);
+
+    lookAtButton->setBounds (384, 488, 150, 24);
+
 
     //[UserPreSize]
     emitterXAttachment.reset(new SliderAttachment(valueTreeState, "SourceX", *emitterX));
@@ -181,6 +188,7 @@ GeometryPanel::~GeometryPanel()
     roomX = nullptr;
     roomY = nullptr;
     roomZ = nullptr;
+    lookAtButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -388,6 +396,22 @@ void GeometryPanel::resized()
     //[/UserResized]
 }
 
+void GeometryPanel::buttonClicked (juce::Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == lookAtButton.get())
+    {
+        //[UserButtonCode_lookAtButton] -- add your button handler code here..
+        processor.lookAtSource();
+        //[/UserButtonCode_lookAtButton]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -515,6 +539,9 @@ BEGIN_JUCER_METADATA
           int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
+  <TEXTBUTTON name="lookAtButton" id="145ae5a1616914e" memberName="lookAtButton"
+              virtualName="" explicitFocusOrder="0" pos="384 488 150 24" buttonText="Look at emitter"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -36,7 +36,8 @@ typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class GeometryPanel  : public juce::Component
+class GeometryPanel  : public juce::Component,
+                       public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -55,6 +56,7 @@ public:
 
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -92,6 +94,7 @@ private:
     std::unique_ptr<juce::Slider> roomX;
     std::unique_ptr<juce::Slider> roomY;
     std::unique_ptr<juce::Slider> roomZ;
+    std::unique_ptr<juce::TextButton> lookAtButton;
 
 
     //==============================================================================
