@@ -1,5 +1,7 @@
 #include "HRTF_output.h"
 
+#ifdef _BRT_LIBRARY_
+
 HRTF_output::HRTF_output()
 {
 	envSources = std::vector<std::shared_ptr<BRTSourceModel::CSourceSimpleModel>>(Parameters::NUM_WAVEGUIDES_TO_OUTPUT);
@@ -88,3 +90,5 @@ void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d positio
 		sourceBuffer.copyFrom(1, 0, bufferProcessed.right.data(), maxIndex + 1); //right
 	}
 }
+
+#endif

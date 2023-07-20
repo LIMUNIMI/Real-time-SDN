@@ -1,13 +1,20 @@
 #pragma once
 
+
 #include <Microphone.h>
 #include <WaveGuide.h>
 #include <Parameters.h>
 #include <Eigen/Geometry>
+
+#if __has_include("BRTLibrary.h")
+#pragma comment(lib, "../../../BRTLibrary-main/include/third_party_libraries/libmysofa/lib/vs/x64/Release/mysofa.lib")
+#pragma comment(lib, "../../../BRTLibrary-main/include/third_party_libraries/libmysofa/lib/vs/x64/Release/zlibstatic.lib")
 #include <BRTLibrary.h>
+#endif
+
+#ifdef _BRT_LIBRARY_
 
 #define HRTFRESAMPLINGSTEP 15
-#define HRTF_BUFFER_SIZE 512
 
 class HRTF_output: public Microphone
 {
@@ -49,3 +56,5 @@ private:
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HRTF_output)
 };
+
+#endif // _BRT_LIBRARY_

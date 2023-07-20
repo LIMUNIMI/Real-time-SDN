@@ -286,8 +286,9 @@ void Room::muteLOS(bool condition)
 	sourceListener.setAttenuation(!condition * (1 / sourceListener.getDistance()));
 }
 
+#ifdef _BRT_LIBRARY_
 void Room::setHRTF(std::string& newPath)
 {
 	receiver.setHRTF(newPath);
 }
-
+#endif

@@ -23,11 +23,12 @@ public:
 	void process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
 
 	void updatePosition();
-
+#ifdef _BRT_LIBRARY_
 	void setHRTF(std::string& newPath)
 	{
 		hrtf->setHRTF(newPath);
 	}
+#endif
 
 	void setOutputMode(int mode);
 
@@ -42,7 +43,9 @@ private:
 	std::shared_ptr<Mono> mono;
 	std::shared_ptr<Stereo> stereo;
 	std::shared_ptr<Ambisonic> ambisonic;
+#ifdef _BRT_LIBRARY_
 	std::shared_ptr<HRTF_output> hrtf;
+#endif
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Receiver);
 

@@ -140,6 +140,28 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
 
     //[UserPreSize]
+
+#ifndef _BRT_LIBRARY_
+    load_HRTF->setVisible(false);
+    
+    Output_mode_comboBox.reset(new juce::ComboBox("new combo box"));
+    addAndMakeVisible(Output_mode_comboBox.get());
+    Output_mode_comboBox->setEditableText(false);
+    Output_mode_comboBox->setJustificationType(juce::Justification::centred);
+    Output_mode_comboBox->setTextWhenNothingSelected(juce::String());
+    Output_mode_comboBox->setTextWhenNoChoicesAvailable(TRANS("(no choices)"));
+    Output_mode_comboBox->addItem(TRANS("Mono"), 1);
+    Output_mode_comboBox->addItem(TRANS("Stereo"), 2);
+    Output_mode_comboBox->addItem(TRANS("1st order Ambisonic"), 3);
+    Output_mode_comboBox->addItem(TRANS("2nd order Ambisonic"), 4);
+    Output_mode_comboBox->addItem(TRANS("3rd order Ambisonic"), 5);
+    Output_mode_comboBox->addItem(TRANS("4th order Ambisonic"), 6);
+    Output_mode_comboBox->addItem(TRANS("5th order Ambisonic"), 7);
+    Output_mode_comboBox->addListener(this);
+
+    Output_mode_comboBox->setBounds(176, 664, 150, 24);
+#endif
+
     HRTF_dragAndDrop->setVisible(false);
     HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
 
@@ -149,6 +171,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     numOutChannels = processor.getMainBusNumOutputChannels();
     setDropDownAvailableOptions(processor.getMainBusNumOutputChannels());
+
     //[/UserPreSize]
 
     setSize (1018, 720);
@@ -275,6 +298,10 @@ void RoomEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+#ifndef _BRT_LIBRARY_
+    los->setTopLeftPosition(los->getPosition().getX() + 30,
+        los->getPosition().getY());
+#endif
     //[/UserResized]
 }
 
@@ -363,7 +390,11 @@ void RoomEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
         float value = *valueTreeState.getRawParameterValue("OutputMode");
         GeometryPanel* ref = (GeometryPanel*)juce__tabbedComponent->getTabContentComponent(0);
 
+#ifdef _BRT_LIBRARY_
         if (value == 0 || value > 2)
+#else
+        if(value != 1)
+#endif
         {
             ref->setRotationEnabled(false);
             backView->setRotationEnabled(false);
@@ -400,6 +431,7 @@ void RoomEditor::setDropDownAvailableOptions(int numCh)
     int i = 0;
     if (numCh == 1)
         i = 2;
+#ifdef _BRT_LIBRARY_
     else if (numCh >= 2 && numCh < ORDER2NSH(1))
         i = 4;
     else if (numCh >= ORDER2NSH(1) && numCh < ORDER2NSH(2))
@@ -410,9 +442,22 @@ void RoomEditor::setDropDownAvailableOptions(int numCh)
         i = 7;
     else if (numCh >= ORDER2NSH(4) && numCh < ORDER2NSH(5))
         i = 8;
-    else
+    else if (numCh >= ORDER2NSH(5))
         i = 9;
-
+#else
+    else if (numCh >= 2 && numCh < ORDER2NSH(1))
+        i = 3;
+    else if (numCh >= ORDER2NSH(1) && numCh < ORDER2NSH(2))
+        i = 4;
+    else if (numCh >= ORDER2NSH(2) && numCh < ORDER2NSH(3))
+        i = 5;
+    else if (numCh >= ORDER2NSH(3) && numCh < ORDER2NSH(4))
+        i = 6;
+    else if (numCh >= ORDER2NSH(4) && numCh < ORDER2NSH(5))
+        i = 7;
+    else if (numCh >= ORDER2NSH(5))
+        i = 8;
+#endif
     for (int j = 1; j < i; j++)
     {
         Output_mode_comboBox->setItemEnabled(j, true);

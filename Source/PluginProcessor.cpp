@@ -121,22 +121,14 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
     internalBufferFill = 0;
 
+#ifdef _BRT_LIBRARY_
     if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
     {
         room.setHRTF(hrtfPath.toStdString());
     }
+#endif
 
-    int outputMode = *parameters.getRawParameterValue("OutputMode");
-    //check if chosen output can be done with available channels if not default to MONO
-    if (outputMode == 0 || (outputMode > 2 && ORDER2NSH(outputMode - 2) <= getNumOutputChannels()) || (outputMode == 1 && getNumOutputChannels() > 1) || (outputMode == 2 && getNumOutputChannels() > 1))
-    {
-        room.setOutputMode(outputMode, getNumOutputChannels());
-    }
-    else
-    {
-        parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
-        room.setOutputMode(0, getNumOutputChannels());
-    }
+    setOutputMode(*parameters.getRawParameterValue("OutputMode"));
 
 }
 
@@ -246,7 +238,9 @@ void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
     if (newPath.fromLastOccurrenceOf(".", false, false) == "sofa")
     {
         hrtfPath = newPath;
+#ifdef _BRT_LIBRARY_
         room.setHRTF(newPath.toStdString());
+#endif
     }
 }
 
@@ -268,17 +262,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
 
     if (paramID == "OutputMode")
     {
-        int value = newValue;
-        //check if chosen output can be done with available channels if not default to MONO
-        if (value == 0 || (value > 2 && ORDER2NSH(value - 2) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) || (value == 2 && getNumOutputChannels() > 1))
-        {
-            room.setOutputMode(value, getNumOutputChannels());
-        }
-        else
-        {
-            parameters.getParameter(paramID)->setValueNotifyingHost(0);
-            room.setOutputMode(0, getNumOutputChannels());
-        }
+        setOutputMode(newValue);
     }
 
     if (paramID.substring(0, 11) == "ListenerRot")
@@ -299,6 +283,25 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     
     if (paramID == "LOS")
         room.muteLOS(newValue < 0.5f);
+}
+
+void RealtimeSDNAudioProcessor::setOutputMode(int mode)
+{
+    int value = mode;
+    //check if chosen output can be done with available channels if not default to MONO
+#ifdef _BRT_LIBRARY_
+    if (value == 0 || (value > 2 && ORDER2NSH(value - 2) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) || (value == 2 && getNumOutputChannels() > 1))
+#else
+    if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1))
+#endif
+    {
+        room.setOutputMode(value, getNumOutputChannels());
+    }
+    else
+    {
+        parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
+        room.setOutputMode(0, getNumOutputChannels());
+    }
 }
 
 //==============================================================================
