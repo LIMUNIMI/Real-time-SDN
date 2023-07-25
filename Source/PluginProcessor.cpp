@@ -17,7 +17,6 @@ RealtimeSDNAudioProcessor::RealtimeSDNAudioProcessor() :
 #endif
 {
 
-
     Parameters::addListenerToAllParameters(parameters, this);
 }
 
@@ -101,7 +100,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerY"),
         *parameters.getRawParameterValue("ListenerZ") };
     
-    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), samplesPerBlock);
+    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
 
     for (int i = 0; i < 3; i++)
     {
@@ -116,6 +115,21 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
             room.setWallFreqAbsorption(*parameters.getRawParameterValue("freq" + String(i) + String(j)), i, j);
         }
     }
+
+    outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5, Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    internalBufferFill = 0;
+
+#ifdef _BRT_LIBRARY_
+    if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
+    {
+        room.setHRTF(hrtfPath.toStdString());
+    }
+#endif
+
+    setOutputMode(*parameters.getRawParameterValue("OutputMode"));
+
 }
 
 void RealtimeSDNAudioProcessor::releaseResources()
@@ -159,7 +173,32 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    room.process(buffer, totalNumInputChannels);
+    int samplesToProcess = buffer.getNumSamples() + internalBufferFill;
+    int inBufferSamplesProcessed = 0;
+
+    while (samplesToProcess >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
+    {
+        for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
+        {
+            internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill);
+        }
+
+        room.process(internalBuffer, totalNumInputChannels);
+
+        outBuffer.storeInBuffer(internalBuffer);
+
+        samplesToProcess -= Parameters::INTERNAL_PROCESS_BLOCK_SIZE;
+        inBufferSamplesProcessed += Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill;
+        internalBufferFill = 0;
+    }
+
+    for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
+    {
+        internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, buffer.getNumSamples() - inBufferSamplesProcessed);
+    }
+    internalBufferFill = samplesToProcess;
+
+    outBuffer.readFromBuffer(buffer);
     
 }
 
@@ -179,6 +218,7 @@ void RealtimeSDNAudioProcessor::getStateInformation (juce::MemoryBlock& destData
 {
     auto state = parameters.copyState();
     std::unique_ptr<XmlElement> xml(state.createXml());
+    xml->setAttribute("HRTF_file_path", hrtfPath);
     copyXmlToBinary(*xml, destData);
 }
 
@@ -187,7 +227,37 @@ void RealtimeSDNAudioProcessor::setStateInformation (const void* data, int sizeI
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState.get() != nullptr)
         if (xmlState->hasTagName(parameters.state.getType()))
+        {
             parameters.replaceState(ValueTree::fromXml(*xmlState));
+            setHRTF(xmlState->getStringAttribute("HRTF_file_path"));
+        }
+}
+
+void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
+{
+    if (newPath.fromLastOccurrenceOf(".", false, false) == "sofa")
+    {
+        hrtfPath = newPath;
+#ifdef _BRT_LIBRARY_
+        room.setHRTF(newPath.toStdString());
+#endif
+    }
+}
+
+void RealtimeSDNAudioProcessor::lookAtSource()
+{
+    Eigen::Vector3f dir = MathUtils::dirVector(room.getSource()->getPosition(), room.getPlayer()->getPosition());
+    dir.normalize();
+
+    float azi = atan2f(dir.x(), dir.z());
+    float elev = -asinf(dir.y() / dir.norm());
+
+    azi = radiansToDegrees(azi);
+    elev = radiansToDegrees(elev);
+
+    parameters.getParameter("ListenerRotx")->setValueNotifyingHost((elev + 180) / 360);
+    parameters.getParameter("ListenerRoty")->setValueNotifyingHost((azi + 180) / 360);
+    parameters.getParameter("ListenerRotz")->setValueNotifyingHost(0.5);
 }
 
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)
@@ -208,17 +278,7 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
 
     if (paramID == "OutputMode")
     {
-        int value = newValue;
-        //check if chosen output can be done with available channels if not default to MONO
-        if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) )
-        {
-            room.setOutputMode(value, getNumOutputChannels());
-        }
-        else
-        {
-            parameters.getParameter(paramID)->setValueNotifyingHost(0);
-            room.setOutputMode(0, getNumOutputChannels());
-        }
+        setOutputMode(newValue);
     }
 
     if (paramID.substring(0, 11) == "ListenerRot")
@@ -239,6 +299,25 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     
     if (paramID == "LOS")
         room.muteLOS(newValue < 0.5f);
+}
+
+void RealtimeSDNAudioProcessor::setOutputMode(int mode)
+{
+    int value = mode;
+    //check if chosen output can be done with available channels if not default to MONO
+#ifdef _BRT_LIBRARY_
+    if (value == 0 || (value > 2 && ORDER2NSH(value - 2) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1) || (value == 2 && getNumOutputChannels() > 1))
+#else
+    if (value == 0 || (value > 1 && ORDER2NSH(value - 1) <= getNumOutputChannels()) || (value == 1 && getNumOutputChannels() > 1))
+#endif
+    {
+        room.setOutputMode(value, getNumOutputChannels());
+    }
+    else
+    {
+        parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
+        room.setOutputMode(0, getNumOutputChannels());
+    }
 }
 
 //==============================================================================

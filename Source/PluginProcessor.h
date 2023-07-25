@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include <Room.h>
+#include <CircularBuffer.h>
 
 //==============================================================================
 /**
@@ -56,15 +57,25 @@ public:
 
     File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
 
+    void setHRTF(const String& newPath);
+    String getHRTFPath() { return hrtfPath; };
+
     bool geometryHasChanged() { return room.geometryHasChanged(); }
+    void lookAtSource();
 
 private:
 
     void parameterChanged(const String& paramID, float newValue) override;
+    void setOutputMode(int mode);
 
     Room room;
     AudioProcessorValueTreeState parameters;
     UndoManager undo;
+    CircularBuffer outBuffer;
+    AudioBuffer<float> internalBuffer;
+    int internalBufferFill = 0;
+    String hrtfPath = "";
+
     //bool wrongOutput = false;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessor)

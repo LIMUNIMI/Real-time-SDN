@@ -39,15 +39,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     gain->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     gain->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    gain->setBounds (40, 600, 96, 96);
-
-    microphone.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (microphone.get());
-    microphone->setRange (0, 10, 0);
-    microphone->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    microphone->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    microphone->setBounds (232, 600, 104, 96);
+    gain->setBounds (48, 592, 96, 96);
 
     los.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (los.get());
@@ -55,7 +47,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     los->addListener (this);
     los->setToggleState (true, juce::dontSendNotification);
 
-    los->setBounds (152, 672, 72, 24);
+    los->setBounds (192, 600, 72, 24);
 
     load.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (load.get());
@@ -87,7 +79,9 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     backView.reset (new RoomPlane (processor, valueTreeState,
                                    'X',
-                                   'Y'));
+                                   'Y',
+                                   'Z',
+                                   true));
     addAndMakeVisible (backView.get());
     backView->setName ("new component");
 
@@ -95,7 +89,9 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     TopDown2.reset (new RoomPlane (processor, valueTreeState,
                                    'X',
-                                   'Z'));
+                                   'Z',
+                                   'Y',
+                                   false));
     addAndMakeVisible (TopDown2.get());
     TopDown2->setName ("new component");
 
@@ -106,13 +102,13 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     load_HRTF->setButtonText (TRANS("Load HRTF"));
     load_HRTF->addListener (this);
 
-    load_HRTF->setBounds (160, 608, 48, 48);
+    load_HRTF->setBounds (256, 584, 48, 48);
 
     juce__tabbedComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible (juce__tabbedComponent.get());
     juce__tabbedComponent->setTabBarDepth (30);
-    juce__tabbedComponent->addTab (TRANS("Tab 0"), juce::Colours::lightgrey, new GeometryPanel (processor, valueTreeState), true);
-    juce__tabbedComponent->addTab (TRANS("Tab 1"), juce::Colours::lightgrey, new WallFiltersUI (processor, valueTreeState), true);
+    juce__tabbedComponent->addTab (TRANS("Room geometry"), juce::Colours::lightgrey, new GeometryPanel (processor, valueTreeState), true);
+    juce__tabbedComponent->addTab (TRANS("Wall filters"), juce::Colours::lightgrey, new WallFiltersUI (processor, valueTreeState), true);
     juce__tabbedComponent->setCurrentTabIndex (0);
 
     juce__tabbedComponent->setBounds (376, 64, 630, 600);
@@ -124,13 +120,57 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     HRTF_dragAndDrop->setBounds (344, 208, 472, 240);
 
+    Output_mode_comboBox.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (Output_mode_comboBox.get());
+    Output_mode_comboBox->setEditableText (false);
+    Output_mode_comboBox->setJustificationType (juce::Justification::centred);
+    Output_mode_comboBox->setTextWhenNothingSelected (juce::String());
+    Output_mode_comboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    Output_mode_comboBox->addItem (TRANS("Mono"), 1);
+    Output_mode_comboBox->addItem (TRANS("Stereo"), 2);
+    Output_mode_comboBox->addItem (TRANS("Binaural"), 3);
+    Output_mode_comboBox->addItem (TRANS("1st order Ambisonic"), 4);
+    Output_mode_comboBox->addItem (TRANS("2nd order Ambisonic"), 5);
+    Output_mode_comboBox->addItem (TRANS("3rd order Ambisonic"), 6);
+    Output_mode_comboBox->addItem (TRANS("4th order Ambisonic"), 7);
+    Output_mode_comboBox->addItem (TRANS("5th order Ambisonic"), 8);
+    Output_mode_comboBox->addListener (this);
+
+    Output_mode_comboBox->setBounds (176, 664, 150, 24);
+
 
     //[UserPreSize]
+
+#ifndef _BRT_LIBRARY_
+    load_HRTF->setVisible(false);
+    
+    Output_mode_comboBox.reset(new juce::ComboBox("new combo box"));
+    addAndMakeVisible(Output_mode_comboBox.get());
+    Output_mode_comboBox->setEditableText(false);
+    Output_mode_comboBox->setJustificationType(juce::Justification::centred);
+    Output_mode_comboBox->setTextWhenNothingSelected(juce::String());
+    Output_mode_comboBox->setTextWhenNoChoicesAvailable(TRANS("(no choices)"));
+    Output_mode_comboBox->addItem(TRANS("Mono"), 1);
+    Output_mode_comboBox->addItem(TRANS("Stereo"), 2);
+    Output_mode_comboBox->addItem(TRANS("1st order Ambisonic"), 3);
+    Output_mode_comboBox->addItem(TRANS("2nd order Ambisonic"), 4);
+    Output_mode_comboBox->addItem(TRANS("3rd order Ambisonic"), 5);
+    Output_mode_comboBox->addItem(TRANS("4th order Ambisonic"), 6);
+    Output_mode_comboBox->addItem(TRANS("5th order Ambisonic"), 7);
+    Output_mode_comboBox->addListener(this);
+
+    Output_mode_comboBox->setBounds(176, 664, 150, 24);
+#endif
+
     HRTF_dragAndDrop->setVisible(false);
+    HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
 
     gainAttachment.reset(new SliderAttachment(valueTreeState, "sourceGain", *gain));
-    microphoneAttachment.reset(new SliderAttachment(valueTreeState, "OutputMode", *microphone));
     losAttachment.reset(new ButtonAttachment(valueTreeState, "LOS", *los));
+    outputModeAttachment.reset(new AudioProcessorValueTreeState::ComboBoxAttachment(valueTreeState, "OutputMode", *Output_mode_comboBox));
+
+    numOutChannels = processor.getMainBusNumOutputChannels();
+    setDropDownAvailableOptions(processor.getMainBusNumOutputChannels());
 
     //[/UserPreSize]
 
@@ -138,6 +178,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
 
     //[Constructor] You can add your own custom stuff here..
+    startTimerHz(10);
     //[/Constructor]
 }
 
@@ -145,12 +186,11 @@ RoomEditor::~RoomEditor()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     gainAttachment.reset();
-    microphoneAttachment.reset();
     losAttachment.reset();
+    outputModeAttachment.reset();
     //[/Destructor_pre]
 
     gain = nullptr;
-    microphone = nullptr;
     los = nullptr;
     load = nullptr;
     save = nullptr;
@@ -161,6 +201,7 @@ RoomEditor::~RoomEditor()
     load_HRTF = nullptr;
     juce__tabbedComponent = nullptr;
     HRTF_dragAndDrop = nullptr;
+    Output_mode_comboBox = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -176,7 +217,7 @@ void RoomEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colour (0xff323e44));
 
     {
-        int x = 228, y = 588, width = 108, height = 20;
+        int x = 200, y = 640, width = 108, height = 20;
         juce::String text (TRANS("Output format"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -188,7 +229,7 @@ void RoomEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 44, y = 588, width = 84, height = 20;
+        int x = 54, y = 576, width = 84, height = 20;
         juce::String text (TRANS("Gain"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -257,6 +298,10 @@ void RoomEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+#ifndef _BRT_LIBRARY_
+    los->setTopLeftPosition(los->getPosition().getX() + 30,
+        los->getPosition().getY());
+#endif
     //[/UserResized]
 }
 
@@ -326,6 +371,7 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         //[UserButtonCode_load_HRTF] -- add your button handler code here..
         //CallOutBox::launchAsynchronously(std::make_unique<DragAndDropPanel>(), Rectangle<int>(0, 0, 0, 0), this);
         HRTF_dragAndDrop->setVisible(!HRTF_dragAndDrop->isVisible());
+        HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
         //[/UserButtonCode_load_HRTF]
     }
 
@@ -333,9 +379,94 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
+void RoomEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == Output_mode_comboBox.get())
+    {
+        //[UserComboBoxCode_Output_mode_comboBox] -- add your combo box handling code here..
+        float value = *valueTreeState.getRawParameterValue("OutputMode");
+        GeometryPanel* ref = (GeometryPanel*)juce__tabbedComponent->getTabContentComponent(0);
+
+#ifdef _BRT_LIBRARY_
+        if (value == 0 || value > 2)
+#else
+        if(value != 1)
+#endif
+        {
+            ref->setRotationEnabled(false);
+            backView->setRotationEnabled(false);
+            TopDown2->setRotationEnabled(false);
+        }
+        else
+        {
+            ref->setRotationEnabled(true);
+            backView->setRotationEnabled(true);
+            TopDown2->setRotationEnabled(true);
+        }
+        //[/UserComboBoxCode_Output_mode_comboBox]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void RoomEditor::timerCallback()
+{
+    if (processor.getMainBusNumOutputChannels() != numOutChannels)
+    {
+        numOutChannels = processor.getMainBusNumOutputChannels();
+        setDropDownAvailableOptions(numOutChannels);
+    }
+}
+
+
+void RoomEditor::setDropDownAvailableOptions(int numCh)
+{
+    int i = 0;
+    if (numCh == 1)
+        i = 2;
+#ifdef _BRT_LIBRARY_
+    else if (numCh >= 2 && numCh < ORDER2NSH(1))
+        i = 4;
+    else if (numCh >= ORDER2NSH(1) && numCh < ORDER2NSH(2))
+        i = 5;
+    else if (numCh >= ORDER2NSH(2) && numCh < ORDER2NSH(3))
+        i = 6;
+    else if (numCh >= ORDER2NSH(3) && numCh < ORDER2NSH(4))
+        i = 7;
+    else if (numCh >= ORDER2NSH(4) && numCh < ORDER2NSH(5))
+        i = 8;
+    else if (numCh >= ORDER2NSH(5))
+        i = 9;
+#else
+    else if (numCh >= 2 && numCh < ORDER2NSH(1))
+        i = 3;
+    else if (numCh >= ORDER2NSH(1) && numCh < ORDER2NSH(2))
+        i = 4;
+    else if (numCh >= ORDER2NSH(2) && numCh < ORDER2NSH(3))
+        i = 5;
+    else if (numCh >= ORDER2NSH(3) && numCh < ORDER2NSH(4))
+        i = 6;
+    else if (numCh >= ORDER2NSH(4) && numCh < ORDER2NSH(5))
+        i = 7;
+    else if (numCh >= ORDER2NSH(5))
+        i = 8;
+#endif
+    for (int j = 1; j < i; j++)
+    {
+        Output_mode_comboBox->setItemEnabled(j, true);
+    }
+    for (; i < Output_mode_comboBox->getNumItems() + 1; i++)
+    {
+        Output_mode_comboBox->setItemEnabled(i, false);
+    }
+}
 //[/MiscUserCode]
 
 
@@ -349,15 +480,15 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RoomEditor" componentName=""
-                 parentClasses="public juce::Component" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 parentClasses="public juce::Component, public juce::Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="1018" initialHeight="720">
   <BACKGROUND backgroundColour="ff323e44">
-    <TEXT pos="228 588 108 20" fill="solid: ffffffff" hasStroke="0" text="Output format"
+    <TEXT pos="200 640 108 20" fill="solid: ffffffff" hasStroke="0" text="Output format"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="44 588 84 20" fill="solid: ffffffff" hasStroke="0" text="Gain"
+    <TEXT pos="54 576 84 20" fill="solid: ffffffff" hasStroke="0" text="Gain"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="20 12 484 30" fill="solid: ffffffff" hasStroke="0" text="SDN Reverb by Laboratorio di Informatica Musicale"
@@ -374,17 +505,12 @@ BEGIN_JUCER_METADATA
           italic="0" justification="36"/>
   </BACKGROUND>
   <SLIDER name="new slider" id="3b7355fbb7fbc0bf" memberName="gain" virtualName=""
-          explicitFocusOrder="0" pos="40 600 96 96" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="48 592 96 96" min="0.0" max="10.0"
           int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
-  <SLIDER name="new slider" id="6d6dc1f71cee9106" memberName="microphone"
-          virtualName="" explicitFocusOrder="0" pos="232 600 104 96" min="0.0"
-          max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="0"/>
   <TOGGLEBUTTON name="new toggle button" id="dd7455385ad38f23" memberName="los"
-                virtualName="" explicitFocusOrder="0" pos="152 672 72 24" buttonText="LOS"
+                virtualName="" explicitFocusOrder="0" pos="192 600 72 24" buttonText="LOS"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="1"/>
   <TEXTBUTTON name="new button" id="318695e64a9a5be0" memberName="load" virtualName=""
               explicitFocusOrder="0" pos="656 16 56 24" buttonText="Load" connectedEdges="0"
@@ -400,25 +526,29 @@ BEGIN_JUCER_METADATA
               needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="new component" id="237d2c8ded89baef" memberName="backView"
                     virtualName="" explicitFocusOrder="0" pos="8 344 360 224" class="RoomPlane"
-                    params="processor, valueTreeState,&#10;'X',&#10;'Y'"/>
+                    params="processor, valueTreeState,&#10;'X',&#10;'Y',&#10;'Z',&#10;true"/>
   <GENERICCOMPONENT name="new component" id="2a2fc017b3736040" memberName="TopDown2"
                     virtualName="" explicitFocusOrder="0" pos="8 88 360 224" class="RoomPlane"
-                    params="processor, valueTreeState,&#10;'X',&#10;'Z'"/>
+                    params="processor, valueTreeState,&#10;'X',&#10;'Z',&#10;'Y',&#10;false"/>
   <TEXTBUTTON name="new button" id="fb9edc7d920f375" memberName="load_HRTF"
-              virtualName="" explicitFocusOrder="0" pos="160 608 48 48" buttonText="Load HRTF"
+              virtualName="" explicitFocusOrder="0" pos="256 584 48 48" buttonText="Load HRTF"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TABBEDCOMPONENT name="new tabbed component" id="7ac39ee7e4771e11" memberName="juce__tabbedComponent"
                    virtualName="" explicitFocusOrder="0" pos="376 64 630 600" orientation="top"
                    tabBarDepth="30" initialTab="0">
-    <TAB name="Tab 0" colour="ffd3d3d3" useJucerComp="0" contentClassName="GeometryPanel"
+    <TAB name="Room geometry" colour="ffd3d3d3" useJucerComp="0" contentClassName="GeometryPanel"
          constructorParams="processor, valueTreeState" jucerComponentFile=""/>
-    <TAB name="Tab 1" colour="ffd3d3d3" useJucerComp="0" contentClassName="WallFiltersUI"
+    <TAB name="Wall filters" colour="ffd3d3d3" useJucerComp="0" contentClassName="WallFiltersUI"
          constructorParams="processor, valueTreeState" jucerComponentFile=""/>
   </TABBEDCOMPONENT>
   <VIEWPORT name="new viewport" id="46f4e61477c28f26" memberName="HRTF_dragAndDrop"
             virtualName="" explicitFocusOrder="0" pos="344 208 472 240" vscroll="0"
             hscroll="0" scrollbarThickness="8" contentType="2" jucerFile=""
             contentClass="DragAndDropPanel" constructorParams="processor, valueTreeState"/>
+  <COMBOBOX name="new combo box" id="bcdf6159f7d447ed" memberName="Output_mode_comboBox"
+            virtualName="" explicitFocusOrder="0" pos="176 664 150 24" editable="0"
+            layout="36" items="Mono&#10;Stereo&#10;Binaural&#10;1st order Ambisonic&#10;2nd order Ambisonic&#10;3rd order Ambisonic&#10;4th order Ambisonic&#10;5th order Ambisonic"
+            textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

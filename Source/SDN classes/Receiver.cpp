@@ -8,12 +8,16 @@ Receiver::Receiver()
 	mono = std::make_shared<Mono>();
 	stereo = std::make_shared<Stereo>();
 	ambisonic = std::make_shared<Ambisonic>();
+#ifdef _BRT_LIBRARY_
+	hrtf = std::make_shared<HRTF_output>();
+#endif
 	microphone = stereo;
 }
 
-void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions)
+void Receiver::init(Point3d normalPosition, int numsamples, int nOfConnections, double samplerate, Point3d dimensions)
 {
 	initRange(samplerate, normalPosition, dimensions);
+	NodeRotation::init(samplerate);
 	
 	setPosition(getSmoothedPos());
 	inWaveguides = std::vector<WaveGuide*>(nOfConnections, 0);
@@ -22,11 +26,16 @@ void Receiver::init(Point3d normalPosition, int nOfConnections, double samplerat
 	mono->init();
 	stereo->init(samplerate);
 	ambisonic->init();
+#ifdef _BRT_LIBRARY_
+	hrtf->init(samplerate, numsamples);
+#endif
 }
 
 void Receiver::process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
-	microphone->process(inWaveguides, getPosition(), sourceBuffer, sampleIndex, maxIndex, hasChanged);
+	interpolateQuaternions();
+	microphone->process(inWaveguides, getPosition(), currentRotation, sourceBuffer, 
+		sampleIndex, maxIndex, hasChanged, isRotating());
 }
 
 void Receiver::updatePosition()
@@ -45,13 +54,24 @@ void Receiver::setOutputMode(int mode)
 	}
 	else if (mode == 1)
 	{
-		stereo->sync();
 		microphone = stereo;
 	}
-	else
+#ifdef _BRT_LIBRARY_
+	else if (mode == 2)
+	{
+		microphone = hrtf;
+	}
+	else if (mode > 2 )
+	{
+		microphone = ambisonic;
+		ambisonic->setAmbisonicOrder(mode - 2);
+	}
+#else
+	else if (mode > 1)
 	{
 		microphone = ambisonic;
 		ambisonic->setAmbisonicOrder(mode - 1);
 	}
+#endif
 	
 }

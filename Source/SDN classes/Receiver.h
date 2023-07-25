@@ -8,36 +8,27 @@
 #include <Stereo.h>
 #include <Mono.h>
 #include <Ambisonic.h>
+#include <HRTF_output.h>
 
 //Listener node in the SDN architecture, can output mono, stereo or ambisonics
-class Receiver : public Node, public NormalPosition
+class Receiver : public Node, public NormalPosition, public NodeRotation
 {
 public:
 	Receiver();
 	~Receiver() { microphone.reset(); };
 
 	//initialize all output instances to save performance during playback
-	void init(Point3d normalPosition, int nOfConnections, double samplerate, Point3d dimensions);
+	void init(Point3d normalPosition, int numsamples, int nOfConnections, double samplerate, Point3d dimensions);
 
 	void process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged);
 
 	void updatePosition();
-	
-
-	void setRotation(float newValue, const char& axis)
+#ifdef _BRT_LIBRARY_
+	void setHRTF(std::string& newPath)
 	{
-		stereo->setRotation(newValue, axis);
+		hrtf->setHRTF(newPath);
 	}
-
-	void updateQuaternion()
-	{
-		stereo->updateQuaternion();
-	}
-
-	bool isRotating()
-	{
-		return stereo->isRotating();
-	}
+#endif
 
 	void setOutputMode(int mode);
 
@@ -52,6 +43,9 @@ private:
 	std::shared_ptr<Mono> mono;
 	std::shared_ptr<Stereo> stereo;
 	std::shared_ptr<Ambisonic> ambisonic;
+#ifdef _BRT_LIBRARY_
+	std::shared_ptr<HRTF_output> hrtf;
+#endif
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Receiver);
 

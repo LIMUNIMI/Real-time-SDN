@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include <WaveGuide.h>
 #include <NodeRotation.h>
+#include <Eigen/Geometry>
 
 //virtual class for output modes
 class Microphone
@@ -14,8 +15,8 @@ public:
 
 	virtual void init() {};
 
-	virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
-		int sampleIndex, int maxIndex, bool hasChanged) {};
+	virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
+		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) {};
 
 private:
 

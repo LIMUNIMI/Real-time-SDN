@@ -59,7 +59,7 @@ void NodeRotation::interpolateQuaternions()
 {
 	if (interpolationIndex <= smoothingDuration)
 	{
-		currentRotation = prevRotation.slerp((float)interpolationIndex / (float)smoothingDuration, targetRotation).normalized().toRotationMatrix();
+		currentRotation = prevRotation.slerp((float)interpolationIndex / (float)smoothingDuration, targetRotation).normalized();
 		interpolationIndex++;
 	}
 }

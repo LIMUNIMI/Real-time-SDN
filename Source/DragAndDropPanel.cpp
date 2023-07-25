@@ -130,12 +130,13 @@ void DragAndDropPanel::resized()
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 bool DragAndDropPanel::isInterestedInFileDrag(const StringArray& files)
 {
-    return files.size() == 1;
+    return files.size() == 1 && files[0].fromLastOccurrenceOf(".", false, false) == String("sofa");
 }
 
 void DragAndDropPanel::fileDragEnter(const StringArray& files, int x, int y)
 {
-    if (files.size() != 1)
+    if (files.size() != 1
+        || files[0].fromLastOccurrenceOf(".", false, false) != String("sofa"))
     {
         customColour = juce::Colours::red;
         repaint();
@@ -157,12 +158,21 @@ void DragAndDropPanel::filesDropped(const StringArray& files, int x, int y)
     customColour = juce::Colour(0xff3d92a3);
     getParentComponent()->getParentComponent()->setVisible(false);
 
-    valueTreeState.state.getOrCreateChildWithName("nonAutoParams", nullptr).setProperty("HRTF_file_path", files[0], nullptr);
+    processor.setHRTF(files[0]);
     fileName_label->setText("Current HRTF file: \n" +
-        valueTreeState.state.getChildWithName("nonAutoParams").getProperty("HRTF_file_path").toString().fromLastOccurrenceOf("\\", false, false),
+        processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
         NotificationType::dontSendNotification);
 
     repaint();
+}
+void DragAndDropPanel::visibilityChanged()
+{
+    if (processor.getHRTFPath().fromLastOccurrenceOf(".", false, false) == "sofa")
+    {
+        fileName_label->setText("Current HRTF file: \n" +
+            processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
+            NotificationType::dontSendNotification);
+    }
 }
 //[/MiscUserCode]
 

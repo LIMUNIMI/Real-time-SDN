@@ -6,7 +6,7 @@
 #include <Parameters.h>
 
 //implements stereo output, handles head rotation
-class Stereo : public Microphone, public NodeRotation
+class Stereo : public Microphone
 {
 public:
 	Stereo() : monoToStereoDummy(2, 0.0f),panValues(Parameters::NUM_WAVEGUIDES_TO_OUTPUT, 0.0f) {};
@@ -15,8 +15,8 @@ public:
 	void init(double sampleRate);
 
 	//pan from azimuth angle
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, AudioBuffer<float>& sourceBuffer, 
-		int sampleIndex, int maxIndex, bool hasChanged) override;
+	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
+		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
 
 private:
