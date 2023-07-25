@@ -209,4 +209,7 @@ void RoomPlane::updateRotation()
 
     listenerRotRect.setCentre(listenerRect.getCentreX() + (figureSize * 0.5 * *horizRot), 
         listenerRect.getCentreY() - (figureSize * 0.5 * *vertRot));
+
+    float noseSize = (figureSize / 3.5) * (1 + ((nDepth ? -*depthRot : *depthRot) * 0.25));
+    listenerRotRect.setSize(noseSize, noseSize);
 }
