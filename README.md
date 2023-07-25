@@ -32,6 +32,10 @@ Some other info about the plugin:
 * [JUCE](https://juce.com/)
 * [Eigen](https://eigen.tuxfamily.org/)
 * [Armadillo](https://arma.sourceforge.net/)
+* [BRT Library](https://github.com/GrupoDiana/BRTLibrary/tree/main) (optional)
+
+## Build notes
+The plugin version with HRTF processing requires the [BRT Library](https://github.com/GrupoDiana/BRTLibrary/tree/main) to be included. Additionaly, on Mac or Linux systems, the "mysofa.lib" and "zlibstatic.lib" files (provided by the BRT Library) must also be added as external libraries to link.
 
 ## References
 This work is based on the following publications:
