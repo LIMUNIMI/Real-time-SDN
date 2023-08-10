@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <unsupported/Eigen/Polynomials>
-#include <armadillo>
+#include <unsupported/Eigen/FFT>
 
 namespace dspUtils
 {
@@ -19,4 +19,5 @@ namespace dspUtils
 	std::vector<std::vector<double>> getWallFilterCoeffs(double sampleRate, double f125, double f250, double f500, double f1000, 
 		double f2000, double f4000, double f8000, double f16000);
 
+	void util_interp1(Eigen::VectorXd& x, Eigen::VectorXd& v, Eigen::VectorXd& interpPoints, Eigen::VectorXd& out);
 }

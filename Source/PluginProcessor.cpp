@@ -100,7 +100,7 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         *parameters.getRawParameterValue("ListenerY"),
         *parameters.getRawParameterValue("ListenerZ") };
     
-    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), samplesPerBlock/*Parameters::INTERNAL_PROCESS_BLOCK_SIZE*/);
 
     for (int i = 0; i < 3; i++)
     {
@@ -176,29 +176,31 @@ void RealtimeSDNAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     int samplesToProcess = buffer.getNumSamples() + internalBufferFill;
     int inBufferSamplesProcessed = 0;
 
-    while (samplesToProcess >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
-    {
-        for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
-        {
-            internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill);
-        }
+    //while (samplesToProcess >= Parameters::INTERNAL_PROCESS_BLOCK_SIZE)
+    //{
+    //    for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
+    //    {
+    //        internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill);
+    //    }
 
-        room.process(internalBuffer, totalNumInputChannels);
+    //    room.process(internalBuffer, totalNumInputChannels);
 
-        outBuffer.storeInBuffer(internalBuffer);
+    //    outBuffer.storeInBuffer(internalBuffer);
 
-        samplesToProcess -= Parameters::INTERNAL_PROCESS_BLOCK_SIZE;
-        inBufferSamplesProcessed += Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill;
-        internalBufferFill = 0;
-    }
+    //    samplesToProcess -= Parameters::INTERNAL_PROCESS_BLOCK_SIZE;
+    //    inBufferSamplesProcessed += Parameters::INTERNAL_PROCESS_BLOCK_SIZE - internalBufferFill;
+    //    internalBufferFill = 0;
+    //}
 
-    for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
-    {
-        internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, buffer.getNumSamples() - inBufferSamplesProcessed);
-    }
-    internalBufferFill = samplesToProcess;
+    //for (int ch = 0; ch < getTotalNumInputChannels(); ch++)
+    //{
+    //    internalBuffer.copyFrom(ch, internalBufferFill, buffer, ch, inBufferSamplesProcessed, buffer.getNumSamples() - inBufferSamplesProcessed);
+    //}
+    //internalBufferFill = samplesToProcess;
 
-    outBuffer.readFromBuffer(buffer);
+    //outBuffer.readFromBuffer(buffer);
+
+    room.process(buffer, totalNumInputChannels);
     
 }
 

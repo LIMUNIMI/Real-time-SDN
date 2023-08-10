@@ -23,7 +23,7 @@ public:
 	float& getCurrentSample() { return delay.readNextSample(); };
 
 	//push sample into the delay-line
-	void pushNextSample(AudioBuffer<float>& sample) 
+	void pushNextSample(AudioBuffer<float>& sample) //TODO remove if not necessary
 	{
 		if (attenuation != 1.0f) sample.applyGain(attenuation);
 		delay.storeInDelay(sample); 

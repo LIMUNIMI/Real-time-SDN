@@ -210,7 +210,7 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 		amplitude[i] = Decibels::gainToDecibels(sqrt(1 - amplitude[i]));
 	}
 
-	float ampExtended[Parameters::NUM_FREQ + 2], freqExtended[Parameters::NUM_FREQ + 2];
+	double ampExtended[Parameters::NUM_FREQ + 2], freqExtended[Parameters::NUM_FREQ + 2];
 	ampExtended[0] = amplitude[0];
 	freqExtended[0] = 0;
 	ampExtended[Parameters::NUM_FREQ + 1] = amplitude[Parameters::NUM_FREQ - 1];
@@ -218,40 +218,68 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 	std::copy(amplitude, &amplitude[Parameters::NUM_FREQ], &ampExtended[1]);
 	std::copy(freq, &freq[Parameters::NUM_FREQ], &freqExtended[1]);
 	
-	arma::vec interpPoints = arma::linspace(0, sizeFFT / 2, (sizeFFT / 2) + 1);
+	VectorXd interpPoints = VectorXd::LinSpaced((sizeFFT / 2) + 1, 0, sizeFFT / 2);
 	interpPoints *= (Fs/sizeFFT);
 	int nSamples = interpPoints.size();
 
-	arma::vec ampEV(std::vector<double>(ampExtended, &ampExtended[Parameters::NUM_FREQ + 2]));
-	arma::vec freqEV(std::vector<double>(freqExtended, &freqExtended[Parameters::NUM_FREQ + 2]));
+	VectorXd ampEV = Map<VectorXd>(ampExtended, Parameters::NUM_FREQ + 2);
+	VectorXd freqEV = Map<VectorXd>(freqExtended, Parameters::NUM_FREQ + 2);
 
-	arma::vec hInterp(nSamples);
+	VectorXd hInterp(nSamples);
 	
-	arma::interp1(freqEV, ampEV, interpPoints, hInterp);
+	util_interp1(freqEV, ampEV, interpPoints, hInterp);
 
-	arma::cx_vec logSpectrum(arma::join_vert(hInterp, arma::reverse(hInterp(arma::span(1, nSamples - 2)))), arma::zeros<arma::vec>((nSamples - 1) * 2));
-	arma::cx_vec cepstrum = arma::ifft(logSpectrum);
+	VectorXcd logSpectrum(nSamples + nSamples - 2);
+	logSpectrum << hInterp, hInterp.segment(1, nSamples - 2).reverse();
+	//(arma::join_vert(hInterp, arma::reverse(hInterp(arma::span(1, nSamples - 2)))), arma::zeros<arma::vec>((nSamples - 1) * 2));
+	
+	Eigen::FFT<double> fft;
+	VectorXcd cepstrum((int)sizeFFT);
+	fft.inv(cepstrum, logSpectrum);
 
-	arma::cx_vec foldedCep(arma::join_vert(arma::cx_vec(1), 
-		cepstrum(arma::span(1, nSamples - 2)) + arma::reverse(cepstrum(arma::span(nSamples, sizeFFT - 1))), 
-		arma::cx_vec(1),
-		arma::zeros<arma::cx_vec>(sizeFFT - nSamples)));
-	foldedCep(0) = cepstrum(0);
-	foldedCep(nSamples - 1) = cepstrum(nSamples - 1);
+	VectorXcd foldedCep((int)sizeFFT);
+	foldedCep << cepstrum(0),
+		cepstrum.segment(1, nSamples - 2) + cepstrum.segment(nSamples, nSamples - 2),
+		cepstrum(nSamples - 1),
+		ArrayXcd::Zero((int)sizeFFT - nSamples);
 
-	arma::cx_vec minPhLogSpectrum = arma::fft(foldedCep);
+	VectorXcd minPhLogSpectrum((int)sizeFFT);
+	fft.fwd(minPhLogSpectrum, foldedCep);
 
-	arma::cx_vec hVec = minPhLogSpectrum(arma::span(0, nSamples - 1));
-	std::vector<std::complex<double>> h = arma::conv_to<std::vector<std::complex<double>>>::from(hVec);
+	VectorXcd hVec = minPhLogSpectrum.segment(0, nSamples);
+	
+	std::vector<std::complex<double>> h(hVec.data(), &hVec.data()[nSamples]);
 
 	for (std::complex<double>& val : h)
 	{
 		val = pow(10.0, (val / 20.0));
 	}
 
-	arma::vec w = (interpPoints / Fs) * MathConstants<double>::twoPi;
+	VectorXd w = (interpPoints / Fs) * MathConstants<double>::twoPi;
 
-	arma::vec wWeights = 1.0 / (24.7 * (4.37 * (interpPoints * 0.001) + 1));
+	VectorXd wWeights = 1.0 / (24.7 * (4.37 * (interpPoints * 0.001).array() + 1));
 
-	return invfreqz(h.data(), w.memptr(), N, N, w.size(), wWeights.memptr(), 10);
+	return invfreqz(h.data(), w.data(), N, N, w.size(), wWeights.data(), 10);
+}
+
+void dspUtils::util_interp1(Eigen::VectorXd& x, Eigen::VectorXd& v, Eigen::VectorXd& interpPoints, Eigen::VectorXd& out)
+{
+	if (interpPoints.size() == out.size())
+	{
+		int xIndex = 1;
+		for (int i = 0; i < interpPoints.size(); i++)
+		{
+			while (x(xIndex) < interpPoints(i))
+			{
+				if (xIndex == x.size() - 1)
+				{
+					break;
+				}
+				xIndex++;
+			}
+
+			double interpCoefficient = (interpPoints(i) - x(xIndex - 1)) / (x(xIndex) - x(xIndex - 1));
+			out(i) = v(xIndex - 1) + ((v(xIndex) - v(xIndex - 1)) * interpCoefficient);
+		}
+	}
 }
