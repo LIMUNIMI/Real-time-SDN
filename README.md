@@ -31,7 +31,6 @@ Some other info about the plugin:
 ## Dependencies
 * [JUCE](https://juce.com/)
 * [Eigen](https://eigen.tuxfamily.org/)
-* [Armadillo](https://arma.sourceforge.net/)
 * [BRT Library](https://github.com/GrupoDiana/BRTLibrary/tree/main) (optional)
 
 ## Build notes
