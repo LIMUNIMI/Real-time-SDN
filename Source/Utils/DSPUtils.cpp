@@ -231,7 +231,6 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 
 	VectorXcd logSpectrum(nSamples + nSamples - 2);
 	logSpectrum << hInterp, hInterp.segment(1, nSamples - 2).reverse();
-	//(arma::join_vert(hInterp, arma::reverse(hInterp(arma::span(1, nSamples - 2)))), arma::zeros<arma::vec>((nSamples - 1) * 2));
 	
 	Eigen::FFT<double> fft;
 	VectorXcd cepstrum((int)sizeFFT);
@@ -239,7 +238,7 @@ std::vector<std::vector<double>> dspUtils::getWallFilterCoeffs(double sampleRate
 
 	VectorXcd foldedCep((int)sizeFFT);
 	foldedCep << cepstrum(0),
-		cepstrum.segment(1, nSamples - 2) + cepstrum.segment(nSamples, nSamples - 2),
+		cepstrum.segment(1, nSamples - 2) + cepstrum.segment(nSamples, nSamples - 2).reverse(),
 		cepstrum(nSamples - 1),
 		ArrayXcd::Zero((int)sizeFFT - nSamples);
 
