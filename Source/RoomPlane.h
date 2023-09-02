@@ -40,12 +40,14 @@ private:
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
     
-    char horizontalAxis, verticalAxis;
+    String horizontalAxis, verticalAxis;
     String listenerHorizParam, listenerVertParam, sourceHorizParam, sourceVertParam;
     
     float drawableAspectRatio = 1.0f;
     float figureSize = 0.0f;
-    juce::Rectangle<int> roomArea; 
+    float arrowHeadsize = 1.0f;
+    juce::Line<float> widthArrow, heightArrow;
+    juce::Rectangle<int> roomArea, maxRoomArea, horizTextRect, vertTextRect;
     juce::Rectangle<float> listenerRect, sourceRect, listenerRotRect;
     Eigen::Matrix3f listenerRot;
     Eigen::Vector3f rotatedListener;

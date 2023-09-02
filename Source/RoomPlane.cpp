@@ -4,7 +4,8 @@ using namespace Eigen;
 
 RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, 
     char horizAxis, char vertAxis, char depthAxis, bool negateDepth)
-    : processor(p), valueTreeState(vts), horizontalAxis(horizAxis), verticalAxis(vertAxis), nDepth(negateDepth)
+    : processor(p), valueTreeState(vts), horizontalAxis(String::charToString(horizAxis)), 
+    verticalAxis(String::charToString(vertAxis)), nDepth(negateDepth)
 {
     startTimerHz(120);
     listenerHorizParam = String("Listener") + String::charToString(horizAxis);
@@ -66,7 +67,7 @@ RoomPlane::~RoomPlane()
 
 void RoomPlane::paint (juce::Graphics& g)
 {
-
+    g.setFont(figureSize);
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     //Only update coordinates on params changes
@@ -80,8 +81,14 @@ void RoomPlane::paint (juce::Graphics& g)
     //
     g.setColour(Colours::grey);
     g.drawRect(roomArea, 1);
-
+    
     g.setColour(Colours::white);
+
+    g.drawArrow(widthArrow, 1, arrowHeadsize, arrowHeadsize);
+    g.drawArrow(heightArrow, 1, arrowHeadsize, arrowHeadsize);
+
+    g.drawText(horizontalAxis, horizTextRect, juce::Justification::centred);
+    g.drawText(verticalAxis, vertTextRect, juce::Justification::centred);
 
     //
     //Draw listener as a circle + "nose" to represent rotation
@@ -105,9 +112,17 @@ void RoomPlane::resized()
 {
     drawableAspectRatio = getLocalBounds().getAspectRatio();
     figureSize = 0.05 * getWidth();
+    arrowHeadsize = figureSize * 0.75;
     sourceRect.setSize(figureSize, figureSize);
     listenerRect.setSize(figureSize, figureSize);
     listenerRotRect.setSize(figureSize / 3.5, figureSize / 3.5);
+
+    horizTextRect.setSize(figureSize, figureSize);
+    vertTextRect.setSize(figureSize, figureSize);
+
+    maxRoomArea.setSize(getWidth() - figureSize, getHeight() - figureSize);
+    maxRoomArea.setCentre(getLocalBounds().getCentre().x + (figureSize / 2), 
+        getLocalBounds().getCentre().y - (figureSize / 2));
 
     updatePlaneCoords();
 }
@@ -160,8 +175,8 @@ float RoomPlane::verticalPosToPointCoord(String positionParam)
 
 float RoomPlane::getRoomAspectRatio()
 {
-    return *valueTreeState.getRawParameterValue(String("Dimensions") + String::charToString(horizontalAxis))
-        / *valueTreeState.getRawParameterValue(String("Dimensions") + String::charToString(verticalAxis));
+    return *valueTreeState.getRawParameterValue(String("Dimensions") + horizontalAxis)
+        / *valueTreeState.getRawParameterValue(String("Dimensions") + verticalAxis);
 }
 
 void RoomPlane::positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam)
@@ -185,13 +200,25 @@ void RoomPlane::updatePlaneCoords()
     float targetRatio = getRoomAspectRatio();
     if (targetRatio >= drawableAspectRatio)
     {
-        roomArea.setSize(getWidth(), getHeight() * (drawableAspectRatio / targetRatio));
+        roomArea.setSize(maxRoomArea.getWidth(), maxRoomArea.getHeight() * (drawableAspectRatio / targetRatio));
     }
     else if (targetRatio < drawableAspectRatio)
     {
-        roomArea.setSize(getWidth() * (targetRatio / drawableAspectRatio), getHeight());
+        roomArea.setSize(maxRoomArea.getWidth() * (targetRatio / drawableAspectRatio), maxRoomArea.getHeight());
     }
-    roomArea.setCentre(getLocalBounds().getCentre());
+    roomArea.setCentre(maxRoomArea.getCentre());
+
+
+    widthArrow.setStart(roomArea.getBottomLeft().toFloat());
+    widthArrow.setEnd(roomArea.getBottomRight().toFloat());
+
+    heightArrow.setStart(roomArea.getBottomLeft().toFloat());
+    heightArrow.setEnd(roomArea.getTopLeft().toFloat());
+
+    horizTextRect.setCentre(roomArea.getRight() - (horizTextRect.getWidth() / 2) - (arrowHeadsize * 1.2),
+        roomArea.getBottom() + (horizTextRect.getHeight() / 2));
+    vertTextRect.setCentre(roomArea.getX() - (vertTextRect.getWidth() / 2), 
+        roomArea.getY() + (vertTextRect.getHeight() / 2) + (arrowHeadsize * 1.2));
 
     listenerRect.setCentre(horizontalPosToPointCoord(listenerHorizParam), verticalPosToPointCoord(listenerVertParam));
     updateRotation();

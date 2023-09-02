@@ -143,7 +143,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
 #ifndef _BRT_LIBRARY_
     load_HRTF->setVisible(false);
-    
+
     Output_mode_comboBox.reset(new juce::ComboBox("new combo box"));
     addAndMakeVisible(Output_mode_comboBox.get());
     Output_mode_comboBox->setEditableText(false);
