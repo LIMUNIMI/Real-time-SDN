@@ -27,7 +27,6 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 	a = coeffs[1];
 	b = coeffs[0];
 	
-;
 	for (IIRBase& filter : wallFilters)
 	{
 		filter.init(samplerate, &a, &b);

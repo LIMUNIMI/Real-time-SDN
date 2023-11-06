@@ -50,7 +50,7 @@ void NodeRotation::sync()
 	if (prevRotation != targetRotation)
 	{
 		prevRotation = targetRotation;
-		currentRotation = targetRotation.normalized().toRotationMatrix();
+		currentRotation = targetRotation.normalized();
 		interpolationIndex = smoothingDuration + 1;
 	}
 }

@@ -27,7 +27,6 @@ public:
 	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
 		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
-	//bugs randomly on HRTF switch
 	void setHRTF(std::string& newPath)
 	{
 		std::shared_ptr<BRTServices::CHRTF>  temp_hrtf_loaded = std::make_shared<BRTServices::CHRTF>();

@@ -9,7 +9,7 @@
 namespace dspUtils
 {
 
-	//[b, a] = invfreqz(h, w, numOrder, denOrder, [], iter) from matlab, does nwork for filter orders higher than 7th
+	//[b, a] = invfreqz(h, w, numOrder, denOrder, [], iter) from matlab, does not work for filter orders higher than 7th
 	std::vector<std::vector<double>> invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize, 
 		double* weights, int iter, double tol);
 

@@ -51,7 +51,7 @@ void Room::initWaveguides(double samplerate)
 
 	float sourceListenerDist = MathUtils::distanceCalc(source.getPosition(), receiver.getPosition());
 	sourceListener.prepare(samplerate, &source, &receiver, sourceListenerDist);
-	sourceListener.setAttenuation(1 / sourceListenerDist);
+	sourceListener.setAttenuation(!mutedLOS * (1 / sourceListener.getDistance()));
 	source.outWaveguides[Parameters::NUM_WALLS] = &sourceListener;
 	receiver.inWaveguides[Parameters::NUM_WALLS] = &sourceListener;
 

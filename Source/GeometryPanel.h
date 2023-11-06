@@ -51,6 +51,7 @@ public:
         listenerPitch->setEnabled(shouldBeRotating);
         listenerYaw->setEnabled(shouldBeRotating);
         listenerRoll->setEnabled(shouldBeRotating);
+        lookAtButton->setEnabled(shouldBeRotating);
     }
     //[/UserMethods]
 

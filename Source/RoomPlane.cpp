@@ -227,9 +227,9 @@ void RoomPlane::updatePlaneCoords()
 
 void RoomPlane::updateRotation()
 {
-    listenerRot = AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotz")), Vector3f::UnitZ())
-        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRoty")), Vector3f::UnitY())
-        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotx")), Vector3f::UnitX());
+    listenerRot = AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRoty")), Vector3f::UnitY())
+        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotx")), Vector3f::UnitX())
+        * AngleAxisf(DEG2RAD(*valueTreeState.getRawParameterValue("ListenerRotz")), Vector3f::UnitZ());
 
     rotatedListener = rotationEnabled ? listenerRot * forward : forward;
     rotatedListener.normalize();

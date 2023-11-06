@@ -102,33 +102,12 @@ void RealtimeSDNAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     
     room.prepare(sampleRate, roomDim, sourceNormPos, playerNormPos, getTotalNumOutputChannels(), samplesPerBlock/*Parameters::INTERNAL_PROCESS_BLOCK_SIZE*/);
 
-    for (int i = 0; i < 3; i++)
-    {
-        room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + String::charToString(Parameters::axishelper[i * 2])), 
-            Parameters::axishelper[i * 2]);
-    }
+    setRoomToParamValues();
 
-    for (int i = 0; i < Parameters::NUM_WALLS; i++)
-    {
-        for (int j = 0; j < Parameters::NUM_FREQ; j++)
-        {
-            room.setWallFreqAbsorption(*parameters.getRawParameterValue("freq" + String(i) + String(j)), i, j);
-        }
-    }
-
-    outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5, Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
-    internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
-    setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
-    internalBufferFill = 0;
-
-#ifdef _BRT_LIBRARY_
-    if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
-    {
-        room.setHRTF(hrtfPath.toStdString());
-    }
-#endif
-
-    setOutputMode(*parameters.getRawParameterValue("OutputMode"));
+    //outBuffer.prepare(sampleRate, getTotalNumOutputChannels(), sampleRate * 5, Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    //internalBuffer.setSize(std::max(getTotalNumOutputChannels(), getTotalNumInputChannels()), Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    //setLatencySamples(Parameters::INTERNAL_PROCESS_BLOCK_SIZE);
+    //internalBufferFill = 0;
 
 }
 
@@ -257,9 +236,9 @@ void RealtimeSDNAudioProcessor::lookAtSource()
     azi = radiansToDegrees(azi);
     elev = radiansToDegrees(elev);
 
-    parameters.getParameter("ListenerRotx")->setValueNotifyingHost((elev + 180) / 360);
-    parameters.getParameter("ListenerRoty")->setValueNotifyingHost((azi + 180) / 360);
     parameters.getParameter("ListenerRotz")->setValueNotifyingHost(0.5);
+    parameters.getParameter("ListenerRoty")->setValueNotifyingHost((azi + 180) / 360);
+    parameters.getParameter("ListenerRotx")->setValueNotifyingHost((elev + 180) / 360);
 }
 
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)
@@ -320,6 +299,38 @@ void RealtimeSDNAudioProcessor::setOutputMode(int mode)
         parameters.getParameter("OutputMode")->setValueNotifyingHost(0);
         room.setOutputMode(0, getNumOutputChannels());
     }
+}
+
+void RealtimeSDNAudioProcessor::setRoomToParamValues()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        room.setListenerRotation(*parameters.getRawParameterValue("ListenerRot" + String::charToString(Parameters::axishelper[i * 2])),
+            Parameters::axishelper[i * 2]);
+    }
+
+    for (int i = 0; i < Parameters::NUM_WALLS; i++)
+    {
+        for (int j = 0; j < Parameters::NUM_FREQ; j++)
+        {
+            room.setWallFreqAbsorption(*parameters.getRawParameterValue("freq" + String(i) + String(j)), i, j);
+        }
+    }
+
+    room.muteLOS(*parameters.getRawParameterValue("LOS") < 0.5f);
+    float gain = *parameters.getRawParameterValue("sourceGain");
+    room.setSourceGain(Decibels::decibelsToGain(gain));
+
+
+#ifdef _BRT_LIBRARY_
+    if (hrtfPath.fromLastOccurrenceOf(".", false, false) == "sofa")
+    {
+        room.setHRTF(hrtfPath.toStdString());
+    }
+#endif
+
+    setOutputMode(*parameters.getRawParameterValue("OutputMode"));
+
 }
 
 //==============================================================================

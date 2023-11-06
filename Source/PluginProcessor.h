@@ -67,6 +67,8 @@ private:
 
     void parameterChanged(const String& paramID, float newValue) override;
     void setOutputMode(int mode);
+    
+    void setRoomToParamValues();
 
     Room room;
     AudioProcessorValueTreeState parameters;

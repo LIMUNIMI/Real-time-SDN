@@ -1,5 +1,8 @@
 #pragma once
 #include <JuceHeader.h>
+#if __has_include("BRTLibrary.h")
+#include <BRTLibrary.h>
+#endif
 
 #define ORDER2NSH(order) ((order+1)*(order+1))
 
