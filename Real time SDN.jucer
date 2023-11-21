@@ -64,6 +64,7 @@
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
+        <FILE id="IGJD3Z" name="FilterPresets.h" compile="0" resource="0" file="Source/Utils/FilterPresets.h"/>
         <FILE id="JLwSnI" name="CircularBuffer.cpp" compile="1" resource="0"
               file="Source/Utils/CircularBuffer.cpp"/>
         <FILE id="zGMlws" name="CircularBuffer.h" compile="0" resource="0"

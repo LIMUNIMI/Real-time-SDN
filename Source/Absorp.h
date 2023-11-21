@@ -22,6 +22,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "FilterPresets.h"
 
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
@@ -59,6 +60,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     void setAllAbsorptionToTarget(float newValue);
+    void setAbsorptionToPreset(int preset);
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
@@ -72,6 +74,8 @@ private:
     std::unique_ptr<SliderAttachment> freq6Attachment;
     std::unique_ptr<SliderAttachment> freq7Attachment;
     std::unique_ptr<SliderAttachment> freq8Attachment;
+
+    PopupMenu presets;
 
     //[/UserVariables]
 

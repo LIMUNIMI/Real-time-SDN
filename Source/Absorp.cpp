@@ -107,7 +107,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
 
     toHalf.reset (new juce::TextButton ("new button"));
     addAndMakeVisible (toHalf.get());
-    toHalf->setButtonText (TRANS("0.5"));
+    toHalf->setButtonText (TRANS("P"));
     toHalf->addListener (this);
     toHalf->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
 
@@ -132,6 +132,11 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     freq6Attachment.reset(new SliderAttachment(valueTreeState, String("freq") + String(wallID) + "5", *abs6));
     freq7Attachment.reset(new SliderAttachment(valueTreeState, String("freq") + String(wallID) + "6", *abs7));
     freq8Attachment.reset(new SliderAttachment(valueTreeState, String("freq") + String(wallID) + "7", *abs8));
+
+    for (int i = 0; i < FilterPresets::NUM_PRESETS; i++)
+    {
+        presets.addItem(i + 1, FilterPresets::PRESETS_NAMES[i]);
+    }
 
     //[/UserPreSize]
 
@@ -209,7 +214,20 @@ void Absorp::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == toHalf.get())
     {
         //[UserButtonCode_toHalf] -- add your button handler code here..
-        setAllAbsorptionToTarget(0.5f);
+
+        presets.showMenuAsync(PopupMenu::Options(),
+            [&](int result)
+            {
+                if (result == 0)
+                {
+
+                }
+                else
+                {
+                    setAbsorptionToPreset(result - 1);
+                }
+            }
+        );
         //[/UserButtonCode_toHalf]
     }
     else if (buttonThatWasClicked == to0.get())
@@ -229,10 +247,20 @@ void Absorp::buttonClicked (juce::Button* buttonThatWasClicked)
 
 void Absorp::setAllAbsorptionToTarget(float newValue)
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < Parameters::NUM_FREQ; i++)
     {
         valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->beginChangeGesture();
         valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->setValueNotifyingHost(newValue);
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->endChangeGesture();
+    }
+}
+
+void Absorp::setAbsorptionToPreset(int preset)
+{
+    for (int i = 0; i < Parameters::NUM_FREQ; i++)
+    {
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->beginChangeGesture();
+        valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->setValueNotifyingHost(FilterPresets::PRESETS_VALUES[preset][i]);
         valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->endChangeGesture();
     }
 }
@@ -292,7 +320,7 @@ BEGIN_JUCER_METADATA
               buttonText="1" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="7d7768b1aebd5283" memberName="toHalf" virtualName=""
               explicitFocusOrder="0" pos="267 44 24 24" bgColOff="ff051111"
-              buttonText="0.5" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              buttonText="P" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="b7e60a045cc4019d" memberName="to0" virtualName=""
               explicitFocusOrder="0" pos="267 80 24 24" bgColOff="ff051111"
               buttonText="0" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
