@@ -7,7 +7,7 @@ RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState&
     : processor(p), valueTreeState(vts), horizontalAxis(String::charToString(horizAxis)), 
     verticalAxis(String::charToString(vertAxis)), nDepth(negateDepth)
 {
-    startTimerHz(120);
+    startTimerHz(80);
     listenerHorizParam = String("Listener") + String::charToString(horizAxis);
     listenerVertParam = String("Listener") + String::charToString(vertAxis);
     sourceHorizParam = String("Source") + String::charToString(horizAxis);
@@ -70,11 +70,7 @@ void RoomPlane::paint (juce::Graphics& g)
     g.setFont(figureSize);
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
-    //Only update coordinates on params changes
-    if (processor.geometryHasChanged())
-    {
-        updatePlaneCoords();
-    }
+    updatePlaneCoords();
 
     //
     //Draw room outline

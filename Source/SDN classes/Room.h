@@ -62,6 +62,7 @@ private:
 
 
 	bool hasChanged = false;
+	bool uiIsSynched = false;
 
 	WaveGuide sourceListener;
 	std::vector<WaveGuide> sourceNode;

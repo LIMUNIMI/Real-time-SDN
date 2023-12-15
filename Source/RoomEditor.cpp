@@ -108,7 +108,7 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     addAndMakeVisible (juce__tabbedComponent.get());
     juce__tabbedComponent->setTabBarDepth (30);
     juce__tabbedComponent->addTab (TRANS("Room geometry"), juce::Colours::lightgrey, new GeometryPanel (processor, valueTreeState), true);
-    juce__tabbedComponent->addTab (TRANS("Wall filters"), juce::Colours::lightgrey, new WallFiltersUI (processor, valueTreeState), true);
+    juce__tabbedComponent->addTab (TRANS("Wall absorption "), juce::Colours::lightgrey, new WallFiltersUI (processor, valueTreeState), true);
     juce__tabbedComponent->setCurrentTabIndex (0);
 
     juce__tabbedComponent->setBounds (376, 64, 630, 600);
@@ -538,7 +538,7 @@ BEGIN_JUCER_METADATA
                    tabBarDepth="30" initialTab="0">
     <TAB name="Room geometry" colour="ffd3d3d3" useJucerComp="0" contentClassName="GeometryPanel"
          constructorParams="processor, valueTreeState" jucerComponentFile=""/>
-    <TAB name="Wall filters" colour="ffd3d3d3" useJucerComp="0" contentClassName="WallFiltersUI"
+    <TAB name="Wall absorption " colour="ffd3d3d3" useJucerComp="0" contentClassName="WallFiltersUI"
          constructorParams="processor, valueTreeState" jucerComponentFile=""/>
   </TABBEDCOMPONENT>
   <VIEWPORT name="new viewport" id="46f4e61477c28f26" memberName="HRTF_dragAndDrop"
