@@ -108,6 +108,7 @@
         <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX" microphonePermissionNeeded="1">
@@ -129,6 +130,7 @@
         <MODULEPATH id="juce_graphics" path="C:\Users\Giorgio\JUCE\modules"/>
         <MODULEPATH id="juce_gui_basics" path="C:\Users\Giorgio\JUCE\modules"/>
         <MODULEPATH id="juce_gui_extra" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
@@ -150,6 +152,7 @@
         <MODULEPATH id="juce_graphics" path="C:\Users\Giorgio\JUCE\modules"/>
         <MODULEPATH id="juce_gui_basics" path="C:\Users\Giorgio\JUCE\modules"/>
         <MODULEPATH id="juce_gui_extra" path="C:\Users\Giorgio\JUCE\modules"/>
+        <MODULEPATH id="juce_osc" path="../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -168,5 +171,6 @@
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
 </JUCERPROJECT>

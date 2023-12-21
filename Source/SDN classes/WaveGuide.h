@@ -16,7 +16,7 @@ public:
 	float getDistance() { return distance; };
 	float getAttenuation() { return attenuation; };
 	void setDistance(float newDist);
-	void setAttenuation(float newValue) { attenuation = newValue; };
+	void setAttenuation(float newValue) { attenuation = jlimit(0.0f, 1.0f, newValue); };
 
 	void prepare(double samplerate, Node* start, Node* end, float dist);
 

@@ -45,8 +45,6 @@ float MathUtils::distanceCalc(Point3d& startPos, Point3d& endPos)
 	float distance = sqrtf(powf((startPos.x - endPos.x), 2) + powf((startPos.y - endPos.y), 2)
 		+ powf((startPos.z - endPos.z), 2));
 
-	if (distance < 1) distance = 1.0f;
-
 	return distance;
 }
 

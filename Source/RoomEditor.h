@@ -90,6 +90,8 @@ private:
     std::unique_ptr<juce::TabbedComponent> juce__tabbedComponent;
     std::unique_ptr<juce::Viewport> HRTF_dragAndDrop;
     std::unique_ptr<juce::ComboBox> Output_mode_comboBox;
+    std::unique_ptr<juce::ToggleButton> OSCToggle;
+    std::unique_ptr<juce::TextEditor> OSC_port_selector;
 
 
     //==============================================================================

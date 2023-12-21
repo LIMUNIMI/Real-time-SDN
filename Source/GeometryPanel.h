@@ -37,6 +37,8 @@ typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
                                                                     //[/Comments]
 */
 class GeometryPanel  : public juce::Component,
+                       public juce::OSCReceiver,
+                       public juce::OSCReceiver::ListenerWithOSCAddress<juce::OSCReceiver::MessageLoopCallback>,
                        public juce::Button::Listener
 {
 public:
@@ -53,6 +55,23 @@ public:
         listenerRoll->setEnabled(shouldBeRotating);
         lookAtButton->setEnabled(shouldBeRotating);
     }
+
+    void showConnectionErrorMessage(const juce::String& messageText)
+    {
+        juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
+            "Connection error",
+            messageText,
+            "OK");
+    }
+
+    void oscMessageReceived(const juce::OSCMessage& message) override;
+
+    void tryToConnect(int portNumber)
+    {
+        if (!connect(portNumber))
+            showConnectionErrorMessage("Error: could not connect to UDP port " + String(portNumber));
+    }
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -89,8 +108,8 @@ private:
     std::unique_ptr<juce::Slider> listenerX;
     std::unique_ptr<juce::Slider> listenerY;
     std::unique_ptr<juce::Slider> listenerZ;
-    std::unique_ptr<juce::Slider> listenerYaw;
     std::unique_ptr<juce::Slider> listenerPitch;
+    std::unique_ptr<juce::Slider> listenerYaw;
     std::unique_ptr<juce::Slider> listenerRoll;
     std::unique_ptr<juce::Slider> roomX;
     std::unique_ptr<juce::Slider> roomY;

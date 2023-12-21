@@ -138,6 +138,26 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
 
     Output_mode_comboBox->setBounds (176, 664, 150, 24);
 
+    OSCToggle.reset (new juce::ToggleButton ("OSCToggle"));
+    addAndMakeVisible (OSCToggle.get());
+    OSCToggle->setButtonText (TRANS("OSC"));
+    OSCToggle->addListener (this);
+
+    OSCToggle->setBounds (376, 680, 72, 24);
+
+    OSC_port_selector.reset (new juce::TextEditor ("OSC port selector"));
+    addAndMakeVisible (OSC_port_selector.get());
+    OSC_port_selector->setTooltip (TRANS("Choose the OSC port to connect to"));
+    OSC_port_selector->setMultiLine (false);
+    OSC_port_selector->setReturnKeyStartsNewLine (false);
+    OSC_port_selector->setReadOnly (false);
+    OSC_port_selector->setScrollbarsShown (false);
+    OSC_port_selector->setCaretVisible (true);
+    OSC_port_selector->setPopupMenuEnabled (true);
+    OSC_port_selector->setText (TRANS("9001"));
+
+    OSC_port_selector->setBounds (448, 680, 40, 24);
+
 
     //[UserPreSize]
 
@@ -172,6 +192,8 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     numOutChannels = processor.getMainBusNumOutputChannels();
     setDropDownAvailableOptions(processor.getMainBusNumOutputChannels());
 
+    OSC_port_selector->setInputRestrictions(4, "0123456789");
+
     //[/UserPreSize]
 
     setSize (1018, 720);
@@ -202,6 +224,8 @@ RoomEditor::~RoomEditor()
     juce__tabbedComponent = nullptr;
     HRTF_dragAndDrop = nullptr;
     Output_mode_comboBox = nullptr;
+    OSCToggle = nullptr;
+    OSC_port_selector = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -373,6 +397,21 @@ void RoomEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         HRTF_dragAndDrop->setVisible(!HRTF_dragAndDrop->isVisible());
         HRTF_dragAndDrop->getViewedComponent()->setVisible(HRTF_dragAndDrop->isVisible());
         //[/UserButtonCode_load_HRTF]
+    }
+    else if (buttonThatWasClicked == OSCToggle.get())
+    {
+        //[UserButtonCode_OSCToggle] -- add your button handler code here..
+        if (OSCToggle->getToggleState())
+        {
+            ((GeometryPanel*)(juce__tabbedComponent->getTabContentComponent(0)))->tryToConnect(OSC_port_selector->getText().getIntValue());
+            OSC_port_selector->setEnabled(false);
+        }
+        else
+        {
+            ((GeometryPanel*)(juce__tabbedComponent->getTabContentComponent(0)))->disconnect();
+            OSC_port_selector->setEnabled(true);
+        }
+        //[/UserButtonCode_OSCToggle]
     }
 
     //[UserbuttonClicked_Post]
@@ -549,6 +588,13 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="176 664 150 24" editable="0"
             layout="36" items="Mono&#10;Stereo&#10;Binaural&#10;1st order Ambisonic&#10;2nd order Ambisonic&#10;3rd order Ambisonic&#10;4th order Ambisonic&#10;5th order Ambisonic"
             textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <TOGGLEBUTTON name="OSCToggle" id="4185302463553676" memberName="OSCToggle"
+                virtualName="" explicitFocusOrder="0" pos="376 680 72 24" buttonText="OSC"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TEXTEDITOR name="OSC port selector" id="568bea26557dc933" memberName="OSC_port_selector"
+              virtualName="" explicitFocusOrder="0" pos="448 680 40 24" tooltip="Choose the OSC port to connect to"
+              initialText="9001" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="0" caret="1" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

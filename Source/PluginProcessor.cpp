@@ -244,18 +244,18 @@ void RealtimeSDNAudioProcessor::lookAtSource()
 void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
     if (paramID == "SourceX")
-        room.setSourcePos(newValue, 'x');
+        room.setSourcePos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'x');
     if (paramID == "SourceY")
-        room.setSourcePos(newValue, 'y');
+        room.setSourcePos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'y');
     if (paramID == "SourceZ")
-        room.setSourcePos(newValue, 'z');
+        room.setSourcePos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'z');
 
     if (paramID == "ListenerX")
-        room.setListenerPos(newValue, 'x');
+        room.setListenerPos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'x');
     if (paramID == "ListenerY")
-        room.setListenerPos(newValue, 'y');
+        room.setListenerPos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'y');
     if (paramID == "ListenerZ")
-        room.setListenerPos(newValue, 'z');
+        room.setListenerPos(juce::jlimit(0.000001f, 0.9999999f, newValue), 'z');
 
     if (paramID == "OutputMode")
     {

@@ -18,6 +18,7 @@ namespace Parameters
 	constexpr int INTERNAL_PROCESS_BLOCK_SIZE = 256;
 	constexpr float ROOM_MAX_DIMENSION = 100.0f;
 	constexpr float SMOOTHING_TIME_SECONDS = 0.020f;
+	constexpr int OSC_PORT = 9001;
 #ifdef _BRT_LIBRARY_
 	constexpr int NUM_OUT_MODES = 8;
 	constexpr char* outputModes[NUM_OUT_MODES] = {"Mono", "Stereo", "Binaural",

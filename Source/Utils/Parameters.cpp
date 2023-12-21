@@ -5,13 +5,13 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
 	//Does not go to 0 and 1 to avoid clipping into the wall
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceX", "Source X", 0.0001f, 0.9999f, 0.50f));
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceY", "Source Y", 0.0001f, 0.9999f, 0.70f));
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceZ", "Source Z", 0.0001f, 0.9999f, 0.75f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceX", "Source X", 0.0f, 1.0f, 0.50f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceY", "Source Y", 0.0f, 1.0f, 0.70f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceZ", "Source Z", 0.0f, 1.0f, 0.75f));
 
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerX", "Listener X", 0.0001f, 0.9999f, 0.50f));
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerY", "Listener Y", 0.0001f, 0.9999f, 0.60f));
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerZ", "Listener Z", 0.0001f, 0.9999f, 0.25f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerX", "Listener X", 0.0f, 1.0f, 0.50f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerY", "Listener Y", 0.0f, 1.0f, 0.60f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerZ", "Listener Z", 0.0f, 1.0f, 0.25f));
 
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotx", "Listener Pitch", -180.0f, 180.0f, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRoty", "Listener Yaw", -180.0f, 180.0f, 0.0f));

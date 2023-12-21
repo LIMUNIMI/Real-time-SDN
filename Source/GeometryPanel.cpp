@@ -81,21 +81,21 @@ GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
 
     listenerZ->setBounds (31, 434, 257, 24);
 
-    listenerYaw.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (listenerYaw.get());
-    listenerYaw->setRange (0, 10, 0);
-    listenerYaw->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    listenerYaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    listenerYaw->setBounds (313, 359, 95, 96);
-
     listenerPitch.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (listenerPitch.get());
     listenerPitch->setRange (0, 10, 0);
     listenerPitch->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     listenerPitch->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    listenerPitch->setBounds (417, 359, 95, 96);
+    listenerPitch->setBounds (313, 359, 95, 96);
+
+    listenerYaw.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (listenerYaw.get());
+    listenerYaw->setRange (0, 10, 0);
+    listenerYaw->setSliderStyle (juce::Slider::RotaryVerticalDrag);
+    listenerYaw->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+
+    listenerYaw->setBounds (417, 359, 95, 96);
 
     listenerRoll.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (listenerRoll.get());
@@ -144,8 +144,8 @@ GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
     listenerXAttachment.reset(new SliderAttachment(valueTreeState, "ListenerX", *listenerX));
     listenerYAttachment.reset(new SliderAttachment(valueTreeState, "ListenerY", *listenerY));
     listenerZAttachment.reset(new SliderAttachment(valueTreeState, "ListenerZ", *listenerZ));
-    listenerYawAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRotx", *listenerYaw));
-    listenerPitchAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRoty", *listenerPitch));
+    listenerPitchAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRotx", *listenerPitch));
+    listenerYawAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRoty", *listenerYaw));
     listenerRollAttachment.reset(new SliderAttachment(valueTreeState, "ListenerRotz", *listenerRoll));
     roomXAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsX", *roomX));
     roomYAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsY", *roomY));
@@ -156,6 +156,15 @@ GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
 
 
     //[Constructor] You can add your own custom stuff here..
+    addListener(this, "/SDN/SourceX");
+    addListener(this, "/SDN/SourceY");
+    addListener(this, "/SDN/SourceZ");
+    addListener(this, "/SDN/ListenerX");
+    addListener(this, "/SDN/ListenerY");
+    addListener(this, "/SDN/ListenerZ");
+    addListener(this, "/SDN/ListenerPitch");
+    addListener(this, "/SDN/ListenerYaw");
+    addListener(this, "/SDN/ListenerRoll");
     //[/Constructor]
 }
 
@@ -182,8 +191,8 @@ GeometryPanel::~GeometryPanel()
     listenerX = nullptr;
     listenerY = nullptr;
     listenerZ = nullptr;
-    listenerYaw = nullptr;
     listenerPitch = nullptr;
+    listenerYaw = nullptr;
     listenerRoll = nullptr;
     roomX = nullptr;
     roomY = nullptr;
@@ -415,6 +424,46 @@ void GeometryPanel::buttonClicked (juce::Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void GeometryPanel::oscMessageReceived(const juce::OSCMessage& message)
+{
+    if (message.getAddressPattern() == "/SDN/SourceX")
+        if (message.size() == 1 && message[0].isFloat32())
+            emitterX->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/SourceY")
+        if (message.size() == 1 && message[0].isFloat32())
+            emitterY->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/SourceZ")
+        if (message.size() == 1 && message[0].isFloat32())
+            emitterZ->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerX")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerX->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerY")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerY->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerZ")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerZ->setValue(juce::jlimit(0.0f, 1.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerPitch")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerPitch->setValue(juce::jlimit(-180.0f, 180.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerYaw")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerYaw->setValue(juce::jlimit(-180.0f, 180.0f, message[0].getFloat32()));
+
+    if (message.getAddressPattern() == "/SDN/ListenerRoll")
+        if (message.size() == 1 && message[0].isFloat32())
+            listenerRoll->setValue(juce::jlimit(-180.0f, 180.0f, message[0].getFloat32()));
+
+
+}
 //[/MiscUserCode]
 
 
@@ -428,7 +477,8 @@ void GeometryPanel::buttonClicked (juce::Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="GeometryPanel" componentName=""
-                 parentClasses="public juce::Component" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 parentClasses="public juce::Component, public juce::OSCReceiver, public juce::OSCReceiver::ListenerWithOSCAddress&lt;juce::OSCReceiver::MessageLoopCallback&gt;"
+                 constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="630" initialHeight="600">
@@ -509,12 +559,12 @@ BEGIN_JUCER_METADATA
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxRight"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
-  <SLIDER name="new slider" id="9e818101edc1d3d7" memberName="listenerYaw"
+  <SLIDER name="new slider" id="9e818101edc1d3d7" memberName="listenerPitch"
           virtualName="" explicitFocusOrder="0" pos="313 359 95 96" min="0.0"
           max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
-  <SLIDER name="new slider" id="1337db1e7de08" memberName="listenerPitch"
+  <SLIDER name="new slider" id="1337db1e7de08" memberName="listenerYaw"
           virtualName="" explicitFocusOrder="0" pos="417 359 95 96" min="0.0"
           max="10.0" int="0.0" style="RotaryVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"

@@ -166,7 +166,6 @@ void Room::process(AudioBuffer<float>& sourceBuffer, int numInputChannels)
 			updatePositions();
 			processSample(sourceBuffer, currentReadPointer, i, maxIndex);
 			hasChanged = receiver.isChanging() || source.isChanging();
-			uiIsSynched = false;
 		}
 	}
 	else
