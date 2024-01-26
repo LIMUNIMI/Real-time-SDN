@@ -52,40 +52,29 @@ void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position,
 
 void Ambisonic::getSphericalHarmonics(int channel)
 {
-	float Nn0, Nnm;
-	int index_n = 0;
+	float N3DConversionFactor, N3DNorm;
+	int index_n = 1;
 
 	// cos(inclination) = sin(elevation)
-	sin_el = sinf(ELEVATION(channel));
+	sin_elevation = sinf(ELEVATION(channel));
 
-	for (int i = 0; i < ambisonicOrder + 1; i++)
+	channelGains(0, channel) = 1.0f;
+
+	for (int i = 1; i < ambisonicOrder + 1; i++)
 	{
-		if (i == 0) //optimize this if out of for
+		unnormalisedLegendrePoly(i, sin_elevation, leg_n_1, leg_n_2, leg_n);
+
+		N3DConversionFactor = sqrtf((2 * i) + 1);
+
+		channelGains(index_n + i, channel) = N3DConversionFactor * leg_n[0];
+		for (int j = 1; j < i + 1; j++)
 		{
-			channelGains(0, channel) = 1.0f;
-			index_n = 1;
+			N3DNorm = N3DConversionFactor * sqrtf(2 * factorials[i - j] / factorials[i + j]);
+			channelGains(index_n + i - j, channel) = N3DNorm * leg_n[j] * sinf(j * AZIMUTH(channel));
+			channelGains(index_n + i + j, channel) = N3DNorm * leg_n[j] * cosf(j * AZIMUTH(channel));
 		}
-		else
-		{
-			unnormalisedLegendrePoly(i, sin_el, leg_n_1, leg_n_2, leg_n);
 
-			Nn0 = sqrtf((2 * i) + 1);
-
-			for (int j = 0; j < i + 1; j++)
-			{
-				if (j == 0) //optimize this if out of for
-					channelGains(index_n + i, channel) = Nn0 * leg_n[j];
-				else
-				{
-					Nnm = Nn0 * sqrtf(2 * factorials[i - j] / factorials[i + j]);
-					channelGains(index_n + i - j, channel) = Nnm * leg_n[j] * sinf(j * AZIMUTH(channel));
-					channelGains(index_n + i + j, channel) = Nnm * leg_n[j] * cosf(j * AZIMUTH(channel));
-				}
-			}
-
-			index_n += 2 * i + 1;
-
-		}
+		index_n += 2 * i + 1;
 
 		std::copy(leg_n_1, leg_n_1 + 6, leg_n_2);
 		std::copy(leg_n, leg_n + 6, leg_n_1);
@@ -100,10 +89,6 @@ void Ambisonic::unnormalisedLegendrePoly(int polyOrder, float x, float* poly1, f
 	
 	switch (polyOrder)
 	{
-	case 0:
-		outPoly[0] = 1.0f;
-		break;
-
 	case 1:
 		outPoly[0] = x;
 		outPoly[1] = sqrtf(1.0f - x2);

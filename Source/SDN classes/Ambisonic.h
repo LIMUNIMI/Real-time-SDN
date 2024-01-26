@@ -64,7 +64,7 @@ private:
 	float leg_n[6] = { 0.0f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f, }, 
 		leg_n_1[6] = { 0.0f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f, }, 
 		leg_n_2[6] = { 0.0f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f, }, 
-		sin_el = 0.0f;
+		sin_elevation = 0.0f;
 
 	//precomputed factorials
 	float factorials[11] = { 1.0f, 1.0f, 2.0f, 6.0f, 24.0f, 120.0f, 720.0f, 5040.0f, 40320.0f, 362880.0f, 3628800.0f };
