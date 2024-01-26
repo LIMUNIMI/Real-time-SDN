@@ -36,6 +36,7 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	}
 
 	params.push_back(std::make_unique<AudioParameterBool>("LOS", "Render Line-of-sight", true));
+	params.push_back(std::make_unique<AudioParameterBool>("airAbsorption", "Air absorption", false));
 
 	return { params.begin(), params.end() };
 }

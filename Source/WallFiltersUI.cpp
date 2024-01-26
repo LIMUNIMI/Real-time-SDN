@@ -69,8 +69,16 @@ WallFiltersUI::WallFiltersUI (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
 
     wall6->setBounds (328, 416, 296, 128);
 
+    airAbsortion_button.reset (new juce::ToggleButton ("airAbsortion_button"));
+    addAndMakeVisible (airAbsortion_button.get());
+    airAbsortion_button->setButtonText (TRANS("Air absorption"));
+    airAbsortion_button->addListener (this);
+
+    airAbsortion_button->setBounds (256, 16, 150, 24);
+
 
     //[UserPreSize]
+    airAbosrptionAttachment.reset(new ButtonAttachment(valueTreeState, "airAbsorption", *airAbsortion_button));
     //[/UserPreSize]
 
     setSize (630, 600);
@@ -91,6 +99,7 @@ WallFiltersUI::~WallFiltersUI()
     wall4 = nullptr;
     wall5 = nullptr;
     wall6 = nullptr;
+    airAbsortion_button = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -202,6 +211,21 @@ void WallFiltersUI::resized()
     //[/UserResized]
 }
 
+void WallFiltersUI::buttonClicked (juce::Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == airAbsortion_button.get())
+    {
+        //[UserButtonCode_airAbsortion_button] -- add your button handler code here..
+        //[/UserButtonCode_airAbsortion_button]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -263,6 +287,9 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="new component" id="11aaf23cd9b2f28d" memberName="wall6"
                     virtualName="" explicitFocusOrder="0" pos="328 416 296 128" class="Absorp"
                     params="processor, valueTreeState, 1"/>
+  <TOGGLEBUTTON name="airAbsortion_button" id="158fd306101db3b6" memberName="airAbsortion_button"
+                virtualName="" explicitFocusOrder="0" pos="256 16 150 24" buttonText="Air absorption"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

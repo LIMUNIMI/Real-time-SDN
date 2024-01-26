@@ -34,6 +34,8 @@ public:
 	//mute and unmute LOS component
 	void muteLOS(bool condition);
 
+	void enableAirAbsorption(bool absorb);
+
 #ifdef _BRT_LIBRARY_
 	void setHRTF(std::string& newPath);
 #endif

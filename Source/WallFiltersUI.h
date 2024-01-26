@@ -22,6 +22,8 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "Absorp.h"
+
+typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 //[/Headers]
 
 
@@ -34,7 +36,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class WallFiltersUI  : public juce::Component
+class WallFiltersUI  : public juce::Component,
+                       public juce::Button::Listener
 {
 public:
     //==============================================================================
@@ -47,6 +50,7 @@ public:
 
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
@@ -54,6 +58,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
+    std::unique_ptr<ButtonAttachment> airAbosrptionAttachment;
     //[/UserVariables]
 
     //==============================================================================
@@ -63,6 +68,7 @@ private:
     std::unique_ptr<Absorp> wall4;
     std::unique_ptr<Absorp> wall5;
     std::unique_ptr<Absorp> wall6;
+    std::unique_ptr<juce::ToggleButton> airAbsortion_button;
 
 
     //==============================================================================

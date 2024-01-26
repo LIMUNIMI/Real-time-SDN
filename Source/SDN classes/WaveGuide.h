@@ -3,6 +3,8 @@
 #include <JuceHeader.h>
 #include <DelayLine.h>
 #include <Parameters.h>
+#include <IIRBase.h>
+#include <FilterPresets.h>
 
 //waveguides that connect all the nodes in the SDN architecture
 class WaveGuide
@@ -20,7 +22,7 @@ public:
 
 	void prepare(double samplerate, Node* start, Node* end, float dist);
 
-	float& getCurrentSample() { return delay.readNextSample(); };
+	float& getCurrentSample();
 
 	//push sample into the delay-line
 	void pushNextSample(AudioBuffer<float>& sample) //TODO remove if not necessary
@@ -41,6 +43,12 @@ public:
 	//advance delay-line by one sample
 	void stepForward() { delay.advanceWriteIndex(); };
 
+	void enableAirAbsorption(bool absorb) 
+	{ 
+		airAbsorption = absorb;
+		airAbsorptionFilter.clearMemory();
+	};
+
 
 private:
 	Node* startNode;
@@ -50,6 +58,11 @@ private:
 	float distance;
 	float toSamplesConst = 0;
 	float attenuation;
+
+	std::vector<double> a, b;
+	IIRBase airAbsorptionFilter;
+	bool airAbsorption = false;
+	bool isNodeToNode = false;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveGuide);
 

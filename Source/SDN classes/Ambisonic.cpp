@@ -24,7 +24,10 @@ void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position,
 			//get azimuth and elevation
 			microphoneToNodeVector = MathUtils::dirVector(guide->getStart()->getPosition(), position);
 			newAzi = -atan2f(microphoneToNodeVector.x(), microphoneToNodeVector.z());
-			newElev = asinf(microphoneToNodeVector.y() / microphoneToNodeVector.norm());
+			if (microphoneToNodeVector.norm() != 0)
+				newElev = asinf(microphoneToNodeVector.y() / microphoneToNodeVector.norm());
+			else
+				newElev = 0;
 
 			//if different then update spherical harmonics values for this waveguide
 			if (newAzi != AZIMUTH(i) || newElev != ELEVATION(i))
@@ -57,7 +60,7 @@ void Ambisonic::getSphericalHarmonics(int channel)
 
 	for (int i = 0; i < ambisonicOrder + 1; i++)
 	{
-		if (i == 0)
+		if (i == 0) //optimize this if out of for
 		{
 			channelGains(0, channel) = 1.0f;
 			index_n = 1;
@@ -66,11 +69,11 @@ void Ambisonic::getSphericalHarmonics(int channel)
 		{
 			unnormalisedLegendrePoly(i, sin_el, leg_n_1, leg_n_2, leg_n);
 
-			Nn0 = sqrtf(2 * (float) i + 1);
+			Nn0 = sqrtf((2 * i) + 1);
 
 			for (int j = 0; j < i + 1; j++)
 			{
-				if (j == 0)
+				if (j == 0) //optimize this if out of for
 					channelGains(index_n + i, channel) = Nn0 * leg_n[j];
 				else
 				{
@@ -84,8 +87,8 @@ void Ambisonic::getSphericalHarmonics(int channel)
 
 		}
 
-		std::copy(leg_n_1, &leg_n_1[5], leg_n_2);
-		std::copy(leg_n, &leg_n[5], leg_n_1);
+		std::copy(leg_n_1, leg_n_1 + 6, leg_n_2);
+		std::copy(leg_n, leg_n + 6, leg_n_1);
 	}
 
 }
@@ -93,7 +96,7 @@ void Ambisonic::getSphericalHarmonics(int channel)
 void Ambisonic::unnormalisedLegendrePoly(int polyOrder, float x, float* poly1, float* poly2, float* outPoly)
 {
 
-	int x2 = x * x;
+	float x2 = x * x;
 	
 	switch (polyOrder)
 	{

@@ -286,6 +286,17 @@ void Room::muteLOS(bool condition)
 	sourceListener.setAttenuation(!condition * (1 / sourceListener.getDistance()));
 }
 
+void Room::enableAirAbsorption(bool absorb)
+{
+	sourceListener.enableAirAbsorption(absorb);
+	for (WaveGuide& guide : sourceNode)
+		guide.enableAirAbsorption(absorb);
+	for (WaveGuide& guide : NodeToNode)
+		guide.enableAirAbsorption(absorb);
+	for (WaveGuide& guide : nodeListener)
+		guide.enableAirAbsorption(absorb);
+}
+
 #ifdef _BRT_LIBRARY_
 void Room::setHRTF(std::string& newPath)
 {

@@ -280,6 +280,9 @@ void RealtimeSDNAudioProcessor::parameterChanged(const String& paramID, float ne
     
     if (paramID == "LOS")
         room.muteLOS(newValue < 0.5f);
+
+    if (paramID == "airAbsorption")
+        room.enableAirAbsorption(newValue);
 }
 
 void RealtimeSDNAudioProcessor::setOutputMode(int mode)
