@@ -214,13 +214,15 @@ void RealtimeSDNAudioProcessor::setStateInformation (const void* data, int sizeI
         }
 }
 
-void RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
+bool RealtimeSDNAudioProcessor::setHRTF(const String& newPath)
 {
     if (newPath.fromLastOccurrenceOf(".", false, false) == "sofa")
     {
-        hrtfPath = newPath;
 #ifdef _BRT_LIBRARY_
-        room.setHRTF(newPath.toStdString());
+        bool loaded = room.setHRTF(newPath.toStdString());
+        if (loaded)
+            hrtfPath = newPath;
+        return loaded;
 #endif
     }
 }

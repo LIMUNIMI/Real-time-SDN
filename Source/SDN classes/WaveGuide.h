@@ -58,6 +58,7 @@ private:
 	float distance;
 	float toSamplesConst = 0;
 	float attenuation;
+	double sampleFreq = 0;
 
 	std::vector<double> a, b;
 	IIRBase airAbsorptionFilter;

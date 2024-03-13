@@ -298,8 +298,8 @@ void Room::enableAirAbsorption(bool absorb)
 }
 
 #ifdef _BRT_LIBRARY_
-void Room::setHRTF(std::string& newPath)
+bool Room::setHRTF(std::string& newPath)
 {
-	receiver.setHRTF(newPath);
+	return receiver.setHRTF(newPath);
 }
 #endif

@@ -55,9 +55,9 @@ void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d positio
 		if (newPos)
 		{
 			//convert axis reference to y-right, z-up
-			tempTransform.SetPosition(Common::CVector3(position.z, position.x, position.y));
+			tempTransform.SetPosition(Common::CVector3(position.z, -position.x, position.y));
 			tempTransform.SetOrientation(Common::CQuaternion(currentRotation.w(), currentRotation.z(),
-				currentRotation.x(), currentRotation.y()));
+				currentRotation.x(), -currentRotation.y()));
 			envListener->SetListenerTransform(tempTransform);
 
 			tempTransform.SetOrientation(Common::CQuaternion());
@@ -65,7 +65,7 @@ void HRTF_output::process(std::vector<WaveGuide*>& inWaveguides, Point3d positio
 			for (WaveGuide* guide : inWaveguides)
 			{
 				tempTransform.SetPosition(Common::CVector3(guide->getStart()->getPosition().z,
-					guide->getStart()->getPosition().x,
+					-guide->getStart()->getPosition().x,
 					guide->getStart()->getPosition().y));
 				envSources[i]->SetSourceTransform(tempTransform);
 

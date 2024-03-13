@@ -37,7 +37,7 @@ public:
 	void enableAirAbsorption(bool absorb);
 
 #ifdef _BRT_LIBRARY_
-	void setHRTF(std::string& newPath);
+	bool setHRTF(std::string& newPath);
 #endif
 
 	bool geometryHasChanged() { return hasChanged || receiver.isRotating(); }

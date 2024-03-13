@@ -27,7 +27,7 @@ public:
 	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
 		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
-	void setHRTF(std::string& newPath)
+	bool setHRTF(std::string& newPath)
 	{
 		std::shared_ptr<BRTServices::CHRTF>  temp_hrtf_loaded = std::make_shared<BRTServices::CHRTF>();
 		bool result = sofaReader.ReadHRTFFromSofa(newPath, temp_hrtf_loaded, HRTFRESAMPLINGSTEP);
@@ -35,9 +35,14 @@ public:
 		if (result) 
 		{
 			envListener->RemoveHRTF();
-			envListener->SetHRTF(temp_hrtf_loaded);
-			hrtf_loaded = temp_hrtf_loaded;
+			result &= envListener->SetHRTF(temp_hrtf_loaded);
+			if (!result)
+				envListener->SetHRTF(hrtf_loaded);
+			else
+				hrtf_loaded = temp_hrtf_loaded;
 		}
+
+		return result;
 	}
 
 private:

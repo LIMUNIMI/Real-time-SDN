@@ -158,10 +158,14 @@ void DragAndDropPanel::filesDropped(const StringArray& files, int x, int y)
     customColour = juce::Colour(0xff3d92a3);
     getParentComponent()->getParentComponent()->setVisible(false);
 
-    processor.setHRTF(files[0]);
-    fileName_label->setText("Current HRTF file: \n" +
-        processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
-        NotificationType::dontSendNotification);
+    bool loaded = processor.setHRTF(files[0]);
+
+    if (loaded)
+        fileName_label->setText("Current HRTF file: \n" +
+            processor.getHRTFPath().fromLastOccurrenceOf("\\", false, false),
+            NotificationType::dontSendNotification);
+    else
+        AlertWindow::showMessageBoxAsync(MessageBoxIconType::WarningIcon, "Sofa", "Failed to load the sofa file", "Accept", this);
 
     repaint();
 }

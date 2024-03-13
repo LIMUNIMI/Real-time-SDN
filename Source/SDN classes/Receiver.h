@@ -24,9 +24,9 @@ public:
 
 	void updatePosition();
 #ifdef _BRT_LIBRARY_
-	void setHRTF(std::string& newPath)
+	bool setHRTF(std::string& newPath)
 	{
-		hrtf->setHRTF(newPath);
+		return hrtf->setHRTF(newPath);
 	}
 #endif
 
