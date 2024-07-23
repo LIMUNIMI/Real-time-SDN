@@ -38,6 +38,8 @@ The plugin version with HRTF processing requires the [BRT Library](https://githu
 
 ## References
 This work is based on the following publications:
+> Fontana, M., Presti, G., Fantini, D., Avanzini, F., Reyes-Lecuona, A. (2024, September). A highly parametrized scattering delay network implementation for interactive room auralization. In press at 27th International Conference on Digital Audio Effects (DAFx24)
+
 > Fontana, M. (2023). Scattering delay networks for real time audio in augmented reality. Master thesis. Università degli Studi di Milano. Milan.
 
 > De Sena, E., Hacihabiboglu, H., & Cvetkovic, Z. (2011, February). Scattering delay network: An interactive reverberator for computer games. In Audio Engineering Society Conference: 41st International Conference: Audio for Games. Audio Engineering Society.
