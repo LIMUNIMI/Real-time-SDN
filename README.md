@@ -36,11 +36,14 @@ Some other info about the plugin:
 ## Build notes
 The plugin version with HRTF processing requires the [BRT Library](https://github.com/GrupoDiana/BRTLibrary/tree/main) to be included. Additionaly, on Mac or Linux systems, the "mysofa.lib" and "zlibstatic.lib" files (provided by the BRT Library) must also be added as external libraries to link.
 
+## Disclaimer
+
+The Scattering delay networks alghoritm is patented in the United States, please make sure to use it following the proper regulations
+
 ## References
 
 To cite this work:
-> Fontana, M., Presti, G., Fantini, D., Avanzini, F., Reyes-Lecuona, A. (2024, September). A highly parametrized scattering delay network implementation for interactive room auralization. In press at 27th International Conference on Digital Audio Effects (DAFx24)
-
+> Fontana, M., Presti, G., Fantini, D., Avanzini, F., Reyes-Lecuona, A. (2024, September). A highly parametrized scattering delay network implementation for interactive room auralization. In proceedings of the 27-th Int. Conf. on Digital Audio Effects (DAFx24), pp. 286-293
 ```
 @inproceedings{DAFx24_paper_34,
     author = "Fontana, Marco and Presti, Giorgio and Fantini, Davide and Avanzini, Federico and Reyes-Lecuona, Arcadio",
@@ -59,7 +62,7 @@ To cite this work:
 ```
 ##
 This work is based on the following publications:
-> Fontana, M., Presti, G., Fantini, D., Avanzini, F., Reyes-Lecuona, A. (2024, September). A highly parametrized scattering delay network implementation for interactive room auralization. In press at 27th International Conference on Digital Audio Effects (DAFx24)
+> Fontana, M., Presti, G., Fantini, D., Avanzini, F., Reyes-Lecuona, A. (2024, September). A highly parametrized scattering delay network implementation for interactive room auralization. In proceedings of the 27-th Int. Conf. on Digital Audio Effects (DAFx24), pp. 286-293
 
 > De Sena, E., Hacihabiboglu, H., & Cvetkovic, Z. (2011, February). Scattering delay network: An interactive reverberator for computer games. In Audio Engineering Society Conference: 41st International Conference: Audio for Games. Audio Engineering Society.
 
