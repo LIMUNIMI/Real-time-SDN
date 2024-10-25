@@ -193,7 +193,6 @@ RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeSta
     setDropDownAvailableOptions(processor.getMainBusNumOutputChannels());
 
     OSC_port_selector->setInputRestrictions(4, "0123456789");
-
     //[/UserPreSize]
 
     setSize (1018, 720);

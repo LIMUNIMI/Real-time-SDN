@@ -19,6 +19,7 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 	inSamples = std::vector<float>(nOfConnections);
 	toListenerSample = 0;
 	wallFilters = std::vector<IIRBase>(nOfConnections);
+	wallLimiters = std::vector<Limiter>(nOfConnections);
 	totLoudness = 0.0f;
 
 	std::vector<std::vector<double>> coeffs = dspUtils::getWallFilterCoeffs(samplerate, absorption[0],
@@ -27,9 +28,10 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 	a = coeffs[1];
 	b = coeffs[0];
 	
-	for (IIRBase& filter : wallFilters)
+	for (int i = 0; i < nOfConnections; i++)
 	{
-		filter.init(samplerate, &a, &b);
+		wallFilters[i].init(samplerate, &a, &b);
+		wallLimiters[i].prepareToPlay(samplerate);
 	}
 
 }
@@ -79,6 +81,7 @@ void ScatteringNode::getAllOutSamples()
 		float chSample = totLoudness - inSamples[inSampleIndex];
 
 		wallFilters[i].process(chSample);
+		wallLimiters[i].processBlock(chSample);
 
 		outWaveguides[i]->pushNextSample(chSample);
 		toListenerSample += chSample;

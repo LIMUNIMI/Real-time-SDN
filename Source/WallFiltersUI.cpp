@@ -231,25 +231,28 @@ void WallFiltersUI::buttonClicked (juce::Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void WallFiltersUI::openPickerWindow(int wallId, Point<int>& position, Point<float>* pickerCoord)
+void WallFiltersUI::openPickerWindow(Absorp* wall, Point<int>& position, Point<float>* pickerCoord)
 {
+    int wallId = wall->getWallId();
     Point<int> adjustedPos = position;
     if (!absorptionPickerWindow)
     {
         absorptionPickerWindow.reset(new Absorption2DWindow(
-            new Absorption2DPanel(processor, valueTreeState),
-            Parameters::WALL_NAMES[0],
+            new Absorption2DUI(processor, valueTreeState),
+            "PickerWindow",
             juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
             juce::DocumentWindow::closeButton));
-        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setPickerCoords(pickerCoord, wall);
     }
 
     adjustedPos.setY(position.y + (wall1->getHeight() / 2) - (absorptionPickerWindow->getHeight() / 2));
     if (absorptionPickerWindow->getWallId() != wallId)
     {
+        absorptionPickerWindow->setVisible(false);
         absorptionPickerWindow->setWallId(wallId);
+        absorptionPickerWindow->getWallInstance()->enableAbs();
         absorptionPickerWindow->setTopLeftPosition(adjustedPos);
-        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setPickerCoords(pickerCoord, wall);
         absorptionPickerWindow->setVisible(true);
     }
     else if (absorptionPickerWindow->isVisible())
@@ -259,23 +262,36 @@ void WallFiltersUI::openPickerWindow(int wallId, Point<int>& position, Point<flo
     else
     {
         absorptionPickerWindow->setTopLeftPosition(adjustedPos);
-        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setPickerCoords(pickerCoord, wall);
         absorptionPickerWindow->setVisible(true);
     }
+
+    wall->disableAbs();
+    absorptionPickerWindow->grabKeyboardFocus();
+    absorptionPickerWindow->setWindowFocus(true);
 }
 
 void WallFiltersUI::hidePickerWindow()
 {
     if (absorptionPickerWindow)
-        absorptionPickerWindow->setVisible(false);
-}
-void WallFiltersUI::setPickerToPreset(int wallId, int preset, Point<float>* pickerCoord)
-{
-    pickerCoord->setXY(AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][0] * absorptionPickerWindow->getPanelWidth(),
-        AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][1] * absorptionPickerWindow->getPanelHeight());
-    if (absorptionPickerWindow->getWallId() == wallId)
     {
-        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setVisible(false);
+        absorptionPickerWindow->getWallInstance()->enableAbs();
+        absorptionPickerWindow->setWindowFocus(false);
+    }
+}
+
+void WallFiltersUI::setPickerToPreset(Absorp* wall, int preset, Point<float>* pickerCoord)
+{
+    if (absorptionPickerWindow)
+    {
+        int wallId = wall->getWallId();
+        pickerCoord->setXY(AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][0] * absorptionPickerWindow->getPanelWidth(),
+            AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][1] * absorptionPickerWindow->getPanelHeight());
+        if (absorptionPickerWindow->getWallId() == wallId)
+        {
+            absorptionPickerWindow->setPickerCoords(pickerCoord, wall);
+        }
     }
 }
 //[/MiscUserCode]

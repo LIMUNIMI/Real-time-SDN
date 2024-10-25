@@ -106,7 +106,6 @@ void RoomPlane::paint (juce::Graphics& g)
 
 void RoomPlane::resized()
 {
-    drawableAspectRatio = getLocalBounds().getAspectRatio();
     figureSize = 0.05 * getWidth();
     arrowHeadsize = figureSize * 0.75;
     sourceRect.setSize(figureSize, figureSize);
@@ -119,6 +118,8 @@ void RoomPlane::resized()
     maxRoomArea.setSize(getWidth() - figureSize, getHeight() - figureSize);
     maxRoomArea.setCentre(getLocalBounds().getCentre().x + (figureSize / 2), 
         getLocalBounds().getCentre().y - (figureSize / 2));
+
+    drawableAspectRatio = maxRoomArea.toFloat().getAspectRatio();
 
     updatePlaneCoords();
 }
@@ -177,9 +178,9 @@ float RoomPlane::getRoomAspectRatio()
 
 void RoomPlane::positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam)
 {
-    Point<int> newCoord = event.getMouseDownPosition() + event.getOffsetFromDragStart() - roomArea.getPosition();
-    float newPosHoriz = std::max(std::min((float)newCoord.getX() / roomArea.getWidth(), 1.0f), 0.0f);
-    float newPosVert = std::max(std::min((float)newCoord.getY() / roomArea.getHeight(), 1.0f), 0.0f);
+    Point<float> newCoord = event.mouseDownPosition + event.getOffsetFromDragStart().toFloat() - roomArea.getPosition().toFloat();
+    float newPosHoriz = std::max(std::min(newCoord.getX() / (float)roomArea.getWidth(), 1.0f), 0.0f);
+    float newPosVert = std::max(std::min(newCoord.getY() / (float)roomArea.getHeight(), 1.0f), 0.0f);
 
     valueTreeState.getParameter(horizontalParam)->beginChangeGesture();
     valueTreeState.getParameter(horizontalParam)->setValueNotifyingHost(newPosHoriz);

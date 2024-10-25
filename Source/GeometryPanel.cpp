@@ -150,6 +150,13 @@ GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
     roomXAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsX", *roomX));
     roomYAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsY", *roomY));
     roomZAttachment.reset(new SliderAttachment(valueTreeState, "DimensionsZ", *roomZ));
+
+    listenerPitch->setRotaryParameters(juce::MathConstants<float>::pi, juce::MathConstants<float>::twoPi + juce::MathConstants<float>::pi, false);
+    listenerRoll->setRotaryParameters(juce::MathConstants<float>::pi, juce::MathConstants<float>::twoPi + juce::MathConstants<float>::pi, false);
+    listenerYaw->setRotaryParameters(juce::MathConstants<float>::pi, juce::MathConstants<float>::twoPi + juce::MathConstants<float>::pi, false);
+    listenerPitch->setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::transparentWhite);
+    listenerRoll->setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::transparentWhite);
+    listenerYaw->setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::transparentWhite);
     //[/UserPreSize]
 
     setSize (630, 600);

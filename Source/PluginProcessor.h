@@ -77,6 +77,7 @@ private:
     AudioBuffer<float> internalBuffer;
     int internalBufferFill = 0;
     String hrtfPath = "";
+    bool isChangingParams = false;
 
     //bool wrongOutput = false;
     //==============================================================================

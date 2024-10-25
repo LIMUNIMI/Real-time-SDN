@@ -36,6 +36,25 @@ public:
     ~Slider_reverse() {};
     double proportionOfLengthToValue(double proportion) { return JUCE_NAMESPACE::Slider::proportionOfLengthToValue(1.0f - proportion); };
     double valueToProportionOfLength(double value) { return 1.0f - (JUCE_NAMESPACE::Slider::valueToProportionOfLength(value)); };
+    String getTextFromValue(double value) override
+    {
+        return String::toDecimalStringWithSignificantFigures(value, 2);
+    };
+
+    void mouseDown(const MouseEvent& e) override
+    {
+        Slider::mouseDown(e);
+        setMouseCursor(MouseCursor::NoCursor);
+    };
+
+    void mouseUp(const MouseEvent& e) override
+    {
+        Slider::mouseUp(e);
+        setMouseCursor(MouseCursor::NormalCursor);
+        Point<float> pos = getScreenPosition().toFloat();
+        pos.setXY(pos.x + (getWidth() * 0.5), pos.y + getPositionOfValue(getValue()));
+        Desktop::getInstance().getMainMouseSource().setScreenPosition(pos);
+    };
 };
 
 //[/Headers]
@@ -62,18 +81,27 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void timerCallback() override;
+    void disableAbs();
+    void enableAbs();
+    int getWallId() { return wallID; }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
+    // Binary resources:
+    static const char* upload_png;
+    static const int upload_pngSize;
+    static const char* down_png;
+    static const int down_pngSize;
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     void setAllAbsorptionToTarget(float newValue);
     void setAbsorptionToPreset(int preset);
+    void scaleAbsorption(float scale);
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
@@ -108,6 +136,8 @@ private:
     //==============================================================================
     std::unique_ptr<juce::TextButton> presets_button;
     std::unique_ptr<juce::TextButton> Absorption_window_button;
+    std::unique_ptr<juce::ImageButton> scaleUp;
+    std::unique_ptr<juce::ImageButton> scaleDown;
 
 
     //==============================================================================

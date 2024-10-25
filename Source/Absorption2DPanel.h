@@ -1,18 +1,18 @@
 #pragma once
 
-#pragma once
-
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include <Eigen/Geometry>
 #include "AbsorptionSpace.h"
+#include "Absorp.h"
 #include <mutex>
 
+class Absorption2DUI;
 
 class Absorption2DPanel : public juce::Component, public Timer
 {
 public:
-    Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, Absorption2DUI& parent);
     ~Absorption2DPanel();
 
     void paint(juce::Graphics&) override;
@@ -26,12 +26,19 @@ public:
 
     void setCurrentWallId(int newId);
     int getCurrentWallId() { return currentWallId; };
-    void setWallCoords(Point<float>* newCoords);
+    
+    void setWallCoords(Point<float>* newCoords, Absorp* wal); 
+    void update2DCoords(float x, float y);
+    void updateX(float x);
+    void updateY(float y);
+
+    Absorp* wall;
 
 private:
 
     void positionChangeOnMouseDrag(const MouseEvent& event);
     void updatePluginParams();
+    void findFilter();
 
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
@@ -50,6 +57,8 @@ private:
     Point<float>* wallCoords;
 
     juce::Rectangle<float> pickerRect, pickerRectInternal;
+
+    Absorption2DUI& ui;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Absorption2DPanel)
 };

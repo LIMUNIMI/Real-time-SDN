@@ -47,9 +47,9 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void openPickerWindow(int wallId, Point<int>& position, Point<float>* pickerCoord);
+    void openPickerWindow(Absorp* wall, Point<int>& position, Point<float>* pickerCoord);
     void hidePickerWindow();
-    void setPickerToPreset(int wallId, int preset, Point<float>* pickerCoord);
+    void setPickerToPreset(Absorp* wall, int preset, Point<float>* pickerCoord);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;

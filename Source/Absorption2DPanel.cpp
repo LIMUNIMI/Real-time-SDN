@@ -1,14 +1,11 @@
 #include "Absorption2DPanel.h"
+#include "Absorption2DUI.h"
 
-Absorption2DPanel::Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
-	: processor(p), valueTreeState(vts)
+Absorption2DPanel::Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, Absorption2DUI& parent)
+	: processor(p), valueTreeState(vts), ui(parent)
 {
 	startTimerHz(60);
 
-	//svgFile = File("C:\\Users\\Marco\\Documents\\Juce\\Real time SDN\\Binary\\FilterSpace.svg");
-	//pngFile = File("C:\\Users\\Marco\\Documents\\Juce\\Real time SDN\\Binary\\FilterSpace.png");
-	//backgroundImg = Drawable::createFromSVGFile(svgFile);
-	//backgroundImg = Drawable::createFromImageFile(pngFile);
 	backgroundImg = Drawable::createFromImageData(BinaryData::FilterSpace_png, BinaryData::FilterSpace_pngSize);
 	addAndMakeVisible(backgroundImg.get());
 	backgroundImg->setBounds(getLocalBounds());
@@ -42,7 +39,7 @@ Absorption2DPanel::Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcesso
 			AbsorptionSpace::points[AbsorptionSpace::simplices[i][2]][1]);
 	}
 
-	setSize(250, 250);
+	//setSize(400, 400);
 }
 
 Absorption2DPanel::~Absorption2DPanel()
@@ -63,9 +60,9 @@ void Absorption2DPanel::resized()
 	convexHull.scaleToFit(0, 0, getWidth(), getHeight(), false);
 	backgroundImg->setTransformToFit(getLocalBounds().toFloat(), RectanglePlacement::stretchToFit);
 	
-	pickerRect.setSize(0.05 * getWidth(), 0.05 * getWidth());
+	pickerRect.setSize(0.02 * getWidth(), 0.02 * getWidth());
 	pickerRect.setCentre(getBounds().getCentre().toFloat());
-	pickerRectInternal.setSize(0.35 * pickerRect.getWidth(), 0.35 * pickerRect.getWidth());
+	pickerRectInternal.setSize( pickerRect.getWidth(), pickerRect.getWidth());
 	pickerRectInternal.setCentre(pickerRect.getCentre());
 	
 	intersectionLine.setStart(getBounds().getCentre().toFloat());
@@ -81,17 +78,11 @@ void Absorption2DPanel::paintOverChildren(Graphics& g)
 {
 	if (validPosition)
 	{
-		g.setColour(Colours::black);
-		g.fillEllipse(pickerRect);
 		g.setColour(Colours::white);
-		g.fillEllipse(pickerRectInternal);
+		g.drawEllipse(pickerRectInternal,4);
+		g.setColour(Colours::black);
+		g.drawEllipse(pickerRect, 3);
 	}
-	//g.strokePath(convexHull, PathStrokeType(1));
-	//g.setColour(Colours::darkred);
-	//for (int i = 0; i < AbsorptionSpace::NUM_SIMPLICES; i++)
-	//{
-	//	g.strokePath(uiSimplices[i], PathStrokeType(1));
-	//}
 }
 
 void Absorption2DPanel::mouseDown(const MouseEvent& event)
@@ -131,13 +122,18 @@ void Absorption2DPanel::setCurrentWallId(int newId)
 	currentWallId = newId;
 }
 
-void Absorption2DPanel::setWallCoords(Point<float>* newCoords)
+void Absorption2DPanel::setWallCoords(Point<float>* newCoords, Absorp* wal)
 {
 	wallCoords = newCoords;
+	wall = wal;
 	if (wallCoords->x != -1)
 	{
 		pickerRect.setCentre(*wallCoords);
 		pickerRectInternal.setCentre(pickerRect.getCentre());
+		float newPosHoriz = std::max(std::min(newCoords->getX(), (float)getWidth()), 0.0f);
+		float newPosVert = std::max(std::min(newCoords->getY(), (float)getHeight()), 0.0f);
+
+		ui.setSliderValues(newPosHoriz / getHeight(), 1 - (newPosVert / getWidth()));
 		validPosition = true;
 	}
 	else
@@ -146,20 +142,74 @@ void Absorption2DPanel::setWallCoords(Point<float>* newCoords)
 	}
 }
 
+void Absorption2DPanel::update2DCoords(float x, float y)
+{
+	wallCoords->setXY(x, y);
+	validPosition = true;
+	pickerRect.setCentre(x, y);
+	pickerRectInternal.setCentre(pickerRect.getCentre());
+	findFilter();
+}
+
+void Absorption2DPanel::updateX(float x)
+{
+	wallCoords->setX(x);
+	if (!validPosition)
+	{
+		wallCoords->setY((1 - ui.getYsliderValue()) * getHeight());
+		validPosition = true;
+	}
+	pickerRect.setCentre(*wallCoords);
+	pickerRectInternal.setCentre(pickerRect.getCentre());
+	findFilter();
+}
+
+void Absorption2DPanel::updateY(float y)
+{
+	wallCoords->setY(y);
+	if (!validPosition)
+	{
+		wallCoords->setX(ui.getXsliderValue() * getWidth());
+		validPosition = true;
+	}
+	pickerRect.setCentre(*wallCoords);
+	pickerRectInternal.setCentre(pickerRect.getCentre());
+	findFilter();
+}
+
 void Absorption2DPanel::positionChangeOnMouseDrag(const MouseEvent& event)
 {
     newCoord = event.mouseDownPosition + clickoffset + event.getOffsetFromDragStart().toFloat() - backgroundImg->getPosition().toFloat();
     float newPosHoriz = std::max(std::min(newCoord.getX(), (float)getWidth()), 0.0f);
     float newPosVert = std::max(std::min(newCoord.getY(), (float)getHeight()), 0.0f);
 
-	pickerRect.setCentre(newPosHoriz, newPosVert);
-	pickerRectInternal.setCentre(pickerRect.getCentre());
-	wallCoords->setXY(newPosHoriz, newPosVert);
+	ui.setSliderValues(newPosHoriz / getHeight(), 1-(newPosVert / getWidth()));
 
-	intersectionLine.setEnd(newPosHoriz, newPosVert);
+	findFilter();
+}
+
+void Absorption2DPanel::updatePluginParams()
+{
+	if (filterChanged)
+	{
+		std::unique_lock<std::mutex> lck(mut);
+		for (int i = 0; i < Parameters::NUM_FREQ; i++)
+		{
+			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->beginChangeGesture();
+			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->setValueNotifyingHost(tempFilter[i]);
+			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->endChangeGesture();
+		}
+		filterChanged = false;
+		lck.unlock();
+	}
+}
+
+void Absorption2DPanel::findFilter()
+{
+	intersectionLine.setEnd(*wallCoords);
 	intersectionLine = convexHull.getClippedLine(intersectionLine, false);
-	float x = intersectionLine.getEndX() - (signbit(newPosHoriz - getBounds().getCentreX()) ? -1 : 1),
-		  y = intersectionLine.getEndY() - (signbit(newPosVert - getBounds().getCentreY()) ? -1 : 1);
+	float x = intersectionLine.getEndX() - (signbit(wallCoords->x - getBounds().getCentreX()) ? -1 : 1),
+		y = intersectionLine.getEndY() - (signbit(wallCoords->y - getBounds().getCentreY()) ? -1 : 1);
 
 	for (int i = 0; i < AbsorptionSpace::NUM_SIMPLICES; i++)
 	{
@@ -172,9 +222,9 @@ void Absorption2DPanel::positionChangeOnMouseDrag(const MouseEvent& event)
 				AbsorptionSpace::points[AbsorptionSpace::simplices[i][1]][1] - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][1]);
 			v1.setXY(AbsorptionSpace::points[AbsorptionSpace::simplices[i][2]][0] - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][0],
 				AbsorptionSpace::points[AbsorptionSpace::simplices[i][2]][1] - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][1]);
-			v2.setXY((x/getWidth()) - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][0],
-				(y/getHeight()) - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][1]);
-			
+			v2.setXY((x / getWidth()) - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][0],
+				(y / getHeight()) - AbsorptionSpace::points[AbsorptionSpace::simplices[i][0]][1]);
+
 			float rec_den = 1 / (v0.x * v1.y - v1.x * v0.y);
 			baricentricCoord[1] = (v2.x * v1.y - v1.x * v2.y) * rec_den;
 			baricentricCoord[2] = (v0.x * v2.y - v2.x * v0.y) * rec_den;
@@ -195,21 +245,5 @@ void Absorption2DPanel::positionChangeOnMouseDrag(const MouseEvent& event)
 			lck.unlock();
 			break;
 		}
-	}
-}
-
-void Absorption2DPanel::updatePluginParams()
-{
-	if (filterChanged)
-	{
-		std::unique_lock<std::mutex> lck(mut);
-		for (int i = 0; i < Parameters::NUM_FREQ; i++)
-		{
-			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->beginChangeGesture();
-			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->setValueNotifyingHost(tempFilter[i]);
-			valueTreeState.getParameter(String("freq") + String(currentWallId) + String(i))->endChangeGesture();
-		}
-		filterChanged = false;
-		lck.unlock();
 	}
 }

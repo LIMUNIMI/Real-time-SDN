@@ -9,10 +9,14 @@
               defines="JUCE_MODAL_LOOPS_PERMITTED = 1" cppLanguageStandard="17">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{44BC4387-CCD4-2120-93D9-E4FF5C4363AC}" name="Assets">
-      <FILE id="Wyap8u" name="FilterSpace.png" compile="0" resource="1" file="Binary/FilterSpace.png"/>
+      <FILE id="Onh3G9" name="FilterSpace.png" compile="0" resource="1" file="Binary/FilterSpace.png"/>
     </GROUP>
     <GROUP id="{670F92B0-7172-2D6A-AF6A-99D5DBFF1A9A}" name="Source">
       <GROUP id="{B2053175-42D2-3910-C404-5AFD2294847E}" name="GUI">
+        <FILE id="MDMuro" name="Absorption2DUI.cpp" compile="1" resource="0"
+              file="Source/Absorption2DUI.cpp"/>
+        <FILE id="qTJ7QQ" name="Absorption2DUI.h" compile="0" resource="0"
+              file="Source/Absorption2DUI.h"/>
         <FILE id="d5L5WY" name="Absorption2DWindow.cpp" compile="1" resource="0"
               file="Source/Absorption2DWindow.cpp"/>
         <FILE id="pdRHqm" name="Absorption2DWindow.h" compile="0" resource="0"
@@ -75,6 +79,8 @@
         <FILE id="JmizbS" name="WaveGuide.h" compile="0" resource="0" file="Source/SDN classes/WaveGuide.h"/>
       </GROUP>
       <GROUP id="{80B7FA1C-5860-CA1D-E73C-AC79F3D62E9C}" name="Utils">
+        <FILE id="omV1fz" name="Limiter.cpp" compile="1" resource="0" file="Source/Utils/Limiter.cpp"/>
+        <FILE id="dVj5pC" name="Limiter.h" compile="0" resource="0" file="Source/Utils/Limiter.h"/>
         <FILE id="BwrOlz" name="AbsorptionSpace.h" compile="0" resource="0"
               file="Source/Utils/AbsorptionSpace.h"/>
         <FILE id="IGJD3Z" name="FilterPresets.h" compile="0" resource="0" file="Source/Utils/FilterPresets.h"/>

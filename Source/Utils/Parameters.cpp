@@ -5,13 +5,13 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
 	//Does not go to 0 and 1 to avoid clipping into the wall
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceX", "Source X", 0.0f, 1.0f, 0.50f));
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceY", "Source Y", 0.0f, 1.0f, 0.70f));
-	params.push_back(std::make_unique<AudioParameterFloat>("SourceZ", "Source Z", 0.0f, 1.0f, 0.75f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceX", "Source X", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.50f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceY", "Source Y", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.70f));
+	params.push_back(std::make_unique<AudioParameterFloat>("SourceZ", "Source Z", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.75f));
 
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerX", "Listener X", 0.0f, 1.0f, 0.50f));
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerY", "Listener Y", 0.0f, 1.0f, 0.60f));
-	params.push_back(std::make_unique<AudioParameterFloat>("ListenerZ", "Listener Z", 0.0f, 1.0f, 0.25f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerX", "Listener X", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.50f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerY", "Listener Y", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.60f));
+	params.push_back(std::make_unique<AudioParameterFloat>("ListenerZ", "Listener Z", NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.25f));
 
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRotx", "Listener Pitch", -180.0f, 180.0f, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("ListenerRoty", "Listener Yaw", -180.0f, 180.0f, 0.0f));
@@ -31,7 +31,7 @@ AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout(
 	{
 		for (int j = 0; j < NUM_FREQ; j++)
 		{
-			params.push_back(std::make_unique<AudioParameterFloat>("freq" + String(i) + String(j), String(125 * pow(2, j)) + "HZ Wall " + String::charToString(axishelper[i]).toUpperCase() + " " + String(i % 2), 0.0001f, 1.0f, 0.25f + 0.5f * (float)j/NUM_FREQ));
+			params.push_back(std::make_unique<AudioParameterFloat>("freq" + String(i) + String(j), String(125 * pow(2, j)) + "HZ Wall " + String::charToString(axishelper[i]).toUpperCase() + " " + String(i % 2), NormalisableRange<float>(0.0f, 1.0f, 0.00001, 1), 0.25f + 0.5f * (float)j/NUM_FREQ));
 		}
 	}
 

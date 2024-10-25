@@ -4,6 +4,7 @@
 #include <WaveGuide.h>
 #include <IIRBase.h>
 #include <DSPUtils.h>
+#include "Limiter.h"
 
 //Scattering node in SDN srchitecture uses IIR filters to simulate material absorption
 class ScatteringNode : public Node
@@ -55,6 +56,7 @@ private:
 	float totLoudness = 0;
 
 	std::vector<IIRBase> wallFilters;
+	std::vector<Limiter> wallLimiters;
 	WaveGuide* sourceGuide = 0;
 	WaveGuide* listenerGuide = 0;
 

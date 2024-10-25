@@ -148,6 +148,7 @@ std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, dou
 	}
 
 	std::vector<std::vector<double>> out;
+	b = polystab(b);
 	out.push_back(b);
 	out.push_back(a);
 
