@@ -33,41 +33,41 @@ WallFiltersUI::WallFiltersUI (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    wall1.reset (new Absorp (processor, valueTreeState, 2));
+    wall1.reset (new Absorp (processor, valueTreeState, 2, this));
     addAndMakeVisible (wall1.get());
     wall1->setName ("new component");
 
-    wall1->setBounds (8, 48, 296, 128);
+    wall1->setBounds (24, 48, 265, 140);
 
-    wall2.reset (new Absorp (processor, valueTreeState, 4));
+    wall2.reset (new Absorp (processor, valueTreeState, 5, this));
     addAndMakeVisible (wall2.get());
     wall2->setName ("new component");
 
-    wall2->setBounds (8, 232, 296, 128);
+    wall2->setBounds (24, 232, 265, 140);
 
-    wall3.reset (new Absorp (processor, valueTreeState, 0));
+    wall3.reset (new Absorp (processor, valueTreeState, 0, this));
     addAndMakeVisible (wall3.get());
     wall3->setName ("new component");
 
-    wall3->setBounds (8, 416, 296, 128);
+    wall3->setBounds (24, 416, 265, 140);
 
-    wall4.reset (new Absorp (processor, valueTreeState, 3));
+    wall4.reset (new Absorp (processor, valueTreeState, 3, this));
     addAndMakeVisible (wall4.get());
     wall4->setName ("new component");
 
-    wall4->setBounds (328, 48, 296, 128);
+    wall4->setBounds (336, 48, 265, 140);
 
-    wall5.reset (new Absorp (processor, valueTreeState, 5));
+    wall5.reset (new Absorp (processor, valueTreeState, 4, this));
     addAndMakeVisible (wall5.get());
     wall5->setName ("new component");
 
-    wall5->setBounds (328, 232, 296, 128);
+    wall5->setBounds (336, 232, 265, 140);
 
-    wall6.reset (new Absorp (processor, valueTreeState, 1));
+    wall6.reset (new Absorp (processor, valueTreeState, 1, this));
     addAndMakeVisible (wall6.get());
     wall6->setName ("new component");
 
-    wall6->setBounds (328, 416, 296, 128);
+    wall6->setBounds (336, 416, 265, 140);
 
     airAbsortion_button.reset (new juce::ToggleButton ("airAbsortion_button"));
     addAndMakeVisible (airAbsortion_button.get());
@@ -91,6 +91,8 @@ WallFiltersUI::WallFiltersUI (RealtimeSDNAudioProcessor& p, AudioProcessorValueT
 WallFiltersUI::~WallFiltersUI()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
+    airAbosrptionAttachment.reset();
+    absorptionPickerWindow.reset();
     //[/Destructor_pre]
 
     wall1 = nullptr;
@@ -229,6 +231,52 @@ void WallFiltersUI::buttonClicked (juce::Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void WallFiltersUI::openPickerWindow(int wallId, Point<int>& position, Point<float>* pickerCoord)
+{
+    Point<int> adjustedPos = position;
+    if (!absorptionPickerWindow)
+    {
+        absorptionPickerWindow.reset(new Absorption2DWindow(
+            new Absorption2DPanel(processor, valueTreeState),
+            Parameters::WALL_NAMES[0],
+            juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
+            juce::DocumentWindow::closeButton));
+        absorptionPickerWindow->setPickerCoords(pickerCoord);
+    }
+
+    adjustedPos.setY(position.y + (wall1->getHeight() / 2) - (absorptionPickerWindow->getHeight() / 2));
+    if (absorptionPickerWindow->getWallId() != wallId)
+    {
+        absorptionPickerWindow->setWallId(wallId);
+        absorptionPickerWindow->setTopLeftPosition(adjustedPos);
+        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setVisible(true);
+    }
+    else if (absorptionPickerWindow->isVisible())
+    {
+        absorptionPickerWindow->setVisible(false);
+    }
+    else
+    {
+        absorptionPickerWindow->setTopLeftPosition(adjustedPos);
+        absorptionPickerWindow->setPickerCoords(pickerCoord);
+        absorptionPickerWindow->setVisible(true);
+    }
+}
+
+void WallFiltersUI::hidePickerWindow()
+{
+    absorptionPickerWindow->setVisible(false);
+}
+void WallFiltersUI::setPickerToPreset(int wallId, int preset, Point<float>* pickerCoord)
+{
+    pickerCoord->setXY(AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][0] * absorptionPickerWindow->getPanelWidth(),
+        AbsorptionSpace::points[FilterPresets::PRESETS_INDEXES[preset]][1] * absorptionPickerWindow->getPanelHeight());
+    if (absorptionPickerWindow->getWallId() == wallId)
+    {
+        absorptionPickerWindow->setPickerCoords(pickerCoord);
+    }
+}
 //[/MiscUserCode]
 
 
@@ -270,23 +318,23 @@ BEGIN_JUCER_METADATA
           italic="0" justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="new component" id="28e5ac1a4cac4c04" memberName="wall1"
-                    virtualName="" explicitFocusOrder="0" pos="8 48 296 128" class="Absorp"
-                    params="processor, valueTreeState, 2"/>
+                    virtualName="" explicitFocusOrder="0" pos="24 48 265 140" class="Absorp"
+                    params="processor, valueTreeState, 2, this"/>
   <GENERICCOMPONENT name="new component" id="f48b2a76dbd4d152" memberName="wall2"
-                    virtualName="" explicitFocusOrder="0" pos="8 232 296 128" class="Absorp"
-                    params="processor, valueTreeState, 4"/>
+                    virtualName="" explicitFocusOrder="0" pos="24 232 265 140" class="Absorp"
+                    params="processor, valueTreeState, 5, this"/>
   <GENERICCOMPONENT name="new component" id="f1737d42e43f94ce" memberName="wall3"
-                    virtualName="" explicitFocusOrder="0" pos="8 416 296 128" class="Absorp"
-                    params="processor, valueTreeState, 0"/>
+                    virtualName="" explicitFocusOrder="0" pos="24 416 265 140" class="Absorp"
+                    params="processor, valueTreeState, 0, this"/>
   <GENERICCOMPONENT name="new component" id="384f4c598c80770d" memberName="wall4"
-                    virtualName="" explicitFocusOrder="0" pos="328 48 296 128" class="Absorp"
-                    params="processor, valueTreeState, 3"/>
+                    virtualName="" explicitFocusOrder="0" pos="336 48 265 140" class="Absorp"
+                    params="processor, valueTreeState, 3, this"/>
   <GENERICCOMPONENT name="new component" id="eccd39e48289ca7" memberName="wall5"
-                    virtualName="" explicitFocusOrder="0" pos="328 232 296 128" class="Absorp"
-                    params="processor, valueTreeState, 5"/>
+                    virtualName="" explicitFocusOrder="0" pos="336 232 265 140" class="Absorp"
+                    params="processor, valueTreeState, 4, this"/>
   <GENERICCOMPONENT name="new component" id="11aaf23cd9b2f28d" memberName="wall6"
-                    virtualName="" explicitFocusOrder="0" pos="328 416 296 128" class="Absorp"
-                    params="processor, valueTreeState, 1"/>
+                    virtualName="" explicitFocusOrder="0" pos="336 416 265 140" class="Absorp"
+                    params="processor, valueTreeState, 1, this"/>
   <TOGGLEBUTTON name="airAbsortion_button" id="158fd306101db3b6" memberName="airAbsortion_button"
                 virtualName="" explicitFocusOrder="0" pos="256 16 150 24" buttonText="Air absorption"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

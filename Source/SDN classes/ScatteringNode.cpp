@@ -46,7 +46,7 @@ void ScatteringNode::process()
 
 		totLoudness += inSamples[i];
 	}
-	
+	totLoudness *= scatteringCoeff;
 	getAllOutSamples();
 
 }
@@ -76,10 +76,7 @@ void ScatteringNode::getAllOutSamples()
 			}
 		}
 
-		float chInSample = inSamples[inSampleIndex];
-
-		float chSample = totLoudness - chInSample;
-		chSample = (chSample * scatteringCoeff) + (chInSample * (scatteringCoeff - 1));
+		float chSample = totLoudness - inSamples[inSampleIndex];
 
 		wallFilters[i].process(chSample);
 

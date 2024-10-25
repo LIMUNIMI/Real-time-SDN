@@ -18,6 +18,8 @@
 */
 
 //[Headers] You can add your own extra header files here...
+#include "WallFiltersUI.h"
+
 //[/Headers]
 
 #include "Absorp.h"
@@ -27,8 +29,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi)
-    : processor(p), valueTreeState(vts), wallID(wi)
+Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par)
+    : processor(p), valueTreeState(vts), wallID(wi), parent(par)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -39,7 +41,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs1->setSliderStyle (juce::Slider::LinearVertical);
     abs1->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs1->setBounds (5, 8, 32, 112);
+    abs1->setBounds (5, 24, 32, 112);
 
     abs2.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs2.get());
@@ -47,7 +49,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs2->setSliderStyle (juce::Slider::LinearVertical);
     abs2->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs2->setBounds (37, 8, 32, 112);
+    abs2->setBounds (37, 24, 32, 112);
 
     abs3.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs3.get());
@@ -55,7 +57,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs3->setSliderStyle (juce::Slider::LinearVertical);
     abs3->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs3->setBounds (69, 8, 32, 112);
+    abs3->setBounds (69, 24, 32, 112);
 
     abs4.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs4.get());
@@ -63,7 +65,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs4->setSliderStyle (juce::Slider::LinearVertical);
     abs4->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs4->setBounds (101, 8, 32, 112);
+    abs4->setBounds (101, 24, 32, 112);
 
     abs5.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs5.get());
@@ -71,7 +73,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs5->setSliderStyle (juce::Slider::LinearVertical);
     abs5->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs5->setBounds (133, 8, 32, 112);
+    abs5->setBounds (133, 24, 32, 112);
 
     abs6.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs6.get());
@@ -79,7 +81,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs6->setSliderStyle (juce::Slider::LinearVertical);
     abs6->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs6->setBounds (165, 8, 32, 112);
+    abs6->setBounds (165, 24, 32, 112);
 
     abs7.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs7.get());
@@ -87,7 +89,7 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs7->setSliderStyle (juce::Slider::LinearVertical);
     abs7->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs7->setBounds (197, 8, 32, 112);
+    abs7->setBounds (197, 24, 32, 112);
 
     abs8.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (abs8.get());
@@ -95,31 +97,23 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     abs8->setSliderStyle (juce::Slider::LinearVertical);
     abs8->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
 
-    abs8->setBounds (229, 8, 32, 112);
+    abs8->setBounds (229, 24, 32, 112);
 
-    to1.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (to1.get());
-    to1->setButtonText (TRANS("1"));
-    to1->addListener (this);
-    to1->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
+    presets_button.reset (new juce::TextButton ("presets_button"));
+    addAndMakeVisible (presets_button.get());
+    presets_button->setButtonText (TRANS("Presets"));
+    presets_button->addListener (this);
+    presets_button->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff080808));
 
-    to1->setBounds (267, 8, 24, 24);
+    presets_button->setBounds (8, 5, 88, 22);
 
-    toHalf.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (toHalf.get());
-    toHalf->setButtonText (TRANS("P"));
-    toHalf->addListener (this);
-    toHalf->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
+    Absorption_window_button.reset (new juce::TextButton ("Absorption_window_button"));
+    addAndMakeVisible (Absorption_window_button.get());
+    Absorption_window_button->setButtonText (TRANS("Picker"));
+    Absorption_window_button->addListener (this);
+    Absorption_window_button->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff080808));
 
-    toHalf->setBounds (267, 44, 24, 24);
-
-    to0.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (to0.get());
-    to0->setButtonText (TRANS("0"));
-    to0->addListener (this);
-    to0->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff051111));
-
-    to0->setBounds (267, 80, 24, 24);
+    Absorption_window_button->setBounds (168, 5, 88, 22);
 
 
     //[UserPreSize]
@@ -138,9 +132,20 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
         presets.addItem(i + 1, FilterPresets::PRESETS_NAMES[i]);
     }
 
+    abs1->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs2->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs3->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs4->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs5->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs6->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs7->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    abs8->onDragStart = [this] { parent->hidePickerWindow(); pickerCoords.setXY(-1, -1); };
+    pickerCoords.setXY(-1, -1);
+
+    startTimerHz(60);
     //[/UserPreSize]
 
-    setSize (296, 128);
+    setSize (265, 140);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -170,9 +175,8 @@ Absorp::~Absorp()
     abs6 = nullptr;
     abs7 = nullptr;
     abs8 = nullptr;
-    to1 = nullptr;
-    toHalf = nullptr;
-    to0 = nullptr;
+    presets_button = nullptr;
+    Absorption_window_button = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -205,36 +209,30 @@ void Absorp::buttonClicked (juce::Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == to1.get())
+    if (buttonThatWasClicked == presets_button.get())
     {
-        //[UserButtonCode_to1] -- add your button handler code here..
-        setAllAbsorptionToTarget(1.0f);
-        //[/UserButtonCode_to1]
-    }
-    else if (buttonThatWasClicked == toHalf.get())
-    {
-        //[UserButtonCode_toHalf] -- add your button handler code here..
-
+        //[UserButtonCode_presets_button] -- add your button handler code here..
         presets.showMenuAsync(PopupMenu::Options(),
             [&](int result)
+        {
+            if (result == 0)
             {
-                if (result == 0)
-                {
 
-                }
-                else
-                {
-                    setAbsorptionToPreset(result - 1);
-                }
             }
+            else
+            {
+                setAbsorptionToPreset(result - 1);
+            }
+        }
         );
-        //[/UserButtonCode_toHalf]
+
+        //[/UserButtonCode_presets_button]
     }
-    else if (buttonThatWasClicked == to0.get())
+    else if (buttonThatWasClicked == Absorption_window_button.get())
     {
-        //[UserButtonCode_to0] -- add your button handler code here..
-        setAllAbsorptionToTarget(0.0f);
-        //[/UserButtonCode_to0]
+        //[UserButtonCode_Absorption_window_button] -- add your button handler code here..
+        parent->openPickerWindow(wallID, getScreenBounds().getTopRight(), &pickerCoords);
+        //[/UserButtonCode_Absorption_window_button]
     }
 
     //[UserbuttonClicked_Post]
@@ -245,8 +243,15 @@ void Absorp::buttonClicked (juce::Button* buttonThatWasClicked)
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
+void Absorp::timerCallback()
+{
+    repaint();
+}
+
 void Absorp::setAllAbsorptionToTarget(float newValue)
 {
+    parent->hidePickerWindow();
+    pickerCoords.setXY(-1, -1);
     for (int i = 0; i < Parameters::NUM_FREQ; i++)
     {
         valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->beginChangeGesture();
@@ -257,6 +262,7 @@ void Absorp::setAllAbsorptionToTarget(float newValue)
 
 void Absorp::setAbsorptionToPreset(int preset)
 {
+    parent->setPickerToPreset(wallID, preset, &pickerCoords);
     for (int i = 0; i < Parameters::NUM_FREQ; i++)
     {
         valueTreeState.getParameter(String("freq") + String(wallID) + String(i))->beginChangeGesture();
@@ -278,52 +284,49 @@ void Absorp::setAbsorptionToPreset(int preset)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Absorp" componentName=""
-                 parentClasses="public juce::Component" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts, int wi"
-                 variableInitialisers="processor(p), valueTreeState(vts), wallID(wi)"
+                 parentClasses="public juce::Component, public Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts, int wi, WallFiltersUI* par"
+                 variableInitialisers="processor(p), valueTreeState(vts), wallID(wi), parent(par)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="296" initialHeight="128">
+                 fixedSize="1" initialWidth="265" initialHeight="140">
   <BACKGROUND backgroundColour="ff151e23"/>
   <SLIDER name="new slider" id="b4b171872c85c136" memberName="abs1" virtualName=""
-          explicitFocusOrder="0" pos="5 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="5 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="598b52f443341c0f" memberName="abs2" virtualName=""
-          explicitFocusOrder="0" pos="37 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="37 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="e1150341e40ea0a3" memberName="abs3" virtualName=""
-          explicitFocusOrder="0" pos="69 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="69 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="2a33624419138f8e" memberName="abs4" virtualName=""
-          explicitFocusOrder="0" pos="101 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="101 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="7a240c37526ae377" memberName="abs5" virtualName=""
-          explicitFocusOrder="0" pos="133 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="133 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="920a09d6d9d59cd6" memberName="abs6" virtualName=""
-          explicitFocusOrder="0" pos="165 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="165 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="7104ac664bc507a6" memberName="abs7" virtualName=""
-          explicitFocusOrder="0" pos="197 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="197 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="new slider" id="6009a5f8ebb42858" memberName="abs8" virtualName=""
-          explicitFocusOrder="0" pos="229 8 32 112" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="229 24 32 112" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <TEXTBUTTON name="new button" id="fc8177dc40c04905" memberName="to1" virtualName=""
-              explicitFocusOrder="0" pos="267 8 24 24" bgColOff="ff051111"
-              buttonText="1" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="new button" id="7d7768b1aebd5283" memberName="toHalf" virtualName=""
-              explicitFocusOrder="0" pos="267 44 24 24" bgColOff="ff051111"
-              buttonText="P" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="new button" id="b7e60a045cc4019d" memberName="to0" virtualName=""
-              explicitFocusOrder="0" pos="267 80 24 24" bgColOff="ff051111"
-              buttonText="0" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="presets_button" id="d5d561af5de52dbb" memberName="presets_button"
+              virtualName="" explicitFocusOrder="0" pos="8 5 88 22" bgColOff="ff080808"
+              buttonText="Presets" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="Absorption_window_button" id="e0c6b7f87944682b" memberName="Absorption_window_button"
+              virtualName="" explicitFocusOrder="0" pos="168 5 88 22" bgColOff="ff080808"
+              buttonText="Picker" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

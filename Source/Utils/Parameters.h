@@ -19,6 +19,7 @@ namespace Parameters
 	constexpr float ROOM_MAX_DIMENSION = 100.0f;
 	constexpr float SMOOTHING_TIME_SECONDS = 0.020f;
 	constexpr int OSC_PORT = 9001;
+	constexpr char* WALL_NAMES[NUM_WALLS] = {"Left", "Right", "Floor", "Ceiling", "Back", "Front"};
 #ifdef _BRT_LIBRARY_
 	constexpr int NUM_OUT_MODES = 8;
 	constexpr char* outputModes[NUM_OUT_MODES] = {"Mono", "Stereo", "Binaural",

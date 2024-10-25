@@ -22,6 +22,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "Absorp.h"
+#include "Absorption2DWindow.h"
 
 typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 //[/Headers]
@@ -46,6 +47,9 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void openPickerWindow(int wallId, Point<int>& position, Point<float>* pickerCoord);
+    void hidePickerWindow();
+    void setPickerToPreset(int wallId, int preset, Point<float>* pickerCoord);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -59,6 +63,8 @@ private:
     RealtimeSDNAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
     std::unique_ptr<ButtonAttachment> airAbosrptionAttachment;
+
+    std::unique_ptr<Absorption2DWindow> absorptionPickerWindow;
     //[/UserVariables]
 
     //==============================================================================

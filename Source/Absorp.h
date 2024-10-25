@@ -27,6 +27,7 @@
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
+class WallFiltersUI;
 //[/Headers]
 
 
@@ -40,15 +41,17 @@ typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
                                                                     //[/Comments]
 */
 class Absorp  : public juce::Component,
+                public Timer,
                 public juce::Button::Listener
 {
 public:
     //==============================================================================
-    Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi);
+    Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par);
     ~Absorp() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void timerCallback() override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -77,6 +80,9 @@ private:
 
     PopupMenu presets;
 
+    WallFiltersUI* parent;
+    Point<float> pickerCoords;
+
     //[/UserVariables]
 
     //==============================================================================
@@ -88,9 +94,8 @@ private:
     std::unique_ptr<juce::Slider> abs6;
     std::unique_ptr<juce::Slider> abs7;
     std::unique_ptr<juce::Slider> abs8;
-    std::unique_ptr<juce::TextButton> to1;
-    std::unique_ptr<juce::TextButton> toHalf;
-    std::unique_ptr<juce::TextButton> to0;
+    std::unique_ptr<juce::TextButton> presets_button;
+    std::unique_ptr<juce::TextButton> Absorption_window_button;
 
 
     //==============================================================================

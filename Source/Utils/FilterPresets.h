@@ -36,6 +36,8 @@ namespace FilterPresets
 		{0.45, 0.75, 0.9, 0.95, 0.95, 0.95, 0.95, 0.95}
 	};
 
+	constexpr int PRESETS_INDEXES[NUM_PRESETS] = { 2, 189, 358, 316, 397, 45, 4, 302, 404, 44, 222, 380 };
+
 	//[b0,b1,a0, a1] from 1 to 100 meters
 	constexpr double AIR_ABSORPTION_FILTERS_48000[N_AIR_FILTER_STEPS][8] =
 	{

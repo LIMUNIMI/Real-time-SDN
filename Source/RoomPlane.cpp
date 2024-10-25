@@ -7,7 +7,7 @@ RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState&
     : processor(p), valueTreeState(vts), horizontalAxis(String::charToString(horizAxis)), 
     verticalAxis(String::charToString(vertAxis)), nDepth(negateDepth)
 {
-    startTimerHz(80);
+    startTimerHz(60);
     listenerHorizParam = String("Listener") + String::charToString(horizAxis);
     listenerVertParam = String("Listener") + String::charToString(vertAxis);
     sourceHorizParam = String("Source") + String::charToString(horizAxis);
@@ -135,8 +135,8 @@ void RoomPlane::mouseDown(const MouseEvent& event)
 
     if (movingSource && movingListener)
     {
-        movingSource = (sourceRect.getCentre().getDistanceSquaredFrom(event.getPosition().toFloat())) <
-            (listenerRect.getCentre().getDistanceSquaredFrom(event.getPosition().toFloat()));
+        movingSource = (sourceRect.getCentre().getDistanceSquaredFrom(event.position)) <
+            (listenerRect.getCentre().getDistanceSquaredFrom(event.position));
         movingListener = !movingSource;
     }
 }

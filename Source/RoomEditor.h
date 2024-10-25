@@ -26,6 +26,7 @@
 #include "WallFiltersUI.h"
 #include "DragAndDropPanel.h"
 #include "GeometryPanel.h"
+#include "Absorption2DPanel.h"
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
