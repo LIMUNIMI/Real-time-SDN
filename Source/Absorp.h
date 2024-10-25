@@ -28,6 +28,16 @@
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
 class WallFiltersUI;
+
+class Slider_reverse : public JUCE_NAMESPACE::Slider
+{
+public:
+    Slider_reverse(const String& componentName) : JUCE_NAMESPACE::Slider(componentName) {};
+    ~Slider_reverse() {};
+    double proportionOfLengthToValue(double proportion) { return JUCE_NAMESPACE::Slider::proportionOfLengthToValue(1.0f - proportion); };
+    double valueToProportionOfLength(double value) { return 1.0f - (JUCE_NAMESPACE::Slider::valueToProportionOfLength(value)); };
+};
+
 //[/Headers]
 
 
@@ -69,6 +79,16 @@ private:
     AudioProcessorValueTreeState& valueTreeState;
     int wallID;
 
+    std::unique_ptr<Slider_reverse> abs1;
+    std::unique_ptr<Slider_reverse> abs2;
+    std::unique_ptr<Slider_reverse> abs3;
+    std::unique_ptr<Slider_reverse> abs4;
+    std::unique_ptr<Slider_reverse> abs5;
+    std::unique_ptr<Slider_reverse> abs6;
+    std::unique_ptr<Slider_reverse> abs7;
+    std::unique_ptr<Slider_reverse> abs8;
+
+
     std::unique_ptr<SliderAttachment> freq1Attachment;
     std::unique_ptr<SliderAttachment> freq2Attachment;
     std::unique_ptr<SliderAttachment> freq3Attachment;
@@ -86,14 +106,6 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::Slider> abs1;
-    std::unique_ptr<juce::Slider> abs2;
-    std::unique_ptr<juce::Slider> abs3;
-    std::unique_ptr<juce::Slider> abs4;
-    std::unique_ptr<juce::Slider> abs5;
-    std::unique_ptr<juce::Slider> abs6;
-    std::unique_ptr<juce::Slider> abs7;
-    std::unique_ptr<juce::Slider> abs8;
     std::unique_ptr<juce::TextButton> presets_button;
     std::unique_ptr<juce::TextButton> Absorption_window_button;
 

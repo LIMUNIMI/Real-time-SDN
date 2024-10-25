@@ -35,70 +35,6 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    abs1.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs1.get());
-    abs1->setRange (0, 10, 0);
-    abs1->setSliderStyle (juce::Slider::LinearVertical);
-    abs1->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs1->setBounds (5, 24, 32, 112);
-
-    abs2.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs2.get());
-    abs2->setRange (0, 10, 0);
-    abs2->setSliderStyle (juce::Slider::LinearVertical);
-    abs2->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs2->setBounds (37, 24, 32, 112);
-
-    abs3.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs3.get());
-    abs3->setRange (0, 10, 0);
-    abs3->setSliderStyle (juce::Slider::LinearVertical);
-    abs3->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs3->setBounds (69, 24, 32, 112);
-
-    abs4.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs4.get());
-    abs4->setRange (0, 10, 0);
-    abs4->setSliderStyle (juce::Slider::LinearVertical);
-    abs4->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs4->setBounds (101, 24, 32, 112);
-
-    abs5.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs5.get());
-    abs5->setRange (0, 10, 0);
-    abs5->setSliderStyle (juce::Slider::LinearVertical);
-    abs5->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs5->setBounds (133, 24, 32, 112);
-
-    abs6.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs6.get());
-    abs6->setRange (0, 10, 0);
-    abs6->setSliderStyle (juce::Slider::LinearVertical);
-    abs6->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs6->setBounds (165, 24, 32, 112);
-
-    abs7.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs7.get());
-    abs7->setRange (0, 10, 0);
-    abs7->setSliderStyle (juce::Slider::LinearVertical);
-    abs7->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs7->setBounds (197, 24, 32, 112);
-
-    abs8.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (abs8.get());
-    abs8->setRange (0, 10, 0);
-    abs8->setSliderStyle (juce::Slider::LinearVertical);
-    abs8->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-
-    abs8->setBounds (229, 24, 32, 112);
-
     presets_button.reset (new juce::TextButton ("presets_button"));
     addAndMakeVisible (presets_button.get());
     presets_button->setButtonText (TRANS("Presets"));
@@ -117,6 +53,70 @@ Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts,
 
 
     //[UserPreSize]
+
+    abs1.reset(new Slider_reverse("abs1"));
+    addAndMakeVisible(abs1.get());
+    abs1->setRange(0, 10, 0);
+    abs1->setSliderStyle(juce::Slider::LinearVertical);
+    abs1->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs1->setBounds(5, 24, 32, 112);
+
+    abs2.reset(new Slider_reverse("abs2"));
+    addAndMakeVisible(abs2.get());
+    abs2->setRange(0, 10, 0);
+    abs2->setSliderStyle(juce::Slider::LinearVertical);
+    abs2->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs2->setBounds(37, 24, 32, 112);
+
+    abs3.reset(new Slider_reverse("abs3"));
+    addAndMakeVisible(abs3.get());
+    abs3->setRange(0, 10, 0);
+    abs3->setSliderStyle(juce::Slider::LinearVertical);
+    abs3->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs3->setBounds(69, 24, 32, 112);
+
+    abs4.reset(new Slider_reverse("abs4"));
+    addAndMakeVisible(abs4.get());
+    abs4->setRange(0, 10, 0);
+    abs4->setSliderStyle(juce::Slider::LinearVertical);
+    abs4->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs4->setBounds(101, 24, 32, 112);
+
+    abs5.reset(new Slider_reverse("abs5"));
+    addAndMakeVisible(abs5.get());
+    abs5->setRange(0, 10, 0);
+    abs5->setSliderStyle(juce::Slider::LinearVertical);
+    abs5->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs5->setBounds(133, 24, 32, 112);
+
+    abs6.reset(new Slider_reverse("abs6"));
+    addAndMakeVisible(abs6.get());
+    abs6->setRange(0, 10, 0);
+    abs6->setSliderStyle(juce::Slider::LinearVertical);
+    abs6->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs6->setBounds(165, 24, 32, 112);
+
+    abs7.reset(new Slider_reverse("abs7"));
+    addAndMakeVisible(abs7.get());
+    abs7->setRange(0, 10, 0);
+    abs7->setSliderStyle(juce::Slider::LinearVertical);
+    abs7->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs7->setBounds(197, 24, 32, 112);
+
+    abs8.reset(new Slider_reverse("abs8"));
+    addAndMakeVisible(abs8.get());
+    abs8->setRange(0, 10, 0);
+    abs8->setSliderStyle(juce::Slider::LinearVertical);
+    abs8->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+
+    abs8->setBounds(229, 24, 32, 112);
 
     freq1Attachment.reset(new SliderAttachment(valueTreeState, String("freq") + String(wallID) + "0", *abs1));
     freq2Attachment.reset(new SliderAttachment(valueTreeState, String("freq") + String(wallID) + "1", *abs2));
@@ -167,14 +167,6 @@ Absorp::~Absorp()
 
     //[/Destructor_pre]
 
-    abs1 = nullptr;
-    abs2 = nullptr;
-    abs3 = nullptr;
-    abs4 = nullptr;
-    abs5 = nullptr;
-    abs6 = nullptr;
-    abs7 = nullptr;
-    abs8 = nullptr;
     presets_button = nullptr;
     Absorption_window_button = nullptr;
 
@@ -289,38 +281,6 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="265" initialHeight="140">
   <BACKGROUND backgroundColour="ff151e23"/>
-  <SLIDER name="new slider" id="b4b171872c85c136" memberName="abs1" virtualName=""
-          explicitFocusOrder="0" pos="5 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="598b52f443341c0f" memberName="abs2" virtualName=""
-          explicitFocusOrder="0" pos="37 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="e1150341e40ea0a3" memberName="abs3" virtualName=""
-          explicitFocusOrder="0" pos="69 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="2a33624419138f8e" memberName="abs4" virtualName=""
-          explicitFocusOrder="0" pos="101 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="7a240c37526ae377" memberName="abs5" virtualName=""
-          explicitFocusOrder="0" pos="133 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="920a09d6d9d59cd6" memberName="abs6" virtualName=""
-          explicitFocusOrder="0" pos="165 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="7104ac664bc507a6" memberName="abs7" virtualName=""
-          explicitFocusOrder="0" pos="197 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="new slider" id="6009a5f8ebb42858" memberName="abs8" virtualName=""
-          explicitFocusOrder="0" pos="229 24 32 112" min="0.0" max="10.0"
-          int="0.0" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <TEXTBUTTON name="presets_button" id="d5d561af5de52dbb" memberName="presets_button"
               virtualName="" explicitFocusOrder="0" pos="8 5 88 22" bgColOff="ff080808"
               buttonText="Presets" connectedEdges="0" needsCallback="1" radioGroupId="0"/>

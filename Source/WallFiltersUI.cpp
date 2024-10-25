@@ -266,7 +266,8 @@ void WallFiltersUI::openPickerWindow(int wallId, Point<int>& position, Point<flo
 
 void WallFiltersUI::hidePickerWindow()
 {
-    absorptionPickerWindow->setVisible(false);
+    if (absorptionPickerWindow)
+        absorptionPickerWindow->setVisible(false);
 }
 void WallFiltersUI::setPickerToPreset(int wallId, int preset, Point<float>* pickerCoord)
 {
