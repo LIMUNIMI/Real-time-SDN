@@ -1,0 +1,9 @@
+[submodule "Libraries/BRTLibrary"]
+	path = Libraries/BRTLibrary
+	url = https://github.com/GrupoDiana/BRTLibrary.git
+[submodule "Libraries/JUCE"]
+	path = Libraries/JUCE
+	url = https://github.com/juce-framework/JUCE.git
+[submodule "Libraries/Eigen"]
+	path = Libraries/Eigen
+	url = https://gitlab.com/libeigen/eigen.git

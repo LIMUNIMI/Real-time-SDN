@@ -2,11 +2,12 @@
 
 <JUCERPROJECT id="U3fnKW" name="Real time SDN" projectType="audioplug" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes&#10;..\..\..\BRTLibrary-main\include"
+              pluginVST3Category="Reverb" headerPath="..\..\Source\Utils&#10;..\..\Source\SDN classes&#10;..\..\Source\Node classes&#10;..\..\Libraries\BRTLibrary\include&#10;..\..\Libraries\Eigen"
               pluginAUMainType="'aufx'" pluginManufacturer="LIM" companyName="Laboratorio di Informatica Musicale"
               companyWebsite="www.lim.di.unimi.it" bundleIdentifier="com.lim.RealtimeSDN"
               pluginFormats="buildAU,buildStandalone,buildVST3" pluginManufacturerCode="LIM!"
-              defines="JUCE_MODAL_LOOPS_PERMITTED = 1" cppLanguageStandard="17">
+              defines="JUCE_MODAL_LOOPS_PERMITTED = 1" cppLanguageStandard="17"
+              version="1.1.0">
   <MAINGROUP id="ojgsDP" name="Real time SDN">
     <GROUP id="{44BC4387-CCD4-2120-93D9-E4FF5C4363AC}" name="Assets">
       <FILE id="Onh3G9" name="FilterSpace.png" compile="0" resource="1" file="Binary/FilterSpace.png"/>
@@ -155,7 +156,7 @@
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
+        <CONFIGURATION isDebug="0" name="Release" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="C:\Users\Giorgio\JUCE\modules"/>

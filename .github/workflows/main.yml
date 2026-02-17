@@ -1,0 +1,200 @@
+# Adapted from https://github.com/LIMUNIMI/ZePolA/blob/develop/.github/workflows/main.yml
+name: Projucer CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch: {}
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-22.04
+            jucer: "Libraries/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
+            jucer_buildir: "Libraries/JUCE/extras/Projucer/Builds/LinuxMakefile"
+            plugin_buildir: "Builds/LinuxMakefile"
+            build_cmd: make -j4 CONFIG=Release
+            build_prefix: "build"
+            label: linux
+          - os: macos-latest
+            jucer: "Libraries/JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
+            jucer_buildir: "Libraries/JUCE/extras/Projucer/Builds/MacOSX"
+            plugin_buildir: "Builds/MacOSX"
+            build_cmd: xcodebuild -project *.xcodeproj -parallelizeTargets -alltargets -configuration Release | xcpretty
+            build_prefix: "build/Release"
+            standalone_ext: .app
+            label: macos
+          - os: windows-latest
+            jucer: "Libraries/JUCE/extras/Projucer/Builds/VisualStudio2022/x64/Release/App/Projucer.exe"
+            jucer_buildir: "Libraries/JUCE/extras/Projucer/Builds/VisualStudio2022"
+            plugin_buildir: "Builds/VisualStudio2022"
+            build_cmd: msbuild.exe -m:4 *.sln /property:Configuration=Release
+            build_prefix: "x64/Release"
+            standalone_ext: .exe
+            standalone_prefix: "Standalone Plugin/"
+            vst3_prefix: "VST3/"
+            label: win
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.label }}
+
+    steps:
+    - name: Install Linux Deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt install libasound2-dev libcurl4-openssl-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev libjack-jackd2-dev lv2-dev
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+
+    - name: Add msbuild to PATH
+      if: runner.os == 'Windows'
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Set up Xcode
+      if: runner.os == 'MacOS'
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
+    - name: Install tree on Mac
+      if: runner.os == 'MacOS'
+      run: brew install tree
+
+    - name: Install tree on Windows (bash)
+      if: runner.os == 'Windows'
+      run: choco install tree -y
+
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Build Projucer
+      shell: bash
+      run: ${{ matrix.build_cmd }}
+      working-directory: ${{ matrix.jucer_buildir }}
+
+    - name: Log jucer project status
+      shell: bash
+      run: ${{ matrix.jucer }} --status *.jucer
+
+    - name: Save jucer project version (for next jobs)
+      id: plugin-version
+      if: runner.os == 'Linux'
+      shell: bash
+      run: echo 'PLUGIN_VERSION='$('${{ matrix.jucer }}' --get-version *.jucer) >> $GITHUB_OUTPUT
+
+    - name: Jucer project name to env variable
+      shell: bash
+      run: echo 'PLUGIN_NAME='$(awk '/<JUCERPROJECT/,/>/' *.jucer | tr -d '\n' | sed -n 's/.*name="\([^"]*\)".*/\1/p') >> $GITHUB_ENV
+
+    - name: Save jucer project name (for next jobs)
+      id: plugin-name
+      if: runner.os == 'Linux'
+      shell: bash
+      run: echo 'PLUGIN_NAME='${{ env.PLUGIN_NAME }} >> $GITHUB_OUTPUT
+
+    - name: Resave jucer file
+      shell: bash
+      run: ${{ matrix.jucer }} --resave *.jucer
+
+    - name: Build Plugin
+      shell: bash
+      run: ${{ matrix.build_cmd }}
+      working-directory: ${{ matrix.plugin_buildir }}
+
+    - name: List artifacts in build directory
+      shell: bash
+      run: ls -l
+      working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
+
+    - name: Upload platform artifacts
+      if: ${{ runner.os == 'ubuntu-22.04' || runner.os == 'windows-latest' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ env.PLUGIN_NAME }}_${{ matrix.label }}"
+        path: |
+          "${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}${{ env.PLUGIN_NAME }}.vst3"
+          "${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}${{ env.PLUGIN_NAME }}${{ matrix.standalone_ext }}"
+
+    - name: Upload platform artifacts Mac
+      if: runner.os == 'MacOS'
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ env.PLUGIN_NAME }}_${{ matrix.label }}"
+        path: |
+          "${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}${{ env.PLUGIN_NAME }}.vst3"
+          "${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}${{ env.PLUGIN_NAME }}${{ matrix.standalone_ext }}"
+          "${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}${{ env.PLUGIN_NAME }}.component"
+
+    outputs:
+      plugin_version: ${{ steps.plugin-version.outputs.PLUGIN_VERSION }}
+      plugin_name: ${{ steps.plugin-name.outputs.PLUGIN_NAME }}
+
+
+  release:
+    if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+    - uses: actions/setup-node@v4
+
+    - run: npm install mdpdf -g
+
+    - uses: actions/checkout@v4
+
+    - uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: List artifacts
+      run: tree artifacts
+      shell: bash
+
+    - name: Create release assets folder
+      run: mkdir rassets
+
+    - name: Compress assets
+      working-directory: artifacts
+      run: |
+        for d in ${{ needs.build.outputs.plugin_name }}_* ; do
+          cp -r Presets "${d}"
+          cd "${d}"                                                               && \
+          dest="../../rassets/${d}_v${{ needs.build.outputs.plugin_version }}.zip" && \
+          echo zip -r "${dest}" *                                                 && \
+          zip -r "${dest}" *                                                      && \
+          cd ..
+        done;
+
+    - name: Empty changelog as default
+      run: touch "$CHANGELOG_FILENAME"
+
+    - name: List assets
+      run: ls rassets 
+
+    - name: Create and push tag
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        custom_tag: ${{ needs.build.outputs.plugin_version }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ needs.build.outputs.plugin_version }}
+        name: Version ${{ needs.build.outputs.plugin_version }}
+        draft: true
+        prerelease: ${{ contains(github.event.head_commit.message, '[PRERELEASE]') }}
+        files: rassets/*
+        body_path: ${{ env.CHANGELOG_FILENAME }}
