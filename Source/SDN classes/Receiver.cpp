@@ -1,6 +1,7 @@
 #include "Receiver.h"
 
 using namespace Eigen;
+using namespace SDN;
 
 Receiver::Receiver()
 {
@@ -31,7 +32,7 @@ void Receiver::init(Point3d normalPosition, int numsamples, int nOfConnections, 
 #endif
 }
 
-void Receiver::process(AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
+void Receiver::process(juce::AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged)
 {
 	interpolateQuaternions();
 	microphone->process(inWaveguides, getPosition(), currentRotation, sourceBuffer, 

@@ -1,5 +1,7 @@
 #include "Parameters.h"
 
+using namespace juce;
+
 AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout()
 {
 	std::vector<std::unique_ptr<RangedAudioParameter>> params;

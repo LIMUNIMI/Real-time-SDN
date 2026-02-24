@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+using namespace juce;
 
 RealtimeSDNAudioProcessorEditor::RealtimeSDNAudioProcessorEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
     : AudioProcessorEditor (&p), roomEditor(p, vts)
@@ -13,7 +14,7 @@ RealtimeSDNAudioProcessorEditor::RealtimeSDNAudioProcessorEditor (RealtimeSDNAud
     options.osxLibrarySubFolder = "Application Support";
     applicationProperties.setStorageParameters(options);
 
-    Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea; 
+    juce::Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea; 
     int screenWidth = r.getWidth() - 200; 
     int screenHeight = r.getHeight() - 200;
 

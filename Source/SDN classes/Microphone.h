@@ -6,19 +6,23 @@
 #include <Eigen/Geometry>
 
 //virtual class for output modes
-class Microphone
+namespace SDN
 {
-public:
+	class Microphone
+	{
+	public:
 
-	Microphone() {};
-	virtual ~Microphone() {};
+		Microphone() {};
+		virtual ~Microphone() {};
 
-	virtual void init() {};
+		virtual void init() {};
 
-	virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, AudioBuffer<float>& sourceBuffer,
-		int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) {};
+		virtual void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, juce::AudioBuffer<float>& sourceBuffer,
+			int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) {
+		};
 
-private:
+	private:
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Microphone);
-};
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Microphone);
+	};
+}

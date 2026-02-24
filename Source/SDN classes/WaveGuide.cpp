@@ -1,6 +1,8 @@
 #include "WaveGuide.h"
+using namespace juce;
 
-WaveGuide::WaveGuide()
+
+SDN::WaveGuide::WaveGuide()
 {
 	startNode = 0;
 	endNode = 0;
@@ -9,7 +11,7 @@ WaveGuide::WaveGuide()
 
 }
 
-void WaveGuide::prepare(double samplerate, Node* start, Node* end, float dist)
+void SDN::WaveGuide::prepare(double samplerate, Node* start, Node* end, float dist)
 {
 	startNode = start;
 	endNode = end;
@@ -46,7 +48,7 @@ void WaveGuide::prepare(double samplerate, Node* start, Node* end, float dist)
 
 }
 
-float& WaveGuide::getCurrentSample()
+float& SDN::WaveGuide::getCurrentSample()
 {
 	float sample = delay.readNextSample();
 	if(airAbsorption)
@@ -55,7 +57,7 @@ float& WaveGuide::getCurrentSample()
 	return sample;
 }
 
-void WaveGuide::setDistance(float newDist)
+void SDN::WaveGuide::setDistance(float newDist)
 {
 	distance = newDist;
 	delay.setDelay(distance * toSamplesConst);

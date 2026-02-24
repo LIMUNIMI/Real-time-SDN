@@ -5,35 +5,38 @@
 #include <WaveGuide.h>
 #include <Parameters.h>
 
-//implements stereo output, handles head rotation
-class Stereo : public Microphone
+namespace SDN
 {
-public:
-	Stereo() : monoToStereoDummy(2, 0.0f),panValues(Parameters::NUM_WAVEGUIDES_TO_OUTPUT, 0.0f) {};
-	~Stereo() {};
+	//implements stereo output, handles head rotation
+	class Stereo : public SDN::Microphone
+	{
+	public:
+		Stereo() : monoToStereoDummy(2, 0.0f), panValues(Parameters::NUM_WAVEGUIDES_TO_OUTPUT, 0.0f) {};
+		~Stereo() {};
 
-	void init(double sampleRate);
+		void init(double sampleRate);
 
-	//pan from azimuth angle
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation, 
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
+		//pan from azimuth angle
+		void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
+			juce::AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
 
-private:
-	
-	//square law panning function
-	void panMonoToStereo(float panAmount);
+	private:
 
-	void processWhileChanging(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex);
-	void processWhileStable(std::vector<WaveGuide*>& inWaveguides,AudioBuffer<float>& sourceBuffer, int sampleIndex);
-	void panWaveguide(std::vector<WaveGuide*>& inWaveguides, int waveguideIndex,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex);
+		//square law panning function
+		void panMonoToStereo(float panAmount);
 
-	std::vector<float> monoToStereoDummy;
-	Eigen::Vector3f microphoneToNodeVector, lookAtVector, upVector, side;
+		void processWhileChanging(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
+			juce::AudioBuffer<float>& sourceBuffer, int sampleIndex);
+		void processWhileStable(std::vector<WaveGuide*>& inWaveguides, juce::AudioBuffer<float>& sourceBuffer, int sampleIndex);
+		void panWaveguide(std::vector<WaveGuide*>& inWaveguides, int waveguideIndex,
+			juce::AudioBuffer<float>& sourceBuffer, int sampleIndex);
 
-	std::vector<float> panValues;
+		std::vector<float> monoToStereoDummy;
+		Eigen::Vector3f microphoneToNodeVector, lookAtVector, upVector, side;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Stereo);
-};
+		std::vector<float> panValues;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Stereo);
+	};
+}

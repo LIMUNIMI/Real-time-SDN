@@ -1,4 +1,5 @@
 #include "Limiter.h"
+using namespace juce;
 
 void Limiter::prepareToPlay(double sampleRate)
 {

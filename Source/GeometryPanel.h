@@ -23,7 +23,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
-typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 //[/Headers]
 
 
@@ -43,7 +43,7 @@ class GeometryPanel  : public juce::Component,
 {
 public:
     //==============================================================================
-    GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    GeometryPanel (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~GeometryPanel() override;
 
     //==============================================================================
@@ -69,7 +69,7 @@ public:
     void tryToConnect(int portNumber)
     {
         if (!connect(portNumber))
-            showConnectionErrorMessage("Error: could not connect to UDP port " + String(portNumber));
+            showConnectionErrorMessage("Error: could not connect to UDP port " + juce::String(portNumber));
     }
 
     //[/UserMethods]
@@ -84,7 +84,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
 
     std::unique_ptr<SliderAttachment> emitterXAttachment;
     std::unique_ptr<SliderAttachment> emitterYAttachment;

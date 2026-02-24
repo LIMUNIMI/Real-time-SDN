@@ -9,25 +9,25 @@
 
 class Absorption2DUI;
 
-class Absorption2DPanel : public juce::Component, public Timer
+class Absorption2DPanel : public juce::Component, public juce::Timer
 {
 public:
-    Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, Absorption2DUI& parent);
+    Absorption2DPanel(RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts, Absorption2DUI& parent);
     ~Absorption2DPanel();
 
     void paint(juce::Graphics&) override;
     void resized() override;
     void timerCallback() override;
-    void paintOverChildren(Graphics& g) override;
+    void paintOverChildren(juce::Graphics& g) override;
 
-    void mouseDown(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
+    void mouseDrag(const juce::MouseEvent& event) override;
+    void mouseUp(const juce::MouseEvent& event) override;
 
     void setCurrentWallId(int newId);
     int getCurrentWallId() { return currentWallId; };
     
-    void setWallCoords(Point<float>* newCoords, Absorp* wal); 
+    void setWallCoords(juce::Point<float>* newCoords, Absorp* wal);
     void update2DCoords(float x, float y);
     void updateX(float x);
     void updateY(float y);
@@ -36,25 +36,25 @@ public:
 
 private:
 
-    void positionChangeOnMouseDrag(const MouseEvent& event);
+    void positionChangeOnMouseDrag(const juce::MouseEvent& event);
     void updatePluginParams();
     void findFilter();
 
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
-    std::unique_ptr<Drawable> backgroundImg;
+    juce::AudioProcessorValueTreeState& valueTreeState;
+    std::unique_ptr<juce::Drawable> backgroundImg;
     std::array<float, Parameters::NUM_FREQ> tempFilter;
-    File svgFile, pngFile;
+    juce::File svgFile, pngFile;
     bool movingFilter, filterChanged, validPosition;
     int currentWallId = 0;
 
     std::mutex mut;
-    Path convexHull;
-    std::array<Path, AbsorptionSpace::NUM_SIMPLICES> uiSimplices;
+    juce::Path convexHull;
+    std::array<juce::Path, AbsorptionSpace::NUM_SIMPLICES> uiSimplices;
     std::array<float, 3> baricentricCoord;
-    Line<float> intersectionLine;
-    Point<float> newCoord, v0, v1, v2, clickoffset;
-    Point<float>* wallCoords;
+    juce::Line<float> intersectionLine;
+    juce::Point<float> newCoord, v0, v1, v2, clickoffset;
+    juce::Point<float>* wallCoords;
 
     juce::Rectangle<float> pickerRect, pickerRectInternal;
 

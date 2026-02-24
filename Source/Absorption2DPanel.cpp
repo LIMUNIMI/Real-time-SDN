@@ -1,5 +1,6 @@
 #include "Absorption2DPanel.h"
 #include "Absorption2DUI.h"
+using namespace juce;
 
 Absorption2DPanel::Absorption2DPanel(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, Absorption2DUI& parent)
 	: processor(p), valueTreeState(vts), ui(parent)

@@ -24,10 +24,11 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+using namespace juce;
 //[/MiscUserDefs]
 
 //==============================================================================
-RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
+RoomEditor::RoomEditor (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts)
     : processor(p), valueTreeState(vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -518,7 +519,7 @@ void RoomEditor::setDropDownAvailableOptions(int numCh)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RoomEditor" componentName=""
-                 parentClasses="public juce::Component, public juce::Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 parentClasses="public juce::Component, public juce::Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, juce::AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="1018" initialHeight="720">

@@ -1,4 +1,5 @@
 #include "Absorption2DUI.h"
+using namespace juce;
 
 #define PANEL_SIZE 400
 #define PANEL_OFFSET 10

@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include <JuceHeader.h>
 #include <Room.h>
 #include <CircularBuffer.h>
 
 //==============================================================================
 /**
 */
-class RealtimeSDNAudioProcessor  : public juce::AudioProcessor, public AudioProcessorValueTreeState::Listener
+class RealtimeSDNAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -55,28 +54,28 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    File defaultLoc = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory);
+    juce::File defaultLoc = juce::File::getSpecialLocation(juce::File::SpecialLocationType::commonDocumentsDirectory);
 
-    bool setHRTF(const String& newPath);
-    String getHRTFPath() { return hrtfPath; };
+    bool setHRTF(const juce::String& newPath);
+    juce::String getHRTFPath() { return hrtfPath; };
 
     bool geometryHasChanged() { return room.geometryHasChanged(); }
     void lookAtSource();
 
 private:
 
-    void parameterChanged(const String& paramID, float newValue) override;
+    void parameterChanged(const juce::String& paramID, float newValue) override;
     void setOutputMode(int mode);
     
     void setRoomToParamValues();
 
-    Room room;
-    AudioProcessorValueTreeState parameters;
-    UndoManager undo;
+    SDN::Room room;
+    juce::AudioProcessorValueTreeState parameters;
+    juce::UndoManager undo;
     CircularBuffer outBuffer;
-    AudioBuffer<float> internalBuffer;
+    juce::AudioBuffer<float> internalBuffer;
     int internalBufferFill = 0;
-    String hrtfPath = "";
+    juce::String hrtfPath = "";
     bool isChangingParams = false;
 
     //bool wrongOutput = false;

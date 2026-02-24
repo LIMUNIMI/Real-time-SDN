@@ -1,4 +1,5 @@
 #include "DelayLine.h"
+using namespace juce;
 
 void DelayLine::prepare(double samplerate, int maxLength, float delaySamp)
 {

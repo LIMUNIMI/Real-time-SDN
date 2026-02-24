@@ -60,12 +60,14 @@ jobs:
     - name: Add msbuild to PATH
       if: runner.os == 'Windows'
       uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[17.5, 17.6)'
 
     - name: Set up Xcode
       if: runner.os == 'MacOS'
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: latest-stable
+        xcode-version: '14'
 
     - name: Install tree on Mac
       if: runner.os == 'MacOS'

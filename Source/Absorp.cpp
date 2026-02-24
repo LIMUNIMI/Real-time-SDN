@@ -19,18 +19,18 @@
 
 //[Headers] You can add your own extra header files here...
 #include "WallFiltersUI.h"
-
 //[/Headers]
 
 #include "Absorp.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+using namespace juce;
 #define SCALE_FACTOR 0.01
 //[/MiscUserDefs]
 
 //==============================================================================
-Absorp::Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par)
+Absorp::Absorp (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par)
     : processor(p), valueTreeState(vts), wallID(wi), parent(par)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -378,7 +378,7 @@ void Absorp::scaleAbsorption(float scale)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Absorp" componentName=""
-                 parentClasses="public juce::Component, public Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts, int wi, WallFiltersUI* par"
+                 parentClasses="public juce::Component, public juce::Timer" constructorParams="RealtimeSDNAudioProcessor&amp; p, juce::AudioProcessorValueTreeState&amp; vts, int wi, WallFiltersUI* par"
                  variableInitialisers="processor(p), valueTreeState(vts), wallID(wi), parent(par)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="265" initialHeight="140">

@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+using namespace juce;
 //#include "RoomEditor.h"
 
 //==============================================================================

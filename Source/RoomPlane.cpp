@@ -1,5 +1,5 @@
 #include "RoomPlane.h"
-
+using namespace juce;
 using namespace Eigen;
 
 RoomPlane::RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, 

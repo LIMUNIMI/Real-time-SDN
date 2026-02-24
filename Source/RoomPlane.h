@@ -6,10 +6,10 @@
 
 #define forward Eigen::Vector3f(0, 0, 1)
 
-class RoomPlane : public juce::Component, public Timer
+class RoomPlane : public juce::Component, public juce::Timer
 {
 public:
-    RoomPlane(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, 
+    RoomPlane(RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts,
         char horizAxis, char vertAxis, char depthAxis, bool negateDepth);
     ~RoomPlane();
 
@@ -17,9 +17,9 @@ public:
     void resized() override;
     void timerCallback() override;
 
-    void mouseDown(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
+    void mouseDrag(const juce::MouseEvent& event) override;
+    void mouseUp(const juce::MouseEvent& event) override;
 
     void setRotationEnabled(bool shouldBeRotating)
     {
@@ -30,18 +30,18 @@ public:
 
 private:
 
-    float horizontalPosToPointCoord(String positionParam);
-    float verticalPosToPointCoord(String positionParam);
+    float horizontalPosToPointCoord(juce::String positionParam);
+    float verticalPosToPointCoord(juce::String positionParam);
     float getRoomAspectRatio();
-    void positionChangeOnMouseDrag(const MouseEvent& event, String& horizontalParam, String& veticalParam);
+    void positionChangeOnMouseDrag(const juce::MouseEvent& event, juce::String& horizontalParam, juce::String& veticalParam);
     void updatePlaneCoords();
     void updateRotation();
 
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
     
-    String horizontalAxis, verticalAxis;
-    String listenerHorizParam, listenerVertParam, sourceHorizParam, sourceVertParam;
+    juce::String horizontalAxis, verticalAxis;
+    juce::String listenerHorizParam, listenerVertParam, sourceHorizParam, sourceVertParam;
     
     float drawableAspectRatio = 1.0f;
     float figureSize = 0.0f;

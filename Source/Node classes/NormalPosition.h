@@ -26,7 +26,7 @@ private:
 	
 
 	Point3d normalPos;
-	SmoothedValue<float, ValueSmoothingTypes::Linear> smoothedX, smoothedY, smoothedZ;
+	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> smoothedX, smoothedY, smoothedZ;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NormalPosition)
 

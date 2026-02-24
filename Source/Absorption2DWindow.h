@@ -18,7 +18,7 @@ public:
     int getPanelHeight() { return absorption2dUI->absorptionPanel->getHeight(); }
     int getPanelWidth() { return absorption2dUI->absorptionPanel->getWidth(); }
     void setWallId(int newId);
-    void setPickerCoords(Point<float>* newCoords, Absorp* wal) { absorption2dUI->absorptionPanel->setWallCoords(newCoords, wal); }
+    void setPickerCoords(juce::Point<float>* newCoords, Absorp* wal) { absorption2dUI->absorptionPanel->setWallCoords(newCoords, wal); }
     void setWindowFocus(bool isWindowFocused) { this->isWindowFocused = isWindowFocused; }
 
 protected:

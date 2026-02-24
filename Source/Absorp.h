@@ -25,35 +25,35 @@
 #include "FilterPresets.h"
 
 
-typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
 class WallFiltersUI;
 
-class Slider_reverse : public JUCE_NAMESPACE::Slider
+class Slider_reverse : public juce::Slider
 {
 public:
-    Slider_reverse(const String& componentName) : JUCE_NAMESPACE::Slider(componentName) {};
+    Slider_reverse(const juce::String& componentName) : JUCE_NAMESPACE::Slider(componentName) {};
     ~Slider_reverse() {};
     double proportionOfLengthToValue(double proportion) { return JUCE_NAMESPACE::Slider::proportionOfLengthToValue(1.0f - proportion); };
     double valueToProportionOfLength(double value) { return 1.0f - (JUCE_NAMESPACE::Slider::valueToProportionOfLength(value)); };
-    String getTextFromValue(double value) override
+    juce::String getTextFromValue(double value) override
     {
-        return String::toDecimalStringWithSignificantFigures(value, 2);
+        return juce::String::toDecimalStringWithSignificantFigures(value, 2);
     };
 
-    void mouseDown(const MouseEvent& e) override
+    void mouseDown(const juce::MouseEvent& e) override
     {
         Slider::mouseDown(e);
-        setMouseCursor(MouseCursor::NoCursor);
+        setMouseCursor(juce::MouseCursor::NoCursor);
     };
 
-    void mouseUp(const MouseEvent& e) override
+    void mouseUp(const juce::MouseEvent& e) override
     {
         Slider::mouseUp(e);
-        setMouseCursor(MouseCursor::NormalCursor);
-        Point<float> pos = getScreenPosition().toFloat();
+        setMouseCursor(juce::MouseCursor::NormalCursor);
+        juce::Point<float> pos = getScreenPosition().toFloat();
         pos.setXY(pos.x + (getWidth() * 0.5), pos.y + getPositionOfValue(getValue()));
-        Desktop::getInstance().getMainMouseSource().setScreenPosition(pos);
+        juce::Desktop::getInstance().getMainMouseSource().setScreenPosition(pos);
     };
 };
 
@@ -70,12 +70,12 @@ public:
                                                                     //[/Comments]
 */
 class Absorp  : public juce::Component,
-                public Timer,
+                public juce::Timer,
                 public juce::Button::Listener
 {
 public:
     //==============================================================================
-    Absorp (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par);
+    Absorp (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts, int wi, WallFiltersUI* par);
     ~Absorp() override;
 
     //==============================================================================
@@ -104,7 +104,7 @@ private:
     void scaleAbsorption(float scale);
 
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
     int wallID;
 
     std::unique_ptr<Slider_reverse> abs1;
@@ -126,10 +126,10 @@ private:
     std::unique_ptr<SliderAttachment> freq7Attachment;
     std::unique_ptr<SliderAttachment> freq8Attachment;
 
-    PopupMenu presets;
+    juce::PopupMenu presets;
 
     WallFiltersUI* parent;
-    Point<float> pickerCoords;
+    juce::Point<float> pickerCoords;
 
     //[/UserVariables]
 

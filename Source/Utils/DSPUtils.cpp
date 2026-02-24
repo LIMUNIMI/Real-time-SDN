@@ -2,6 +2,7 @@
 #include <Parameters.h>
 
 using namespace Eigen;
+using namespace juce;
 
 std::vector<std::vector<double>> dspUtils::invfreqz(std::complex<double>* h, double* w, int numOrder, int denOrder, int wSize, 
 	double* weights, int iter = 0, double tol = 0.01)

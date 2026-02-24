@@ -39,16 +39,16 @@ class DragAndDropPanel  : public juce::Component,
 {
 public:
     //==============================================================================
-    DragAndDropPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    DragAndDropPanel (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~DragAndDropPanel() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    bool isInterestedInFileDrag(const StringArray& files) override;
-    void fileDragEnter(const StringArray& files, int x, int y) override;
-    void fileDragMove(const StringArray& files, int x, int y) override;
-    void fileDragExit(const StringArray& files) override;
-    void filesDropped(const StringArray& files, int x, int y) override;
+    bool isInterestedInFileDrag(const juce::StringArray& files) override;
+    void fileDragEnter(const juce::StringArray& files, int x, int y) override;
+    void fileDragMove(const juce::StringArray& files, int x, int y) override;
+    void fileDragExit(const juce::StringArray& files) override;
+    void filesDropped(const juce::StringArray& files, int x, int y) override;
     void visibilityChanged() override;
     //[/UserMethods]
 
@@ -61,7 +61,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Colour customColour = juce::Colour(0xff3d92a3);
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
     //[/UserVariables]
 
     //==============================================================================

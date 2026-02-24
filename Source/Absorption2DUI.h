@@ -7,7 +7,7 @@
 class Absorption2DUI : public juce::Component
 {
 public:
-    Absorption2DUI(RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    Absorption2DUI(RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~Absorption2DUI();
 
     void paint(juce::Graphics&) override;
@@ -22,11 +22,11 @@ public:
 
 private:
 
-    std::unique_ptr<Slider> xSlider;
-    std::unique_ptr<Slider> ySlider;
+    std::unique_ptr<juce::Slider> xSlider;
+    std::unique_ptr<juce::Slider> ySlider;
 
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Absorption2DUI)
 };

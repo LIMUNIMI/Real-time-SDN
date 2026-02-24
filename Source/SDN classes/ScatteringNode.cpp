@@ -1,11 +1,11 @@
 #include "ScatteringNode.h"
 
-ScatteringNode::ScatteringNode()
+SDN::ScatteringNode::ScatteringNode()
 {
 	setPosition({ 0, 0, 0 });
 }
 
-void ScatteringNode::init(double samplerate, Point3d position, int nOfConnections,
+void SDN::ScatteringNode::init(double samplerate, Point3d position, int nOfConnections,
 	WaveGuide* sourceNodeGuide, WaveGuide* nodeListenerGuide)
 {
 	setPosition(position);
@@ -36,7 +36,7 @@ void ScatteringNode::init(double samplerate, Point3d position, int nOfConnection
 
 }
 
-void ScatteringNode::process()
+void SDN::ScatteringNode::process()
 {
 
 	totLoudness = 0;
@@ -53,7 +53,7 @@ void ScatteringNode::process()
 
 }
 
-void ScatteringNode::getAllOutSamples()
+void SDN::ScatteringNode::getAllOutSamples()
 {
 
 	toListenerSample = 0;

@@ -11,7 +11,7 @@ public:
 
 	void prepare(double samplerate, int maxLength, float delaySamp);
 	
-	void storeInDelay(const AudioBuffer<float>& buffer);
+	void storeInDelay(const juce::AudioBuffer<float>& buffer);
 	void storeInDelay(const float* sampleReadPointer, float gain);
 	void storeInDelay(float sample);
 	float& readNextSample();
@@ -34,7 +34,7 @@ public:
 
 private:
 
-	AudioBuffer<float> circularBuffer;
+	juce::AudioBuffer<float> circularBuffer;
 	float oldSample = 0;
 	float outSample = 0;
 	int maxBufferLength = 0;

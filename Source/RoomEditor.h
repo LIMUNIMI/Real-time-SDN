@@ -28,8 +28,8 @@
 #include "GeometryPanel.h"
 #include "Absorption2DPanel.h"
 
-typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
-typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 //[/Headers]
 
 
@@ -49,7 +49,7 @@ class RoomEditor  : public juce::Component,
 {
 public:
     //==============================================================================
-    RoomEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    RoomEditor (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~RoomEditor() override;
 
     //==============================================================================
@@ -67,11 +67,11 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
 
     std::unique_ptr<SliderAttachment> gainAttachment;
     std::unique_ptr<ButtonAttachment> losAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> outputModeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> outputModeAttachment;
     int numOutChannels = 0;
 
     void setDropDownAvailableOptions(int numCh);

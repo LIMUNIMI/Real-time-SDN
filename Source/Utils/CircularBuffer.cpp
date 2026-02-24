@@ -1,4 +1,5 @@
 #include "CircularBuffer.h"
+using namespace juce;
 
 void CircularBuffer::prepare(double samplerate, int nchannels, int maxLength, int writeHead)
 {

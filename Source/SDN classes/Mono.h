@@ -5,19 +5,22 @@
 #include <Parameters.h>
 
 //handles MONO output
-class Mono : public Microphone
+namespace SDN
 {
-public:
-	Mono() {};
-	~Mono() {};
+	class Mono : public SDN::Microphone
+	{
+	public:
+		Mono() {};
+		~Mono() {};
 
-	void init() override;
+		void init() override;
 
-	void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
-		AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
+		void process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
+			juce::AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating) override;
 
-private:
+	private:
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mono);
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mono);
 
-};
+	};
+}

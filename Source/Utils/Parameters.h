@@ -1,7 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #if __has_include("BRTLibrary.h")
-#include <BRTLibrary.h>
+	#include <BRTLibrary.h> 
 #endif
 
 #define ORDER2NSH(order) ((order+1)*(order+1))
@@ -30,15 +30,15 @@ namespace Parameters
 		"1st order Ambisonic", "2nd order Ambisonic", "3rd order Ambisonic", "4th order Ambisonic", "5th order Ambisonic" };
 #endif
 
-	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+	juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
-	static void addListenerToAllParameters(AudioProcessorValueTreeState& valueTreeState, AudioProcessorValueTreeState::Listener* listener)
+	static void addListenerToAllParameters(juce::AudioProcessorValueTreeState& valueTreeState, juce::AudioProcessorValueTreeState::Listener* listener)
 	{
-		std::unique_ptr<XmlElement> xml(valueTreeState.copyState().createXml());
+		std::unique_ptr<juce::XmlElement> xml(valueTreeState.copyState().createXml());
 
 		for (auto element : xml->getChildWithTagNameIterator("PARAM"))
 		{
-			const String& id = element->getStringAttribute("id");
+			const juce::String& id = element->getStringAttribute("id");
 			valueTreeState.addParameterListener(id, listener);
 		}
 	}

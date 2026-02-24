@@ -1,4 +1,6 @@
 #include "Mono.h"
+using namespace juce;
+using namespace SDN;
 
 void Mono::init()
 {

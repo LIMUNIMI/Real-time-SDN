@@ -24,7 +24,7 @@
 #include "Absorp.h"
 #include "Absorption2DWindow.h"
 
-typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 //[/Headers]
 
 
@@ -42,14 +42,14 @@ class WallFiltersUI  : public juce::Component,
 {
 public:
     //==============================================================================
-    WallFiltersUI (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    WallFiltersUI (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~WallFiltersUI() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void openPickerWindow(Absorp* wall, Point<int>& position, Point<float>* pickerCoord);
+    void openPickerWindow(Absorp* wall, const juce::Point<int>& position, juce::Point<float>* pickerCoord);
     void hidePickerWindow();
-    void setPickerToPreset(Absorp* wall, int preset, Point<float>* pickerCoord);
+    void setPickerToPreset(Absorp* wall, int preset, juce::Point<float>* pickerCoord);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -61,7 +61,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     RealtimeSDNAudioProcessor& processor;
-    AudioProcessorValueTreeState& valueTreeState;
+    juce::AudioProcessorValueTreeState& valueTreeState;
     std::unique_ptr<ButtonAttachment> airAbosrptionAttachment;
 
     std::unique_ptr<Absorption2DWindow> absorptionPickerWindow;

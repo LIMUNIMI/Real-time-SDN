@@ -7,7 +7,7 @@
 class RealtimeSDNAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    RealtimeSDNAudioProcessorEditor (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts);
+    RealtimeSDNAudioProcessorEditor (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts);
     ~RealtimeSDNAudioProcessorEditor() override;
 
     void resized() override;
@@ -19,7 +19,7 @@ private:
     static constexpr double maximumScale{ 2.00 };
 
     RoomEditor roomEditor;
-    ApplicationProperties applicationProperties;
+    juce::ApplicationProperties applicationProperties;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RealtimeSDNAudioProcessorEditor)
 };

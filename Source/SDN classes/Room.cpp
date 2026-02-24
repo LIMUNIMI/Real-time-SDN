@@ -1,6 +1,7 @@
 #include "Room.h"
 #include <MathUtils.h>
-
+using namespace juce;
+using namespace SDN;
 
 Room::Room()
 {

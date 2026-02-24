@@ -1,4 +1,6 @@
 #include "Stereo.h"
+using namespace juce;
+using namespace SDN;
 
 void Stereo::init(double sampleRate)
 {

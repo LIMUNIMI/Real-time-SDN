@@ -24,10 +24,11 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+using namespace juce;
 //[/MiscUserDefs]
 
 //==============================================================================
-GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
+GeometryPanel::GeometryPanel (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts)
     : processor(p), valueTreeState(vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -485,7 +486,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="GeometryPanel" componentName=""
                  parentClasses="public juce::Component, public juce::OSCReceiver, public juce::OSCReceiver::ListenerWithOSCAddress&lt;juce::OSCReceiver::MessageLoopCallback&gt;"
-                 constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 constructorParams="RealtimeSDNAudioProcessor&amp; p, juce::AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="630" initialHeight="600">

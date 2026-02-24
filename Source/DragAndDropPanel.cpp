@@ -24,10 +24,11 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+using namespace juce;
 //[/MiscUserDefs]
 
 //==============================================================================
-DragAndDropPanel::DragAndDropPanel (RealtimeSDNAudioProcessor& p, AudioProcessorValueTreeState& vts)
+DragAndDropPanel::DragAndDropPanel (RealtimeSDNAudioProcessor& p, juce::AudioProcessorValueTreeState& vts)
     : processor(p), valueTreeState(vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -192,7 +193,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="DragAndDropPanel" componentName=""
                  parentClasses="public juce::Component, public juce::FileDragAndDropTarget"
-                 constructorParams="RealtimeSDNAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 constructorParams="RealtimeSDNAudioProcessor&amp; p, juce::AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="processor(p), valueTreeState(vts)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="472" initialHeight="240">

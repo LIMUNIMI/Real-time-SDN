@@ -1,6 +1,7 @@
 #include "Ambisonic.h"
 
 using namespace Eigen;
+using namespace SDN;
 
 void Ambisonic::init()
 {
@@ -9,7 +10,7 @@ void Ambisonic::init()
 }
 
 void Ambisonic::process(std::vector<WaveGuide*>& inWaveguides, Point3d position, Eigen::Quaternionf currentRotation,
-	AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating)
+	juce::AudioBuffer<float>& sourceBuffer, int sampleIndex, int maxIndex, bool hasChanged, bool isRotating)
 {
 
 	int i = 0;
